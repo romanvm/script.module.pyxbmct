@@ -14,9 +14,9 @@
     <disclaimer lang="en"></disclaimer>
     <language></language>    
     <license>GNU GPL v.3</license>
-    <forum></forum>
+    <forum>http://forum.xbmc.org/showthread.php?tid=174859</forum>
     <website>http://romanvm.github.io/PyXBMCt</website>
-    <email></email>
-    <source></source>
+    <email>romanvm@yandex.ua</email>
+    <source>https://github.com/romanvm/script.module.pyxbmct</source>
   </extension>  
 </addon>
