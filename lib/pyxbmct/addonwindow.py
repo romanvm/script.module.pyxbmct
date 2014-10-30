@@ -9,8 +9,10 @@
 ## @package addonwindow
 #  PyXBMCt framework module
 
-import sys, os
-import xbmc, xbmcgui, xbmcaddon
+import os
+import xbmc
+import xbmcgui
+import xbmcaddon
 
 _ADDON_NAME = 'script.module.pyxbmct'
 _addon = xbmcaddon.Addon(id=_ADDON_NAME)
