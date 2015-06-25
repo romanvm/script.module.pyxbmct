@@ -1,13 +1,22 @@
 # -*- coding: utf-8 -*-
+## @package addonwindow
+# PyXBMCt framework module
 #
-# PyXBMCt is a mini-framework for creating XBMC Python addons
+# PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons
 # with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
-# The framework uses image textures from XBMC Confluence skin.
+# The framework uses image textures from Kodi Confluence skin.
 #
 # Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
-#
-## @package addonwindow
-#  PyXBMCt framework module
+
+"""
+PyXBMCt framework module
+
+PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons
+with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
+The framework uses image textures from Kodi Confluence skin.
+
+Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
+"""
 
 import os
 import xbmc
@@ -17,7 +26,11 @@ import xbmcaddon
 _ADDON_NAME = 'script.module.pyxbmct'
 _addon = xbmcaddon.Addon(id=_ADDON_NAME)
 _addon_path = _addon.getAddonInfo('path')
-_images = os.path.join(_addon_path, 'lib', 'pyxbmct', 'textures', 'default')
+try:
+    _images = os.path.join(_addon_path, 'lib', 'pyxbmct', 'textures', 'default')
+except TypeError:
+    # Needed for unit testing with xbmcstubs
+    _images = os.path.join(os.path.dirname(__file__), 'textures', 'default')
 
 
 # Text alighnment constants. Mixed variants are obtained by bit OR (|)
@@ -29,38 +42,47 @@ ALIGN_CENTER = 6
 ALIGN_TRUNCATED = 8
 ALIGN_JUSTIFY = 10
 
-# XBMC key action codes.
-# More codes at https://github.com/xbmc/xbmc/blob/master/xbmc/guilib/Key.h
+# Kodi key action codes.
+# More codes available in xbmcgui module
 ## ESC action
 ACTION_PREVIOUS_MENU = 10
+"""ESC action"""
 ## Backspace action
 ACTION_NAV_BACK = 92
-## Left arrow key
+"""Backspace action"""
+## Left arrow action
 ACTION_MOVE_LEFT = 1
+"""Left arrow key"""
 ## Right arrow key
 ACTION_MOVE_RIGHT = 2
+"""Right arrow key"""
 ## Up arrow key
 ACTION_MOVE_UP = 3
+"""Up arrow key"""
 ## Down arrow key
 ACTION_MOVE_DOWN = 4
+"""Down arrow key"""
 ## Mouse wheel up
 ACTION_MOUSE_WHEEL_UP = 104
+"""Mouse wheel up"""
 ## Mouse wheel down
 ACTION_MOUSE_WHEEL_DOWN = 105
+"""Mouse wheel down"""
 ## Mouse drag
 ACTION_MOUSE_DRAG = 106
+"""Mouse drag"""
 ## Mouse move
 ACTION_MOUSE_MOVE = 107
+"""Mouse move"""
 ## Mouse click
 ACTION_MOUSE_LEFT_CLICK = 100
+"""Mouse click"""
 
 
-def _set_textures(textures={}, kwargs={}):
+def _set_textures(textures, kwargs):
     """Set texture arguments for controls."""
     for texture in textures.keys():
-        try:
-            kwargs[texture]
-        except KeyError:
+        if kwargs.get(texture) is None:
             kwargs[texture] = textures[texture]
 
 
@@ -178,9 +200,7 @@ class Button(xbmcgui.ControlButton):
         textures = {'focusTexture': os.path.join(_images, 'Button', 'KeyboardKey.png'),
                     'noFocusTexture': os.path.join(_images, 'Button', 'KeyboardKeyNF.png')}
         _set_textures(textures, kwargs)
-        try:
-            kwargs['alignment']
-        except KeyError:
+        if kwargs.get('alignment') is None:
             kwargs['alignment'] = ALIGN_CENTER
         return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -233,7 +253,7 @@ class RadioButton(xbmcgui.ControlRadioButton):
 
 class Edit(xbmcgui.ControlEdit):
     """
-   	ControlEdit class.
+    ControlEdit class.
 
     Implements a clickable text entry field with on-screen keyboard.
 
@@ -358,17 +378,18 @@ class _AbstractWindow(object):
         else:
             self.x = 640 - self.width/2
             self.y = 360 - self.height/2
-        self.setGrid()
+        self._setGrid()
 
-    def setGrid(self):
+    def _setGrid(self):
         """
         Set window grid layout of rows * columns.
+
         This is a helper method not to be called directly.
         """
         self.grid_x = self.x
         self.grid_y = self.y
-        self.tile_width = self.width/self.columns
-        self.tile_height = self.height/self.rows
+        self.tile_width = self.width / self.columns
+        self.tile_height = self.height / self.rows
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -425,6 +446,7 @@ class _AbstractWindow(object):
     def getRows(self):
         """
         Get grid rows count.
+
         Raises AddonWindowError if a grid has not yet been set.
         """
         try:
@@ -435,6 +457,7 @@ class _AbstractWindow(object):
     def getColumns(self):
         """
         Get grid columns count.
+
         Raises AddonWindowError if a grid has not yet been set.
         """
         try:
@@ -476,6 +499,7 @@ class _AbstractWindow(object):
     def connectEventList(self, events, function):
         """
         Connect a list of controls/action codes to a function.
+
         See connect docstring for more info.
         """
         [self.connect(event, function) for event in events]
@@ -507,15 +531,17 @@ class _AbstractWindow(object):
     def disconnectEventList(self, events):
         """
         Disconnect a list of controls/action codes from functions.
+
         See disconnect docstring for more info.
         Raises AddonWindowError if at least one event in the list
         is not connected to any function.
         """
         [self.disconnect(event) for event in events]
 
-    def executeConnected(self, event, connected_list):
+    def _executeConnected(self, event, connected_list):
         """
         Execute a connected event (an action or a control).
+
         This is a helper method not to be called directly.
         """
         for item in connected_list:
@@ -525,6 +551,8 @@ class _AbstractWindow(object):
 
     def setAnimation(self, control):
         """
+        Set animation for control
+
         This method is called to set animation properties for all controls
         added to the current addon window instance - both built-in controls
         (window background, title bar etc.) and controls added with placeControl().
@@ -559,10 +587,12 @@ class _AddonWindow(_AbstractWindow):
     def __init__(self, title=''):
         """Constructor method."""
         super(_AddonWindow, self).__init__()
-        self.setFrame(title)
+        self._setFrame(title)
 
-    def setFrame(self, title):
+    def _setFrame(self, title):
         """
+        Set window frame
+
         Define paths to images for window background and title background textures,
         and set control position adjustment constants used in setGrid.
         This is a helper method not to be called directly.
@@ -623,9 +653,10 @@ class _AddonWindow(_AbstractWindow):
         self.title_bar.setHeight(self.HEADER_HEIGHT)
         self.window_close_button.setPosition(self.x + self.width - 70, self.y + self.Y_MARGIN + self.Y_SHIFT)
 
-    def setGrid(self):
+    def _setGrid(self):
         """
         Set window grid layout of rows * columns.
+
         This is a helper method not to be called directly.
         """
         self.grid_x = self.x + self.X_MARGIN + self.win_padding
@@ -637,6 +668,7 @@ class _AddonWindow(_AbstractWindow):
     def setWindowTitle(self, title=''):
         """
         Set window title.
+
         This method must be called AFTER (!!!) setGeometry(),
         otherwise there is some werid bug with all skin text labels set to the 'title' text.
         Example:
@@ -655,6 +687,7 @@ class _FullWindow(xbmcgui.Window):
     def onAction(self, action):
         """
         Catch button actions.
+
         Note that, despite being compared to an integer,
         action is an instance of xbmcgui.Action class.
         """
@@ -666,6 +699,7 @@ class _FullWindow(xbmcgui.Window):
     def onControl(self, control):
         """
         Catch activated controls.
+
         Control is an instance of xbmcgui.Control class.
         """
         if control == self.window_close_button:
@@ -681,6 +715,7 @@ class _DialogWindow(xbmcgui.WindowDialog):
     def onAction(self, action):
         """
         Catch button actions.
+
         Note that, despite being compared to an integer,
         action is an instance of xbmcgui.Action class.
         """
@@ -692,6 +727,7 @@ class _DialogWindow(xbmcgui.WindowDialog):
     def onControl(self, control):
         """
         Catch activated controls.
+
         Control is an instance of xbmcgui.Control class.
         """
         if control == self.window_close_button:
@@ -703,6 +739,7 @@ class _DialogWindow(xbmcgui.WindowDialog):
 class BlankFullWindow(_FullWindow, _AbstractWindow):
     """
     Addon UI container with a solid background.
+
     This is a blank window with a black background and without any elements whatsoever.
     The decoration and layout are completely up to an addon developer.
     The window controls can hide under video or music visualization.
@@ -723,6 +760,7 @@ class BlankFullWindow(_FullWindow, _AbstractWindow):
 class BlankDialogWindow(_DialogWindow, _AbstractWindow):
     """
     Addon UI container with a transparent background.
+
     This is a blank window with a transparent background and without any elements whatsoever.
     The decoration and layout are completely up to an addon developer.
     The window controls are always displayed over video or music visualization.
@@ -738,6 +776,7 @@ class AddonFullWindow(_FullWindow, _AddonWindow):
 
     """
     Addon UI container with a solid background.
+
     Control window is displayed on top of the main background image - self.main_bg.
     Video and music visualization are displayed unhindered.
     Window ID can be passed on class instantiation as the 2nd positional agrument
@@ -755,7 +794,7 @@ class AddonFullWindow(_FullWindow, _AddonWindow):
     def __new__(cls, title='', *args, **kwargs):
         return super(AddonFullWindow, cls).__new__(cls, *args, **kwargs)
 
-    def setFrame(self, title):
+    def _setFrame(self, title):
         """
         Set the image for for the fullscreen background.
         """
@@ -764,11 +803,12 @@ class AddonFullWindow(_FullWindow, _AddonWindow):
         # Fullscreen background image control.
         self.main_bg = xbmcgui.ControlImage(1, 1, 1280, 720, self.main_bg_img)
         self.addControl(self.main_bg)
-        super(AddonFullWindow, self).setFrame(title)
+        super(AddonFullWindow, self)._setFrame(title)
 
     def setBackground(self, image=''):
         """
         Set the main bacground to an image file.
+
         image: path to an image file as str.
         Example:
         self.setBackground('d:\images\bacground.png')
@@ -779,6 +819,7 @@ class AddonFullWindow(_FullWindow, _AddonWindow):
 class AddonDialogWindow(_DialogWindow, _AddonWindow):
     """
     Addon UI container with a transparent background.
+
     Control window is displayed on top of XBMC UI,
     including video an music visualization!
     Minimal example:
