@@ -9,13 +9,7 @@
 # Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
 
 """
-PyXBMCt framework module
-
-PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons
-with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
-The framework uses image textures from Kodi Confluence skin.
-
-Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
+addonwindow module contains all classes and constants of PyXBMCt framework
 """
 
 import os
@@ -694,7 +688,7 @@ class _FullWindow(xbmcgui.Window):
         if action == ACTION_PREVIOUS_MENU:
             self.close()
         else:
-            self.executeConnected(action, self.actions_connected)
+            self._executeConnected(action, self.actions_connected)
 
     def onControl(self, control):
         """
@@ -705,7 +699,7 @@ class _FullWindow(xbmcgui.Window):
         if control == self.window_close_button:
             self.close()
         else:
-            self.executeConnected(control, self.controls_connected)
+            self._executeConnected(control, self.controls_connected)
 
 
 class _DialogWindow(xbmcgui.WindowDialog):
@@ -722,7 +716,7 @@ class _DialogWindow(xbmcgui.WindowDialog):
         if action == ACTION_PREVIOUS_MENU:
             self.close()
         else:
-            self.executeConnected(action, self.actions_connected)
+            self._executeConnected(action, self.actions_connected)
 
     def onControl(self, control):
         """
@@ -733,7 +727,7 @@ class _DialogWindow(xbmcgui.WindowDialog):
         if control == self.window_close_button:
             self.close()
         else:
-            self.executeConnected(control, self.controls_connected)
+            self._executeConnected(control, self.controls_connected)
 
 
 class BlankFullWindow(_FullWindow, _AbstractWindow):
