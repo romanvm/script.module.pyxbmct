@@ -6,14 +6,12 @@ It was inspired by PyQt GUI framework (hence the name) and provides a main windo
 The main windows serves as a parent widget for the controls much like QtGui.QWidget class and provides a grid layout
 manager to place the controls.
 
-[PyXBMCt Quick Start Guide](http://romanvm.github.io/PyXBMCt/files/PyXBMCt_QuickStart.pdf).
-
-[Developer documentation](http://romanvm.github.io/PyXBMCt/docs).
+PyXBMCt developer's documentation: http://romanvm.github.io/PyXBMCt/docs.
 
 Support thread on Kodi forum: http://forum.xbmc.org/showthread.php?tid=174859
 
 The framework uses image textures from Kodi (XBMC) Confluence skin.
 
-[PyXBMCt demo addon](https://github.com/romanvm/pyxbmct.demo) that illustrates the usage of PyXBMCt mini-framework.
+See also [PyXBMCt demo addon](https://github.com/romanvm/pyxbmct.demo) that illustrates the usage of PyXBMCt mini-framework.
 
 Licence: [GPL v.3](http://www.gnu.org/licenses/gpl.html).
