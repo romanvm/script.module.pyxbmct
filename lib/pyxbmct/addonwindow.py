@@ -8,7 +8,7 @@
 #
 # Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
 """
-addonwindow module contains all classes and constants of PyXBMCt framework
+``pyxbmct.addonwindow`` module contains all classes and constants of PyXBMCt framework
 """
 
 import os
@@ -74,8 +74,11 @@ class AddonWindowError(Exception):
 
 
 class Label(xbmcgui.ControlLabel):
-    """ControlLabel class.
-
+    """
+    Label(label, font=None, textColor=None, disabledColor=None, alignment=0,hasPath=False, angle=0)
+    
+    ControlLabel class.
+    
     Implements a simple text label.
 
     :param label: string or unicode - text string.
@@ -87,9 +90,9 @@ class Label(xbmcgui.ControlLabel):
     :param angle: integer - angle of control. (+ rotates CCW, - rotates CW)
 
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
      self.label = Label('Status', angle=45)
     """
     def __new__(cls, *args, **kwargs):
@@ -97,18 +100,21 @@ class Label(xbmcgui.ControlLabel):
 
 
 class FadeLabel(xbmcgui.ControlFadeLabel):
-    """Control that scrolls label text.
-
+    """
+    FadeLabel(font=None, textColor=None, _alignment=0)
+    
+    Control that scrolls label text.
+    
     Implements a text label that can auto-scroll very long text.
-
+    
     :param font: string - font used for label text. (e.g. 'font13')
     :param textColor: hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')
     :param _alignment: integer - alignment of label - *Note, see xbfont.h
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.fadelabel = FadeLabel(textColor='0xFFFFFFFF')
     """
     def __new__(cls, *args, **kwargs):
@@ -116,18 +122,21 @@ class FadeLabel(xbmcgui.ControlFadeLabel):
 
 
 class TextBox(xbmcgui.ControlTextBox):
-    """ControlTextBox class.
-
+    """
+    TextBox(font=None, textColor=None)
+    
+    ControlTextBox class
+    
     Implements a box for displaying multi-line text.
-    Long text is truncated from below.
-
+    Long text is truncated from below. Also supports auto-scrolling.
+    
     :param font: string - font used for text. (e.g. 'font13')
     :param textColor: hexstring - color of textbox's text. (e.g. '0xFFFFFFFF')
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.textbox = TextBox(textColor='0xFFFFFFFF')
     """
     def __new__(cls, *args, **kwargs):
@@ -135,19 +144,22 @@ class TextBox(xbmcgui.ControlTextBox):
 
 
 class Image(xbmcgui.ControlImage):
-    """ControlImage class.
-
+    """
+    Image(filename, aspectRatio=0, colorDiffuse=None)
+    
+    ControlImage class.
+    
     Implements a box for displaying .jpg, .png, and .gif images.
 
     :param filename: string - image filename.
     :param colorKey: hexString - (example, '0xFFFF3300')
     :param aspectRatio: integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bars)
     :param colorDiffuse: hexString - (example, '0xC0FF0000' (red tint)).
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.image = Image('d:\images\picture.jpg', aspectRatio=2)
     """
     def __new__(cls, *args, **kwargs):
@@ -155,8 +167,11 @@ class Image(xbmcgui.ControlImage):
 
 
 class Button(xbmcgui.ControlButton):
-    """ControlButton class.
-
+    """
+    Button(label, focusTexture=None, noFocusTexture=None, textOffsetX=CONTROL_TEXT_OFFSET_X, textOffsetY=CONTROL_TEXT_OFFSET_Y, alignment=4, font=None, textColor=None, disabledColor=None, angle=0, shadowColor=None, focusedColor=None)
+    
+    ControlButton class.
+    
     Implements a clickable button.
 
     :param label: string or unicode - text string.
@@ -171,11 +186,11 @@ class Button(xbmcgui.ControlButton):
     :param angle: integer - angle of control. (+ rotates CCW, - rotates CW)
     :param shadowColor: hexstring - color of button's label's shadow. (e.g. '0xFF000000')
     :param focusedColor: hexstring - color of focused button's label. (e.g. '0xFF00FFFF')
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+        
     Example::
-
+    
         self.button = Button('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
@@ -188,10 +203,13 @@ class Button(xbmcgui.ControlButton):
 
 
 class RadioButton(xbmcgui.ControlRadioButton):
-    """ControlRadioButton class.
-
+    """
+    RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)
+    
+    ControlRadioButton class.
+    
     Implements a 2-state switch.
-
+    
     :param label: string or unicode - text string.
     :param focusTexture: string - filename for focus texture.
     :param noFocusTexture: string - filename for no focus texture.
@@ -208,13 +226,13 @@ class RadioButton(xbmcgui.ControlRadioButton):
     :param noFocusOnTexture: string - filename for radio not focused/checked texture.
     :param focusOffTexture: string - filename for radio focused/unchecked texture.
     :param noFocusOffTexture: string - filename for radio not focused/unchecked texture.
-
+    
     .. note:: To customize RadioButton all 4 abovementioned textures need to be provided.
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.radiobutton = RadioButton('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
@@ -236,11 +254,11 @@ class RadioButton(xbmcgui.ControlRadioButton):
 
 class Edit(xbmcgui.ControlEdit):
     """
+    Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
+    
     ControlEdit class.
-
-    Implements a clickable text entry field with on-screen keyboard.
-
-    ``Edit(label[, font, textColor, disabledColor, alignment, focusTexture, noFocusTexture])``
+    
+    Implements a clickable text entry field with an on-screen keyboard.
 
     :param label: string or unicode - text string.
     :param font: [opt] string - font used for label text. (e.g. 'font13')
@@ -250,13 +268,13 @@ class Edit(xbmcgui.ControlEdit):
     :param focusTexture: [opt] string - filename for focus texture.
     :param noFocusTexture: [opt] string - filename for no focus texture.
     :param isPassword: [opt] bool - if true, mask text value.
-
+    
     .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
-    Once you use a keyword, all following arguments require the keyword.
-    After you create the control, you need to add it to the window with ``palceControl()``.
-
+        Once you use a keyword, all following arguments require the keyword.
+        After you create the control, you need to add it to the window with ``palceControl()``.
+    
     Example::
-
+    
         self.edit = Edit('Status')
     """
     def __new__(cls, *args, **kwargs):
@@ -267,10 +285,13 @@ class Edit(xbmcgui.ControlEdit):
 
 
 class List(xbmcgui.ControlList):
-    """ControlList class.
-
+    """
+    List(font=None, textColor=None, buttonTexture=None, buttonFocusTexture=None, selectedColor=None, _imageWidth=10, _imageHeight=10, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4)
+    
+    ControlList class.
+    
     Implements a scrollable list of items.
-
+    
     :param font: string - font used for items label. (e.g. 'font13')
     :param textColor: hexstring - color of items label. (e.g. '0xFFFFFFFF')
     :param buttonTexture: string - filename for no focus texture.
@@ -283,11 +304,11 @@ class List(xbmcgui.ControlList):
     :param _itemHeight: integer - height of items.
     :param _space: integer - space between items.
     :param _alignmentY: integer - Y-axis alignment of items label - *Note, see xbfont.h
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.cList = List('font14', space=5)
     """
     def __new__(cls, *args, **kwargs):
@@ -298,18 +319,21 @@ class List(xbmcgui.ControlList):
 
 
 class Slider(xbmcgui.ControlSlider):
-    """ControlSlider class.
-
+    """
+    Slider(textureback=None, texture=None, texturefocus=None)
+    
+    ControlSlider class.
+    
     Implements a movable slider for adjusting some value.
-
+    
     :param textureback: string - image filename.
     :param texture: string - image filename.
     :param texturefocus: string - image filename.
-
+    
     .. note:: After you create the control, you need to add it to the window with placeControl().
-
+    
     Example::
-
+    
         self.slider = Slider()
     """
     def __new__(cls, *args, **kwargs):
@@ -324,12 +348,12 @@ class _AbstractWindow(object):
 
     """
     Top-level control window.
-
+    
     The control windows serves as a parent widget for other XBMC UI controls
     much like Tkinter.Tk or PyQt QWidget class.
     This is an abstract class which is not supposed to be instantiated directly
     and will raise exeptions.
-
+    
     This class is a basic "skeleton" for a control window.
     """
 
@@ -341,19 +365,19 @@ class _AbstractWindow(object):
     def setGeometry(self, width_, height_, rows_, columns_, pos_x=-1, pos_y=-1):
         """
         Set width, height, Grid layout, and coordinates (optional) for a new control window.
-
+        
         :param width_: widgh of the created window.
         :param height_: height of the created window.
         :param rows_: # rows of the Grid layout to place controls on.
         :param columns_: # colums of the Grid layout to place controls on.
         :param pos_x: (opt) x coordinate of the top left corner of the window.
         :param pos_y: (opt) y coordinates of the top left corner of the window.
-
+        
         If pos_x and pos_y are not privided, the window will be placed
         at the center of the screen.
 
         Example::
-
+        
             self.setGeometry(400, 500, 5, 4)
         """
         self.width = width_
@@ -549,7 +573,7 @@ class _AbstractWindow(object):
 
         :param events: the list of events to be disconnected.
         :raises: :class:`AddonWindowError` if at least one event in the list
-        is not connected to any function.
+            is not connected to any function.
         """
         [self.disconnect(event) for event in events]
 
@@ -694,7 +718,7 @@ class _AddonWindow(_AbstractWindow):
         """
         Set window title.
 
-        .. warning:: This method must be called AFTER (!!!) :func:`setGeometry`,
+        .. warning:: This method must be called **AFTER** (!!!) :func:`setGeometry`,
             otherwise there is some werid bug with all skin text labels set to the ``title`` text.
 
         Example::
@@ -765,57 +789,42 @@ class _DialogWindow(xbmcgui.WindowDialog):
 
 class BlankFullWindow(_FullWindow, _AbstractWindow):
     """
+    BlankFullWindow()
+
     Addon UI container with a solid background.
 
     This is a blank window with a black background and without any elements whatsoever.
     The decoration and layout are completely up to an addon developer.
     The window controls can hide under video or music visualization.
-    Window ID can be passed on class instantiation an agrument
-    but __init__ must have the 2nd fake argument, e.g::
-
-        def __init__(self, *args)
-
-    Minimal example::
-
-        addon = MyAddon('My Cool Addon')
-        addon.setGeometry(400, 300, 4, 3)
-        addon.doModal()
     """
     pass
 
 
 class BlankDialogWindow(_DialogWindow, _AbstractWindow):
     """
+    BlankDialogWindow()
+
     Addon UI container with a transparent background.
 
     This is a blank window with a transparent background and without any elements whatsoever.
     The decoration and layout are completely up to an addon developer.
     The window controls are always displayed over video or music visualization.
-
-    Minimal example::
-
-        addon = MyAddon('My Cool Addon')
-        addon.setGeometry(400, 300, 4, 3)
-        addon.doModal()
     """
     pass
 
 class AddonFullWindow(_FullWindow, _AddonWindow):
 
     """
+    AddonFullWindow(title='')
+
     Addon UI container with a solid background.
 
-    ``AddonFullWindow`` instande is displayed on top of the main background image -
-    ``self.main_bg``. Video and music visualization are displayed unhindered.
-
-    Window ID can be passed on class instantiation as the 2nd positional agrument
-    but ``__init__`` must have the 3rd fake argument, e.g::
-
-        def __init__(self, title='', *args)
+    ``AddonFullWindow`` instance is displayed on top of the main background image --
+    ``self.main_bg`` -- and can hide behind a fullscreen video or music viaualisation.
 
     Minimal example::
 
-        addon = MyAddon('My Cool Addon')
+        addon = AddonFullWindow('My Cool Addon')
         addon.setGeometry(400, 300, 4, 3)
         addon.doModal()
     """
@@ -849,14 +858,16 @@ class AddonFullWindow(_FullWindow, _AddonWindow):
 
 class AddonDialogWindow(_DialogWindow, _AddonWindow):
     """
+    AddonDialogWindow(title='')
+
     Addon UI container with a transparent background.
 
-    ``AddonDialogWindow`` instance is displayed on top of XBMC UI,
-    including video an music visualization!
+    .. note:: ``AddonDialogWindow`` instance is displayed on top of XBMC UI,
+        including fullscreen video and music visualization.
 
     Minimal example::
 
-        addon = MyAddon('My Cool Addon')
+        addon = AddonDialogWindow('My Cool Addon')
         addon.setGeometry(400, 300, 4, 3)
         addon.doModal()
     """
