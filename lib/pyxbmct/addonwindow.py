@@ -491,26 +491,26 @@ class _AbstractWindow(object):
         Connect an event to a function.
 
         :param event: event to be connected.
-        :param callable: callable object the event is connected to.
+        :param callable: callable object (a function or a method) the event is being connected to.
 
         An event can be an inctance of a Control object or an integer key action code.
-        Several basic key action codes are provided by PyXBMCt. ``xbmcgui`` module
+        Several basic key action codes are provided by PyXBMCt. `xbmcgui`_ module
         provides more action codes.
 
         You can connect the following Controls: :class:`Button`, :class:`RadioButton`
         and :class:`List`. Other Controls do not generate any control events when activated
-        so their connections won't work.
+        so their connections won't have any effect.
 
-        To catch :class:`Slider` events you need to connect the following key actions:
+        To monitor the state of :class:`Slider` Control you need to connect the following key actions:
         ``ACTION_MOVE_LEFT``, ``ACTION_MOVE_RIGHT`` and ``ACTION_MOUSE_DRAG``, and do a check
-        whether the ``Slider`` instance is focused.
+        whether the :class:`Slider` instance is focused.
 
-        ``callable`` parameter is a function or a method to be executed on when the event is fired.
+        ``callable`` parameter is a function or a method to be executed when the event is fired.
 
         .. warning:: For connection you must provide a function object without brackets ``()``,
             not a function call!
 
-        ``lambda`` can be used as to call another function or method with parameters known at runtime.
+        ``lambda`` can be used to call another function or method with parameters known at runtime.
 
         Examples::
 
@@ -519,6 +519,8 @@ class _AbstractWindow(object):
         or::
 
             self.connect(ACTION_NAV_BACK, self.close)
+
+        .. _xbmcgui: http://romanvm.github.io/xbmcstubs/docs/xbmcgui-module.html
         """
         try:
             self.disconnect(event)
