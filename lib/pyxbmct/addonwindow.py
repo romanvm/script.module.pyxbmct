@@ -13,8 +13,9 @@
 import os
 import xbmc
 import xbmcgui
+from xbmcaddon import Addon
 
-_images = os.path.join(os.path.dirname(__file__), 'textures', 'default')
+_images = os.path.join(Addon('script.module.pyxbmct').getAddonInfo('path'), 'textures', 'default')
 
 # Text alighnment constants. Mixed variants are obtained by bit OR (|)
 ALIGN_LEFT = 0
