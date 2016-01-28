@@ -1,3 +1,5 @@
+[B]Version 1.1.6[/B]
+- Minor code refactoring
 [B]Version 1.1.5[/B]
 - Added a package-level import.
 - Changed doctsrings to Sphinx-compatible
