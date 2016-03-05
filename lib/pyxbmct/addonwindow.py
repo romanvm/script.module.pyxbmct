@@ -13,9 +13,9 @@
 import os
 import xbmc
 import xbmcgui
-from xbmcaddon import Addon
+from addonskin import Skin
 
-_images = os.path.join(Addon('script.module.pyxbmct').getAddonInfo('path'), 'lib', 'pyxbmct', 'textures', 'default')
+skin = Skin()
 
 # Text alighnment constants. Mixed variants are obtained by bit OR (|)
 ALIGN_LEFT = 0
@@ -192,8 +192,8 @@ class Button(xbmcgui.ControlButton):
         self.button = Button('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
-        textures = {'focusTexture': os.path.join(_images, 'Button', 'KeyboardKey.png'),
-                    'noFocusTexture': os.path.join(_images, 'Button', 'KeyboardKeyNF.png')}
+        textures = {'focusTexture': os.path.join(skin.images, 'Button', 'KeyboardKey.png'),
+                    'noFocusTexture': os.path.join(skin.images, 'Button', 'KeyboardKeyNF.png')}
         _set_textures(textures, kwargs)
         if kwargs.get('alignment') is None:
             kwargs['alignment'] = ALIGN_CENTER
@@ -235,17 +235,17 @@ class RadioButton(xbmcgui.ControlRadioButton):
     """
     def __new__(cls, *args, **kwargs):
         if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 13:
-            textures = {'focusTexture': os.path.join(_images, 'RadioButton', 'MenuItemFO.png'),
-                        'noFocusTexture': os.path.join(_images, 'RadioButton', 'MenuItemNF.png'),
-                        'focusOnTexture': os.path.join(_images, 'RadioButton', 'radiobutton-focus.png'),
-                        'noFocusOnTexture': os.path.join(_images, 'RadioButton', 'radiobutton-focus.png'),
-                        'focusOffTexture': os.path.join(_images, 'RadioButton', 'radiobutton-nofocus.png'),
-                        'noFocusOffTexture': os.path.join(_images, 'RadioButton', 'radiobutton-nofocus.png')}
+            textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
+                        'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
+                        'focusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
+                        'noFocusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
+                        'focusOffTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png'),
+                        'noFocusOffTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png')}
         else: # This is for compatibility with Frodo and earlier versions.
-            textures = {'focusTexture': os.path.join(_images, 'RadioButton', 'MenuItemFO.png'),
-                        'noFocusTexture': os.path.join(_images, 'RadioButton', 'MenuItemNF.png'),
-                        'TextureRadioFocus': os.path.join(_images, 'RadioButton', 'radiobutton-focus.png'),
-                        'TextureRadioNoFocus': os.path.join(_images, 'RadioButton', 'radiobutton-nofocus.png')}
+            textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
+                        'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
+                        'TextureRadioFocus': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
+                        'TextureRadioNoFocus': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png')}
         _set_textures(textures, kwargs)
         return super(RadioButton, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -276,8 +276,8 @@ class Edit(xbmcgui.ControlEdit):
         self.edit = Edit('Status')
     """
     def __new__(cls, *args, **kwargs):
-        textures = {'focusTexture': os.path.join(_images, 'Edit', 'button-focus.png'),
-                    'noFocusTexture': os.path.join(_images, 'Edit', 'black-back2.png')}
+        textures = {'focusTexture': os.path.join(skin.images, 'Edit', 'button-focus.png'),
+                    'noFocusTexture': os.path.join(skin.images, 'Edit', 'black-back2.png')}
         _set_textures(textures, kwargs)
         return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -310,8 +310,8 @@ class List(xbmcgui.ControlList):
         self.cList = List('font14', space=5)
     """
     def __new__(cls, *args, **kwargs):
-        textures = {'buttonTexture': os.path.join(_images, 'List', 'MenuItemNF.png'),
-                    'buttonFocusTexture': os.path.join(_images, 'List', 'MenuItemFO.png')}
+        textures = {'buttonTexture': os.path.join(skin.images, 'List', 'MenuItemNF.png'),
+                    'buttonFocusTexture': os.path.join(skin.images, 'List', 'MenuItemFO.png')}
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -335,9 +335,9 @@ class Slider(xbmcgui.ControlSlider):
         self.slider = Slider()
     """
     def __new__(cls, *args, **kwargs):
-        textures = {'textureback': os.path.join(_images, 'Slider', 'osd_slider_bg.png'),
-                    'texture': os.path.join(_images, 'Slider', 'osd_slider_nibNF.png'),
-                    'texturefocus': os.path.join(_images, 'Slider', 'osd_slider_nib.png')}
+        textures = {'textureback': os.path.join(skin.images, 'Slider', 'osd_slider_bg.png'),
+                    'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
+                    'texturefocus': os.path.join(skin.images, 'Slider', 'osd_slider_nib.png')}
         _set_textures(textures, kwargs)
         return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -641,30 +641,30 @@ class AddonWindow(AbstractWindow):
         This is a helper method not to be called directly.
         """
         # Window background image
-        self.background_img = os.path.join(_images, 'AddonWindow', 'ContentPanel.png')
+        self.background_img = os.path.join(skin.images, 'AddonWindow', 'ContentPanel.png')
         # Background for a window header
-        self.title_background_img = os.path.join(_images, 'AddonWindow', 'dialogheader.png')
+        self.title_background_img = os.path.join(skin.images, 'AddonWindow', 'dialogheader.png')
         # Horisontal adjustment for a header background if the main background has transparent edges.
-        self.X_MARGIN = 5
+        self.x_margin = skin.x_margin
         # Vertical adjustment for a header background if the main background has transparent edges
-        self.Y_MARGIN = 5
+        self.y_margin = skin.y_margin
         # Header position adjustment if the main backround has visible borders.
-        self.Y_SHIFT = 4
+        self.y_shift = skin.y_shift
         # The height of a window header (for the title background and the title label).
-        self.HEADER_HEIGHT = 35
+        self.header_height = skin.header_height
         self.background = xbmcgui.ControlImage(-10, -10, 1, 1, self.background_img)
         self.addControl(self.background)
         self.setAnimation(self.background)
         self.title_background = xbmcgui.ControlImage(-10, -10, 1, 1, self.title_background_img)
         self.addControl(self.title_background)
         self.setAnimation(self.title_background)
-        self.title_bar = xbmcgui.ControlLabel(-10, -10, 1, 1, title, alignment=ALIGN_CENTER, textColor='0xFFFFA500',
-                                                                        font='font13_title')
+        self.title_bar = xbmcgui.ControlLabel(-10, -10, 1, 1, title, alignment=skin.heder_align,
+                                              textColor=skin.header_text_color, font='font13_title')
         self.addControl(self.title_bar)
         self.setAnimation(self.title_bar)
-        self.window_close_button = xbmcgui.ControlButton(-100, -100, 60, 30, '',
-                        focusTexture=os.path.join(_images, 'AddonWindow', 'DialogCloseButton-focus.png'),
-                        noFocusTexture=os.path.join(_images, 'AddonWindow', 'DialogCloseButton.png'))
+        self.window_close_button = xbmcgui.ControlButton(-100, -100, skin.close_btn_width, skin.close_btn_height, '',
+                        focusTexture=os.path.join(skin.images, 'AddonWindow', 'DialogCloseButton-focus.png'),
+                        noFocusTexture=os.path.join(skin.images, 'AddonWindow', 'DialogCloseButton.png'))
         self.addControl(self.window_close_button)
         self.setAnimation(self.window_close_button)
 
@@ -693,13 +693,14 @@ class AddonWindow(AbstractWindow):
         self.background.setPosition(self.x, self.y)
         self.background.setWidth(self.width)
         self.background.setHeight(self.height)
-        self.title_background.setPosition(self.x + self.X_MARGIN, self.y + self.Y_MARGIN + self.Y_SHIFT)
-        self.title_background.setWidth(self.width - 2 * self.X_MARGIN)
-        self.title_background.setHeight(self.HEADER_HEIGHT)
-        self.title_bar.setPosition(self.x + self.X_MARGIN, self.y + self.Y_MARGIN + self.Y_SHIFT)
-        self.title_bar.setWidth(self.width - 2 * self.X_MARGIN)
-        self.title_bar.setHeight(self.HEADER_HEIGHT)
-        self.window_close_button.setPosition(self.x + self.width - 70, self.y + self.Y_MARGIN + self.Y_SHIFT)
+        self.title_background.setPosition(self.x + self.x_margin, self.y + self.y_margin + self.y_shift)
+        self.title_background.setWidth(self.width - 2 * self.x_margin)
+        self.title_background.setHeight(self.header_height)
+        self.title_bar.setPosition(self.x + self.x_margin, self.y + self.y_margin + self.y_shift)
+        self.title_bar.setWidth(self.width - 2 * self.x_margin)
+        self.title_bar.setHeight(self.header_height)
+        self.window_close_button.setPosition(self.x + self.width - skin.close_btn_x_offset,
+                                             self.y + self.y_margin + skin.close_btn_y_offset)
 
     def _setGrid(self):
         """
@@ -707,11 +708,11 @@ class AddonWindow(AbstractWindow):
 
         This is a helper method not to be called directly.
         """
-        self.grid_x = self.x + self.X_MARGIN + self.win_padding
-        self.grid_y = self.y + self.Y_MARGIN + self.Y_SHIFT + self.HEADER_HEIGHT + self.win_padding
-        self.tile_width = (self.width - 2 * (self.X_MARGIN + self.win_padding))/self.columns
+        self.grid_x = self.x + self.x_margin + self.win_padding
+        self.grid_y = self.y + self.y_margin + self.y_shift + self.header_height + self.win_padding
+        self.tile_width = (self.width - 2 * (self.x_margin + self.win_padding)) / self.columns
         self.tile_height = (
-                    self.height - self.HEADER_HEIGHT - self.Y_SHIFT - 2 * (self.Y_MARGIN + self.win_padding))/self.rows
+               self.height - self.header_height - self.y_shift - 2 * (self.y_margin + self.win_padding)) / self.rows
 
     def setWindowTitle(self, title=''):
         """
@@ -836,7 +837,7 @@ class AddonFullWindow(FullWindowMixin, AddonWindow):
         Set the image for for the fullscreen background.
         """
         # Image for the fullscreen background.
-        self.main_bg_img = os.path.join(_images, 'AddonWindow', 'SKINDEFAULT.jpg')
+        self.main_bg_img = os.path.join(skin.images, 'AddonWindow', 'SKINDEFAULT.jpg')
         # Fullscreen background image control.
         self.main_bg = xbmcgui.ControlImage(1, 1, 1280, 720, self.main_bg_img)
         self.addControl(self.main_bg)
