@@ -5,7 +5,7 @@
 # with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
 # The framework uses image textures from Kodi Confluence skin.
 #
-# Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
+# Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
 """
 ``pyxbmct.addonwindow`` module contains all classes and constants of PyXBMCt framework
 """
@@ -644,14 +644,6 @@ class AddonWindow(AbstractWindow):
         self.background_img = os.path.join(skin.images, 'AddonWindow', 'ContentPanel.png')
         # Background for a window header
         self.title_background_img = os.path.join(skin.images, 'AddonWindow', 'dialogheader.png')
-        # Horisontal adjustment for a header background if the main background has transparent edges.
-        self.x_margin = skin.x_margin
-        # Vertical adjustment for a header background if the main background has transparent edges
-        self.y_margin = skin.y_margin
-        # Header position adjustment if the main backround has visible borders.
-        self.y_shift = skin.y_shift
-        # The height of a window header (for the title background and the title label).
-        self.header_height = skin.header_height
         self.background = xbmcgui.ControlImage(-10, -10, 1, 1, self.background_img)
         self.addControl(self.background)
         self.setAnimation(self.background)
@@ -693,14 +685,15 @@ class AddonWindow(AbstractWindow):
         self.background.setPosition(self.x, self.y)
         self.background.setWidth(self.width)
         self.background.setHeight(self.height)
-        self.title_background.setPosition(self.x + self.x_margin, self.y + self.y_margin + self.y_shift)
-        self.title_background.setWidth(self.width - 2 * self.x_margin)
-        self.title_background.setHeight(self.header_height)
-        self.title_bar.setPosition(self.x + self.x_margin, self.y + self.y_margin + self.y_shift)
-        self.title_bar.setWidth(self.width - 2 * self.x_margin)
-        self.title_bar.setHeight(self.header_height)
+        self.title_background.setPosition(self.x + skin.x_margin, self.y + skin.y_margin + skin.title_back_y_shift)
+        self.title_background.setWidth(self.width - 2 * skin.x_margin)
+        self.title_background.setHeight(skin.header_height)
+        self.title_bar.setPosition(self.x + skin.x_margin + skin.title_bar_x_shift,
+                                   self.y + skin.y_margin + skin.title_bar_y_shift)
+        self.title_bar.setWidth(self.width - 2 * skin.x_margin)
+        self.title_bar.setHeight(skin.header_height)
         self.window_close_button.setPosition(self.x + self.width - skin.close_btn_x_offset,
-                                             self.y + self.y_margin + skin.close_btn_y_offset)
+                                             self.y + skin.y_margin + skin.close_btn_y_offset)
 
     def _setGrid(self):
         """
@@ -708,11 +701,11 @@ class AddonWindow(AbstractWindow):
 
         This is a helper method not to be called directly.
         """
-        self.grid_x = self.x + self.x_margin + self.win_padding
-        self.grid_y = self.y + self.y_margin + self.y_shift + self.header_height + self.win_padding
-        self.tile_width = (self.width - 2 * (self.x_margin + self.win_padding)) / self.columns
-        self.tile_height = (
-               self.height - self.header_height - self.y_shift - 2 * (self.y_margin + self.win_padding)) / self.rows
+        self.grid_x = self.x + skin.x_margin + self.win_padding
+        self.grid_y = self.y + skin.y_margin + skin.title_back_y_shift + skin.header_height + self.win_padding
+        self.tile_width = (self.width - 2 * (skin.x_margin + self.win_padding)) / self.columns
+        self.tile_height = ((self.height - skin.header_height - skin.title_back_y_shift -
+                             2 * (skin.y_margin + self.win_padding)) / self.rows)
 
     def setWindowTitle(self, title=''):
         """

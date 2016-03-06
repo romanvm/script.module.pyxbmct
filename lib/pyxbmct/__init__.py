@@ -9,7 +9,6 @@ Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
 """
 
 from addonwindow import *
-from addonskin import estuary
 
 version = '1.1.7'
 
@@ -47,5 +46,5 @@ __all__ = [
     'BlankDialogWindow',
     'AddonDialogWindow',
     'AddonFullWindow',
-    'estuary'
+    'skin'
 ]
