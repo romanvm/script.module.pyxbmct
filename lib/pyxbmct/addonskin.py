@@ -30,7 +30,7 @@ class Skin(object):
         if self.estuary:
             return os.path.join(self._texture_dir, 'estuary')
         else:
-            return os.path.join(self._texture_dir, 'default')
+            return os.path.join(self._texture_dir, 'confluence')
 
     @property
     def x_margin(self):
