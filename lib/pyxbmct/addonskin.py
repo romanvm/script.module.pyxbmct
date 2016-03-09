@@ -62,7 +62,7 @@ class Skin(object):
     @property
     def title_bar_y_shift(self):
         if self.estuary:
-            return 5
+            return 8
         else:
             return 4
 
