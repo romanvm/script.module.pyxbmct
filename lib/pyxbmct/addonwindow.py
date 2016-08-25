@@ -551,13 +551,13 @@ class AbstractWindow(object):
 
             self.disconnect(ACTION_NAV_BACK)
         """
-        if type(event) == int:
-             event_list = self.actions_connected
+        if isinstance(event, int):
+            event_list = self.actions_connected
         else:
-             event_list = self.controls_connected
-        for index in range(len(event_list)):
-            if event == event_list[index][0]:
-                event_list.pop(index)
+            event_list = self.controls_connected
+        for index, item in enumerate(event_list):
+            if event == item[0]:
+                del event_list[index]
                 break
         else:
             raise AddonWindowError('The action or control %s is not connected!' % event)
