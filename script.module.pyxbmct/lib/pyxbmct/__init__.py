@@ -46,5 +46,6 @@ __all__ = [
     'BlankDialogWindow',
     'AddonDialogWindow',
     'AddonFullWindow',
+    'Skin',
     'skin'
 ]

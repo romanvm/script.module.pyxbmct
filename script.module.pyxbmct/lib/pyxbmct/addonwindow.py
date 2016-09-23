@@ -641,9 +641,9 @@ class AddonWindow(AbstractWindow):
         This is a helper method not to be called directly.
         """
         # Window background image
-        self.background_img = os.path.join(skin.images, 'AddonWindow', 'ContentPanel.png')
+        self.background_img = skin.background_img
         # Background for a window header
-        self.title_background_img = os.path.join(skin.images, 'AddonWindow', 'dialogheader.png')
+        self.title_background_img = skin.title_background_img
         self.background = xbmcgui.ControlImage(-10, -10, 1, 1, self.background_img)
         self.addControl(self.background)
         self.setAnimation(self.background)
@@ -655,8 +655,8 @@ class AddonWindow(AbstractWindow):
         self.addControl(self.title_bar)
         self.setAnimation(self.title_bar)
         self.window_close_button = xbmcgui.ControlButton(-100, -100, skin.close_btn_width, skin.close_btn_height, '',
-                        focusTexture=os.path.join(skin.images, 'AddonWindow', 'DialogCloseButton-focus.png'),
-                        noFocusTexture=os.path.join(skin.images, 'AddonWindow', 'DialogCloseButton.png'))
+                        focusTexture=skin.close_button_focus,
+                        noFocusTexture=skin.close_button_no_focus)
         self.addControl(self.window_close_button)
         self.setAnimation(self.window_close_button)
 
@@ -830,7 +830,7 @@ class AddonFullWindow(FullWindowMixin, AddonWindow):
         Set the image for for the fullscreen background.
         """
         # Image for the fullscreen background.
-        self.main_bg_img = os.path.join(skin.images, 'AddonWindow', 'SKINDEFAULT.jpg')
+        self.main_bg_img = skin.main_bg_img
         # Fullscreen background image control.
         self.main_bg = xbmcgui.ControlImage(1, 1, 1280, 720, self.main_bg_img)
         self.addControl(self.main_bg)

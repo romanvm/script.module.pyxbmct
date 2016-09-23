@@ -5,6 +5,7 @@
 # Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
 
 import os
+import xbmc
 from xbmcaddon import Addon
 
 
@@ -14,13 +15,15 @@ class Skin(object):
 
     Defines parameters that control
     the appearance of PyXBMCt windows and controls.
-    """
-    estuary = True
-    """
-    ``True``: use Estuary skin design.
-    ``False``: use Confluence skin design.
+
+    ``estuary`` bool property defines the look of PyXBMCt elements:
+    ``True``: use Estuary skin design, ``False``: use Confluence skin design.
     """
     def __init__(self):
+        if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 17:
+            self.estuary = True
+        else:
+            self.estuary = False
         self._texture_dir = os.path.join(Addon('script.module.pyxbmct').getAddonInfo('path'),
                                          'lib', 'pyxbmct', 'textures')
 
@@ -127,3 +130,23 @@ class Skin(object):
             return ''
         else:
             return '0xFFFFA500'
+
+    @property
+    def background_img(self):
+        return os.path.join(self.images, 'AddonWindow', 'ContentPanel.png')
+
+    @property
+    def title_background_img(self):
+        return os.path.join(self.images, 'AddonWindow', 'dialogheader.png')
+
+    @property
+    def close_button_focus(self):
+        return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton-focus.png')
+
+    @property
+    def close_button_no_focus(self):
+        return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton.png')
+
+    @property
+    def main_bg_img(self):
+        return os.path.join(self.images, 'AddonWindow', 'SKINDEFAULT.jpg')
