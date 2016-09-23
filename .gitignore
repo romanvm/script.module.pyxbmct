@@ -110,3 +110,4 @@ crashlytics-build.properties
 
 epydoc.*
 _docs/
+*.zip
