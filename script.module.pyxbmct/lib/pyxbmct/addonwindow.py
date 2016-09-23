@@ -520,7 +520,7 @@ class AbstractWindow(object):
         try:
             self.disconnect(event)
         except AddonWindowError:
-            if type(event) == int:
+            if isinstance(event, int):
                 self.actions_connected.append([event, callable])
             else:
                 self.controls_connected.append([event, callable])
@@ -551,7 +551,7 @@ class AbstractWindow(object):
 
             self.disconnect(ACTION_NAV_BACK)
         """
-        if type(event) == int:
+        if isinstance(event, int):
              event_list = self.actions_connected
         else:
              event_list = self.controls_connected
