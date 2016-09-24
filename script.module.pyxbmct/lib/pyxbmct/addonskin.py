@@ -20,7 +20,9 @@ class Skin(object):
     ``True``: use Estuary skin design, ``False``: use Confluence skin design.
     """
     def __init__(self):
-        if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 17:
+        kodi_version = xbmc.getInfoLabel('System.BuildVersion')[:2]
+        # Kodistubs return an empty string
+        if kodi_version and int(kodi_version) >= 17:
             self.estuary = True
         else:
             self.estuary = False

@@ -1,5 +1,5 @@
 """
-PyXBMCt framework module
+PyXBMCt framework package
 
 PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons
 with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
