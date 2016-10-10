@@ -1,7 +1,5 @@
 Wellcome to PyXBMCt documentation!
 ==================================
-A GUI micro-framework for Kodi meidacenter addons
--------------------------------------------------
 
 PyXBMCt is a Python micro-framework created to simplify creating GUI for `Kodi (XBMC)`_ mediacenter addons.
 It was inspired by PyQt (hence the name) and shares the same basic principles,

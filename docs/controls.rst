@@ -40,7 +40,7 @@ Image
 -----
 
 :class:`Image<pyxbmct.addonwindow.Image>` control displays images from files (``.jpg``, ``.png``, ``.gif``).
-For ``.gif`` and ``.png`` images transparency is supported, and for ``.gif`` animation as well.
+For ``.gif`` and ``.png`` images transparency is supported, and for ``.gif`` animation is shown as well.
 
 Button
 ------
