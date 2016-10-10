@@ -6,7 +6,8 @@ with the following differences:
 
 * You don’t need to specify coordinates and size for the controls explicitly.
   The Grid layout manager takes care of control placement.
-* All controls that require textures are provided with default textures (borrowed from Confluence skin resources).
+* All controls that require textures are provided with default textures
+  (borrowed from Confluence and Estuary skin resources).
   You can specify your own textures for PyXBMCt controls, but you need to do this through keyword arguments (important!).
 * Button caption is center-aligned by default. You can change button caption alignment by providing a necessary alignment
   parameter through a keyword argument (PyXBMCt already includes symbolic constants for control text alignment).
@@ -39,7 +40,7 @@ Image
 -----
 
 :class:`Image<pyxbmct.addonwindow.Image>` control displays images from files (``.jpg``, ``.png``, ``.gif``).
-For ``.gif`` and ``.png`` images animation and transparency are supported.
+For ``.gif`` and ``.png`` images transparency is supported, and for ``.gif`` animation as well.
 
 Button
 ------
