@@ -111,4 +111,6 @@ crashlytics-build.properties
 epydoc.*
 _docs/
 
+venv/
 *.zip
+*.cmd

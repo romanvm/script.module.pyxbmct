@@ -1,0 +1,25 @@
+branches:
+  only: master
+language: python
+python: "2.7"
+install: true
+script: echo "Nothing to build"
+before_deploy:
+  - pip install Sphinx
+  - wget https://raw.githubusercontent.com/romanvm/travis_scripts/master/deploy_addon.py
+  - python deploy_addon.py -z script.module.pyxbmct
+  - export RELEASE_ZIP=$(ls *.zip)
+deploy:
+  - provider: releases
+    api_key: $GH_TOKEN
+    file_glob: true
+    file: $RELEASE_ZIP
+    skip_cleanup: true
+    on:
+      tags: true
+  # Publish docs to GH Pages
+  - provider: script
+    skip_cleanup: true
+    script: python deploy_addon.py -d script.module.pyxbmct
+notifications:
+  email: false
