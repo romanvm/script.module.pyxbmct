@@ -13,8 +13,8 @@ PyXBMCt appearance can also be selected explicitly::
 
 You can also subclass :class:`Skin<pyxbmct.addonskin.Skin>` class to chanage
 :class:`AddonDialogWindow<pyxbmct.addonwindow.AddonDialogWindow>` or
-:class:`AddonDialogWindow<pyxbmct.addonwindow.AddonDialogWindow>` appearance.
-The following example shows how to change :class:`AddonDialogWindow<pyxbmct.addonwindow.AddonDialogWindow>`
+:class:`AddonFullWindow<pyxbmct.addonwindow.AddonFullWindow>` appearance.
+The following example shows how to change :class:`AddonFullWindow<pyxbmct.addonwindow.AddonFullWindow>`
 fullscreen background without altering other elements::
 
   import pyxbmct
