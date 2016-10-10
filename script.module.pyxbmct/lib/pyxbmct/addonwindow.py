@@ -650,7 +650,7 @@ class AddonWindow(AbstractWindow):
         self.title_background = xbmcgui.ControlImage(-10, -10, 1, 1, self.title_background_img)
         self.addControl(self.title_background)
         self.setAnimation(self.title_background)
-        self.title_bar = xbmcgui.ControlLabel(-10, -10, 1, 1, title, alignment=skin.heder_align,
+        self.title_bar = xbmcgui.ControlLabel(-10, -10, 1, 1, title, alignment=skin.header_align,
                                               textColor=skin.header_text_color, font='font13_title')
         self.addControl(self.title_bar)
         self.setAnimation(self.title_bar)

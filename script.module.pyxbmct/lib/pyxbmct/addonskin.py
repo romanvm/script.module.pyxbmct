@@ -17,7 +17,7 @@ class Skin(object):
     the appearance of PyXBMCt windows and controls.
 
     ``estuary`` bool property defines the look of PyXBMCt elements:
-    ``True``: use Estuary skin design, ``False``: use Confluence skin design.
+    ``True`` -- use Estuary skin appearance, ``False`` -- use Confluence skin appearance.
     """
     def __init__(self):
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')[:2]
@@ -59,6 +59,7 @@ class Skin(object):
 
     @property
     def title_bar_x_shift(self):
+        """Horisontal adjustment for title bar texture"""
         if self.estuary:
             return 20
         else:
@@ -66,6 +67,7 @@ class Skin(object):
 
     @property
     def title_bar_y_shift(self):
+        """Vertical adjustment for title bar texture"""
         if self.estuary:
             return 8
         else:
@@ -100,6 +102,7 @@ class Skin(object):
 
     @property
     def close_btn_height(self):
+        """The height of the top-right close button"""
         if self.estuary:
             return 30
         else:
@@ -107,6 +110,7 @@ class Skin(object):
 
     @property
     def close_btn_x_offset(self):
+        """Close button horisontal adjustment"""
         if self.estuary:
             return 50
         else:
@@ -114,13 +118,20 @@ class Skin(object):
 
     @property
     def close_btn_y_offset(self):
+        """Close button vertical adjustment"""
         if self.estuary:
             return 7
         else:
             return 4
 
     @property
-    def heder_align(self):
+    def header_align(self):
+        """
+        Header text alignment
+
+        0 -- left
+        6 -- center
+        """
         if self.estuary:
             return 0
         else:
@@ -128,6 +139,7 @@ class Skin(object):
 
     @property
     def header_text_color(self):
+        """The color of the header text"""
         if self.estuary:
             return ''
         else:
@@ -135,20 +147,25 @@ class Skin(object):
 
     @property
     def background_img(self):
+        """Dialog background texture"""
         return os.path.join(self.images, 'AddonWindow', 'ContentPanel.png')
 
     @property
     def title_background_img(self):
+        """Title bar background texture"""
         return os.path.join(self.images, 'AddonWindow', 'dialogheader.png')
 
     @property
     def close_button_focus(self):
+        """Close button focused texture"""
         return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton-focus.png')
 
     @property
     def close_button_no_focus(self):
+        """Close button unfocused texture"""
         return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton.png')
 
     @property
     def main_bg_img(self):
+        """Fullscreen background for AddonFullWindow class"""
         return os.path.join(self.images, 'AddonWindow', 'SKINDEFAULT.jpg')
