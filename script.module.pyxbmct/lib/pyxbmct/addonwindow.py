@@ -318,15 +318,16 @@ class List(xbmcgui.ControlList):
 
 class Slider(xbmcgui.ControlSlider):
     """
-    Slider(textureback=None, texture=None, texturefocus=None)
+    Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
     
     ControlSlider class.
     
     Implements a movable slider for adjusting some value.
     
-    :param textureback: string - image filename.
-    :param texture: string - image filename.
-    :param texturefocus: string - image filename.
+    :param textureback: string -- image filename.
+    :param texture: string -- image filename.
+    :param texturefocus: string -- image filename.
+    :param orientation: int -- slider orientation
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -339,6 +340,8 @@ class Slider(xbmcgui.ControlSlider):
                     'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
                     'texturefocus': os.path.join(skin.images, 'Slider', 'osd_slider_nib.png')}
         _set_textures(textures, kwargs)
+        if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 17:
+            kwargs['orientation'] = xbmcgui.HORIZONTAL
         return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
