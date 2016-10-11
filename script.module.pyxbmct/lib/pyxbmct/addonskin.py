@@ -3,13 +3,197 @@
 # Created on: 04.03.2016
 # Author: Roman Miroshnychenko aka Roman V.M. (romanvm@yandex.ua)
 # Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
+"""Classes for defining the appearance of PyXBMCt Windows and Controls"""
 
 import os
+from abc import ABCMeta, abstractproperty
 import xbmc
 from xbmcaddon import Addon
 
 
-class Skin(object):
+class BaseSkin(object):
+    """
+    Abstract class for creating fully customized skins
+
+    .. warning:: This class is meant for subclassing and cannot be instantiated directly!
+        A sublcass must implement all the following properties.
+    """
+    __metaclass__ = ABCMeta
+
+    @abstractproperty
+    def images(self):
+        """
+        Get the base directory for image files
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def x_margin(self):
+        """
+        Get horisontal adjustment for the header background
+        if the main background has transparent edges.
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def y_margin(self):
+        """
+        Get vertical adjustment for the header background
+        if the main background has transparent edges.
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def title_bar_x_shift(self):
+        """
+        Get horisontal adjustment for title bar texture
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def title_bar_y_shift(self):
+        """
+        Get vertical adjustment for title bar texture
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def title_back_y_shift(self):
+        """
+        Get header position adjustment
+        if the main backround has visible borders.
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def header_height(self):
+        """
+        Get the height of a window header
+        (for the title background and the title label).
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def close_btn_width(self):
+        """
+        Get the width of the top-right close button
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def close_btn_height(self):
+        """
+        Get the height of the top-right close button
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def close_btn_x_offset(self):
+        """
+        Get close button horisontal adjustment
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def close_btn_y_offset(self):
+        """
+        Get close button vertical adjustment
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def header_align(self):
+        """
+        Get a numeric value for header text alignment
+
+        For example:
+
+        - ``0``: left
+        - ``6``: center
+
+        :rtype: int
+        """
+        return
+
+    @abstractproperty
+    def header_text_color(self):
+        """
+        Get the color of the header text
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def background_img(self):
+        """
+        Get dialog background texture
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def title_background_img(self):
+        """
+        Get title bar background texture
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def close_button_focus(self):
+        """
+        Get close button focused texture
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def close_button_no_focus(self):
+        """
+        Get close button unfocused texture
+
+        :rtype: str
+        """
+        return
+
+    @abstractproperty
+    def main_bg_img(self):
+        """
+        Get fullscreen background for
+        :class:`AddonFullWindow<pyxbmct.addonwindow.AddonFullWindow>` class
+
+        :rtype: str
+        """
+        return
+
+
+class Skin(BaseSkin):
     """
     Skin class
 
@@ -46,7 +230,6 @@ class Skin(object):
 
     @property
     def images(self):
-        """Get the base directory for image files"""
         if self.estuary:
             return os.path.join(self._texture_dir, 'estuary')
         else:
@@ -54,10 +237,6 @@ class Skin(object):
 
     @property
     def x_margin(self):
-        """
-        Get horisontal adjustment for the header background
-        if the main background has transparent edges.
-        """
         if self.estuary:
             return 0
         else:
@@ -65,10 +244,6 @@ class Skin(object):
 
     @property
     def y_margin(self):
-        """
-        Get vertical adjustment for the header background
-        if the main background has transparent edges.
-        """
         if self.estuary:
             return 0
         else:
@@ -76,7 +251,6 @@ class Skin(object):
 
     @property
     def title_bar_x_shift(self):
-        """Get horisontal adjustment for title bar texture"""
         if self.estuary:
             return 20
         else:
@@ -84,7 +258,6 @@ class Skin(object):
 
     @property
     def title_bar_y_shift(self):
-        """Get vertical adjustment for title bar texture"""
         if self.estuary:
             return 8
         else:
@@ -92,10 +265,6 @@ class Skin(object):
 
     @property
     def title_back_y_shift(self):
-        """
-        Get header position adjustment
-        if the main backround has visible borders.
-        """
         if self.estuary:
             return 0
         else:
@@ -103,10 +272,6 @@ class Skin(object):
 
     @property
     def header_height(self):
-        """
-        Get the height of a window header
-        (for the title background and the title label).
-        """
         if self.estuary:
             return 45
         else:
@@ -114,7 +279,6 @@ class Skin(object):
 
     @property
     def close_btn_width(self):
-        """Get the width of the top-right close button"""
         if self.estuary:
             return 35
         else:
@@ -122,7 +286,6 @@ class Skin(object):
 
     @property
     def close_btn_height(self):
-        """Get the height of the top-right close button"""
         if self.estuary:
             return 30
         else:
@@ -130,7 +293,6 @@ class Skin(object):
 
     @property
     def close_btn_x_offset(self):
-        """Get close button horisontal adjustment"""
         if self.estuary:
             return 50
         else:
@@ -138,7 +300,6 @@ class Skin(object):
 
     @property
     def close_btn_y_offset(self):
-        """Get close button vertical adjustment"""
         if self.estuary:
             return 7
         else:
@@ -146,14 +307,6 @@ class Skin(object):
 
     @property
     def header_align(self):
-        """
-        Get a numeric value for header text alignment
-
-        For example:
-
-        - ``0``: left
-        - ``6``: center
-        """
         if self.estuary:
             return 0
         else:
@@ -161,7 +314,6 @@ class Skin(object):
 
     @property
     def header_text_color(self):
-        """Get the color of the header text"""
         if self.estuary:
             return ''
         else:
@@ -169,28 +321,20 @@ class Skin(object):
 
     @property
     def background_img(self):
-        """Get dialog background texture"""
         return os.path.join(self.images, 'AddonWindow', 'ContentPanel.png')
 
     @property
     def title_background_img(self):
-        """Get title bar background texture"""
         return os.path.join(self.images, 'AddonWindow', 'dialogheader.png')
 
     @property
     def close_button_focus(self):
-        """Get close button focused texture"""
         return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton-focus.png')
 
     @property
     def close_button_no_focus(self):
-        """Get close button unfocused texture"""
         return os.path.join(self.images, 'AddonWindow', 'DialogCloseButton.png')
 
     @property
     def main_bg_img(self):
-        """
-        Get fullscreen background for
-        :class:`AddonFullWindow<pyxbmct.addonwindow.AddonFullWindow>` class
-        """
         return os.path.join(self.images, 'AddonWindow', 'SKINDEFAULT.jpg')

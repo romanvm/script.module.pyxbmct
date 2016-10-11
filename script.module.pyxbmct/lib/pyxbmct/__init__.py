@@ -9,11 +9,9 @@ Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
 """
 
 from addonwindow import *
-
-version = '1.2.0'
+from addonskin import BaseSkin
 
 __all__ = [
-    'version',
     'ALIGN_LEFT',
     'ALIGN_RIGHT',
     'ALIGN_CENTER_X',
@@ -47,5 +45,6 @@ __all__ = [
     'AddonDialogWindow',
     'AddonFullWindow',
     'Skin',
-    'skin'
+    'skin',
+    'BaseSkin'
 ]

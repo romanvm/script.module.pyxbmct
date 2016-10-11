@@ -7,7 +7,7 @@
 #
 # Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
 """
-``pyxbmct.addonwindow`` module contains all classes and constants of PyXBMCt framework
+This module contains all classes and constants of PyXBMCt framework
 """
 
 import os
