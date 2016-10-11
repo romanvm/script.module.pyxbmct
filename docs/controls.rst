@@ -14,9 +14,14 @@ with the following differences:
   Since all PyXBMCt Controls are subclassed from ``xbmcgui.Control*`` classes, you can use all parent :mod:`xbmcgui`
   classes' methods to set Control properties.
 
-.. figure:: _static/pyxbmct_controls.jpg
+.. figure:: _static/pyxbmct_controls_confl.jpg
 
-    **PyXBMCt controls**
+  **PyXBMCt controls (Confluence-based skin)**
+
+
+.. figure:: _static/pyxbmct_controls_est.jpg
+
+  **PyXBMCt controls (Estuary-based skin)**
 
 Below is the list of PyXBMCt controls with brief descriptions:
 

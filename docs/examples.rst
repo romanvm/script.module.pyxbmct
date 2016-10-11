@@ -22,11 +22,11 @@ The simplest code which will display a window with "Hello, World!" header looks 
 
 If you’ve done everything correctly, you should see a window like the one shown below:
 
-.. figure:: _static/addon_dialog_window.jpg
-    :height: 400
-    :width: 400
+.. figure:: _static/hello_world.jpg
+  :height: 400
+  :width: 400
 
-    **"Hello World!" example**
+  **"Hello World!" example**
 
 The window Grid has 1 row and 1 column. We haven't placed any controls on it, but ``setGeometry`` method takes
 at least 4 arguments, so we have provided it dummy values.
@@ -37,12 +37,20 @@ Now let’s analyze a more complex example.
 Example with interactive controls
 ---------------------------------
 
-First, we need to draft the layout or our UI. You can use a pen and paper, a spreadsheet program (e.g. MS Excel)
-or even imagine the layout in your head — any way will do. I’ll use an Excel spreadsheet.
+First, we need to draft the layout or our UI. You can use a pen and paper or imagine the layout in your head,
+it does not matter. The following table showsh the draft of the UI layout for our example addon:
 
-.. figure:: _static/ui_draft.png
-
-    **The draft of the UI layout for our example addon**
++----------------+----------------+----------------+
+| Rows\\Columns  | 0              | 1              |
++----------------+----------------+----------------+
+| 0              | Image                           |
++----------------+                                 +
+| 1              |                                 |
++----------------+----------------+----------------+
+| 2              | Name Label     | Name Edit      |
++----------------+----------------+----------------+
+| 3              | "Close" button | "Hello" button |
++----------------+----------------+----------------+
 
 As you can see, our example UI will have 4 rows, 2 columns and 5 controls placed in grid cells.
 Let’s see how it looks in Python code::
