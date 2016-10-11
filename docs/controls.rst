@@ -69,6 +69,3 @@ Slider
 ------
 
 :class:`Slider<pyxbmct.addonwindow.Slider>` is a control for stepless adjusting some value (e.g. volume level).
-
-.. note:: In Kodi 17 (Krypton) a Slider requires an additional click to focus it.
-  There is no visual indication if a Slider is selected/unfocused. It's a known issue.
