@@ -21,5 +21,11 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: python deploy_addon.py -d script.module.pyxbmct
+  # Prepare for submitting to the official Kodi repo
+  - provider: script
+    skip_cleanup: true
+    script: python deploy_addon.py -k repo-scripts script.module.pyxbmct
+    on:
+      tags: true
 notifications:
   email: false
