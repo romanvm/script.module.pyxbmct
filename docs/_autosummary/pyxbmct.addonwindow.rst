@@ -28,6 +28,7 @@ pyxbmct.addonwindow
       Label
       List
       RadioButton
+      Skin
       Slider
       TextBox
    

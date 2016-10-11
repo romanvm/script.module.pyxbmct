@@ -45,9 +45,6 @@ project = u'PyXBMCt'
 copyright = u'2015, Roman Miroshnychenko'
 author = u'Roman Miroshnychenko'
 
-version = pyxbmct.version
-release = version
-
 language = None
 
 exclude_patterns = ['_build']

@@ -21,7 +21,17 @@ and does not require the knowledge of Kodi skinning. PyXBMCt-based GUIs can be c
 
 .. _Kodi (XBMC): http://www.kodi.tv
 
+Licenses:
+---------
+
+* Source code: `GPL v.3`_
+* This documentation: `CC BY-NC-SA 4.0`_
+
+.. _GPL v.3: https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
 Contents:
+---------
 
 .. toctree::
   :maxdepth: 2
@@ -33,6 +43,7 @@ Contents:
   using
   examples
   estuary
+  skins
   links
   pyxbmct
 

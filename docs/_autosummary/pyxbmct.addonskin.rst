@@ -12,9 +12,10 @@ pyxbmct.addonskin
    .. rubric:: Classes
 
    .. autosummary::
-   
+
+      BaseSkin
       Skin
-   
+
    
 
    
