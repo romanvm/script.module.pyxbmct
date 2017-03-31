@@ -61,6 +61,7 @@ html_theme_options = {
     'github_repo': 'script.module.pyxbmct',
     'github_banner': True,
     'description': 'A GUI micro-framework for Kodi meidacenter addons',
+    'font_family': 'Georgia',
 }
 
 html_static_path = ['_static']

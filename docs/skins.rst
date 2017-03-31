@@ -25,3 +25,4 @@ without altering other elements::
 
   pyxbct.skin = MySkin()
   # Then create your UI
+
