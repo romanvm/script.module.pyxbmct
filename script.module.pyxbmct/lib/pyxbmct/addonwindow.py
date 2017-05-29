@@ -79,13 +79,20 @@ class Label(xbmcgui.ControlLabel):
     
     Implements a simple text label.
 
-    :param label: string or unicode - text string.
-    :param font: string - font used for label text. (e.g. 'font13')
-    :param textColor: hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')
-    :param disabledColor: hexstring - color of disabled label's label. (e.g. '0xFFFF3300')
-    :param alignment: integer - alignment of label - *Note, see xbfont.h
-    :param hasPath: bool - True=stores a path / False=no path.
-    :param angle: integer - angle of control. (+ rotates CCW, - rotates CW)
+    :param label: text string
+    :type label: str
+    :param font: font used for label text. (e.g. ``'font13'``)
+    :type font: str
+    :param textColor: hex color code of enabled label's label. (e.g. ``'0xFFFFFFFF'``)
+    :type textColor: str
+    :param disabledColor: hex color code of disabled label's label. (e.g. ``'0xFFFF3300'``)
+    :type disabledColor: str
+    :param alignment: alignment of label. **Note**: see ``xbfont.h``
+    :type alignment: int
+    :param hasPath: ``True`` = stores a path / ``False`` = no path.
+    :type hasPath: bool
+    :param angle: angle of control. (``+`` rotates CCW, ``-`` rotates CW)
+    :type angle: int
 
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -105,9 +112,12 @@ class FadeLabel(xbmcgui.ControlFadeLabel):
     
     Implements a text label that can auto-scroll very long text.
     
-    :param font: string - font used for label text. (e.g. 'font13')
-    :param textColor: hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')
-    :param _alignment: integer - alignment of label - *Note, see xbfont.h
+    :param font: font used for label text. (e.g. ``'font13'``)
+    :type font: str
+    :param textColor: hex color code of fadelabel's labels. (e.g. ``'0xFFFFFFFF'``)
+    :type textColor: str
+    :param _alignment: alignment of label. **Note**: see ``xbfont.h``
+    :type _alignment: int
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -128,8 +138,10 @@ class TextBox(xbmcgui.ControlTextBox):
     Implements a box for displaying multi-line text.
     Long text is truncated from below. Also supports auto-scrolling.
     
-    :param font: string - font used for text. (e.g. 'font13')
-    :param textColor: hexstring - color of textbox's text. (e.g. '0xFFFFFFFF')
+    :param font: font used for text. (e.g. ``'font13'``)
+    :type font: str
+    :param textColor: hex color code of textbox's text. (e.g. ``'0xFFFFFFFF'``)
+    :type textColor: str
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -147,12 +159,14 @@ class Image(xbmcgui.ControlImage):
     
     ControlImage class.
     
-    Implements a box for displaying .jpg, .png, and .gif images.
+    Implements a box for displaying ``.jpg``, ``.png``, and ``.gif`` images.
 
-    :param filename: string - image filename.
-    :param colorKey: hexString - (example, '0xFFFF3300')
-    :param aspectRatio: integer - (values 0 = stretch (default), 1 = scale up (crops), 2 = scale down (black bars)
-    :param colorDiffuse: hexString - (example, '0xC0FF0000' (red tint)).
+    :param filename: path or URL to an image file.
+    :type filename: str
+    :param aspectRatio: (values: ``0`` = stretch (default), ``1`` = scale up (crops), ``2`` = scale down (black bars)
+    :type aspectRatio: int
+    :param colorDiffuse: for example, ``'0xC0FF0000'`` (red tint)
+    :type colorDiffuse: str
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -172,18 +186,30 @@ class Button(xbmcgui.ControlButton):
     
     Implements a clickable button.
 
-    :param label: string or unicode - text string.
-    :param focusTexture: string - filename for focus texture.
-    :param noFocusTexture: string - filename for no focus texture.
-    :param textOffsetX: integer - x offset of label.
-    :param textOffsetY: integer - y offset of label.
-    :param alignment: integer - alignment of label - *Note, see xbfont.h
-    :param font: string - font used for label text. (e.g. 'font13')
-    :param textColor: hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')
-    :param disabledColor: hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
-    :param angle: integer - angle of control. (+ rotates CCW, - rotates CW)
-    :param shadowColor: hexstring - color of button's label's shadow. (e.g. '0xFF000000')
-    :param focusedColor: hexstring - color of focused button's label. (e.g. '0xFF00FFFF')
+    :param label: button caption
+    :type label: str
+    :param focusTexture: filename for focus texture.
+    :type focusTexture: str
+    :param noFocusTexture: filename for no focus texture.
+    :type noFocusTexture: str
+    :param textOffsetX: x offset of label.
+    :type textOffsetX: int
+    :param textOffsetY: y offset of label.
+    :type textOffsetY: int
+    :param alignment: alignment of label. **Note**: see ``xbfont.h``
+    :type alignment: int
+    :param font: font used for label text. (e.g. ``'font13'``)
+    :type font: str
+    :param textColor: hex color code of enabled button's label. (e.g. ``'0xFFFFFFFF'``)
+    :type textColor: str
+    :param disabledColor: hex color code of disabled button's label. (e.g. ``'0xFFFF3300'``)
+    :type disabledColor: str
+    :param angle: angle of control. (``+`` rotates CCW, ``-`` rotates CW)
+    :type angle: int
+    :param shadowColor: hex color code of button's label's shadow. (e.g. ``'0xFF000000'``)
+    :type shadowColor: str
+    :param focusedColor: hex color code of focused button's label. (e.g. ``'0xFF00FFFF'``)
+    :type focusedColor: str
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
         
@@ -269,7 +295,7 @@ class Edit(xbmcgui.ControlEdit):
     
     .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
         Once you use a keyword, all following arguments require the keyword.
-        After you create the control, you need to add it to the window with ``palceControl()``.
+        After you create the control, you need to add it to the window with ``placeControl()``.
     
     Example::
     

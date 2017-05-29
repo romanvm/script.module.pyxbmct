@@ -132,7 +132,8 @@ Two remarks about the code:
 
 - In my example I have used an online URL for the Image control.
   Paths to image files stored on your local disks can be used as well.
-- Note the usage of ``lambda`` to connect a function (``xbmc.executebuiltin``) with an argument.
+- Note the usage of :keyword:`lambda` to connect a function
+  (:func:`xbmc.executebuiltin` in this case) with an argument.
 
 Despite being rather simple, this example illustrates main steps of initializing PyXBMCt-based addon UI:
 

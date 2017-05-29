@@ -17,7 +17,7 @@ Here ``self.foo_button`` is a :class:`Button<pyxbmct.addonwindow.Button>` instan
 .. warning::
   For connection you must provide a function object without brackets ``()``, not a function call!
 
-Similarly to PyQt signal-slot connection, ``lambda`` can be used to connect a function/method with arguments
+Similarly to PyQt signal-slot connection, :keyword:`lambda` can be used to connect a function/method with arguments
 known at runtime. For example::
 
   self.connect(self.foo_button, lambda: self.on_foo_clicked('bar', 'spam'))

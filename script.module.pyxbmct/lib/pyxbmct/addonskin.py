@@ -32,7 +32,7 @@ class BaseSkin(object):
     @abstractproperty
     def x_margin(self):
         """
-        Get horisontal adjustment for the header background
+        Get horizontal adjustment for the header background
         if the main background has transparent edges.
 
         :rtype: int
@@ -52,7 +52,7 @@ class BaseSkin(object):
     @abstractproperty
     def title_bar_x_shift(self):
         """
-        Get horisontal adjustment for title bar texture
+        Get horizontal adjustment for title bar texture
 
         :rtype: int
         """
@@ -71,7 +71,7 @@ class BaseSkin(object):
     def title_back_y_shift(self):
         """
         Get header position adjustment
-        if the main backround has visible borders.
+        if the main background has visible borders.
 
         :rtype: int
         """
@@ -108,7 +108,7 @@ class BaseSkin(object):
     @abstractproperty
     def close_btn_x_offset(self):
         """
-        Get close button horisontal adjustment
+        Get close button horizontal adjustment
 
         :rtype: int
         """

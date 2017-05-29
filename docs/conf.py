@@ -6,7 +6,6 @@ import os
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 sys.path.insert(0, os.path.join(os.path.dirname(basedir), 'xbmcstubs'))
-sys.path.insert(0, os.path.join(basedir, 'Kodistubs'))
 sys.path.insert(0, os.path.join(basedir, 'script.module.pyxbmct', 'lib'))
 
 import pyxbmct
@@ -62,6 +61,7 @@ html_theme_options = {
     'github_repo': 'script.module.pyxbmct',
     'github_banner': True,
     'description': 'A GUI micro-framework for Kodi meidacenter addons',
+    'font_family': 'Georgia',
 }
 
 html_static_path = ['_static']
