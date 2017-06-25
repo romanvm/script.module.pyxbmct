@@ -8,7 +8,7 @@ manager to place the controls.
 
 PyXBMCt developer's documentation: http://romanvm.github.io/script.module.pyxbmct
 
-Support thread on Kodi forum: http://forum.xbmc.org/showthread.php?tid=174859
+Support thread on Kodi forum: http://forum.kodi.tv/showthread.php?tid=174859
 
 The framework uses image textures from Kodi Estuary and Confluence skins.
 
