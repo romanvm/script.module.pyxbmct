@@ -23,6 +23,6 @@ without altering other elements::
           return '/path/to/my/background_image.png'
 
 
-  pyxbct.skin = MySkin()
+  pyxbmct.skin = MySkin()
   # Then create your UI
 
