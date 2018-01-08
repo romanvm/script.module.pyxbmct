@@ -178,7 +178,14 @@ class Image(xbmcgui.ControlImage):
         return super(Image, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Button(xbmcgui.ControlButton):
+class CompareMixin(object):
+    def __eq__(self, other):
+        if hasattr(other, 'getId'):
+            return self.getId() == other.getId()
+        return False
+
+
+class Button(CompareMixin, xbmcgui.ControlButton):
     """
     Button(label, focusTexture=None, noFocusTexture=None, textOffsetX=CONTROL_TEXT_OFFSET_X, textOffsetY=CONTROL_TEXT_OFFSET_Y, alignment=4, font=None, textColor=None, disabledColor=None, angle=0, shadowColor=None, focusedColor=None)
     
@@ -226,7 +233,7 @@ class Button(xbmcgui.ControlButton):
         return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class RadioButton(xbmcgui.ControlRadioButton):
+class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
     """
     RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)
     
@@ -276,7 +283,7 @@ class RadioButton(xbmcgui.ControlRadioButton):
         return super(RadioButton, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Edit(xbmcgui.ControlEdit):
+class Edit(CompareMixin, xbmcgui.ControlEdit):
     """
     Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
     
@@ -308,7 +315,7 @@ class Edit(xbmcgui.ControlEdit):
         return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class List(xbmcgui.ControlList):
+class List(CompareMixin, xbmcgui.ControlList):
     """
     List(font=None, textColor=None, buttonTexture=None, buttonFocusTexture=None, selectedColor=None, _imageWidth=10, _imageHeight=10, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4)
     
@@ -342,7 +349,7 @@ class List(xbmcgui.ControlList):
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Slider(xbmcgui.ControlSlider):
+class Slider(CompareMixin, xbmcgui.ControlSlider):
     """
     Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
     
@@ -610,7 +617,7 @@ class AbstractWindow(object):
         This is a helper method not to be called directly.
         """
         for item in connected_list:
-            if event == item[0]:
+            if item[0] == event:
                 item[1]()
                 break
 
@@ -775,7 +782,8 @@ class FullWindowMixin(xbmcgui.Window):
 
         ``control`` is an instance of :class:`xbmcgui.Control` class.
         """
-        if hasattr(self, 'window_close_button') and control == self.window_close_button:
+        if (hasattr(self, 'window_close_button') and
+                control.getId() == self.window_close_button.geId()):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
@@ -802,7 +810,8 @@ class DialogWindowMixin(xbmcgui.WindowDialog):
 
         ``control`` is an instance of :class:`xbmcgui.Control` class.
         """
-        if hasattr(self, 'window_close_button') and control == self.window_close_button:
+        if (hasattr(self, 'window_close_button') and
+                control.getId() == self.window_close_button.geId()):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
