@@ -5,6 +5,7 @@
    provider-name="Roman V.M.">
   <requires>
     <import addon="xbmc.python" version="2.20.0"/>
+    <import addon="script.module.future" />
   </requires>
   <extension point="xbmc.python.module" library="lib" />
   <extension point="xbmc.addon.metadata">

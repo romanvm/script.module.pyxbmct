@@ -10,10 +10,12 @@
 This module contains all classes and constants of PyXBMCt framework
 """
 
+from __future__ import absolute_import, division
+from builtins import range
 import os
 import xbmc
 import xbmcgui
-from addonskin import Skin
+from .addonskin import Skin
 
 skin = Skin()
 
@@ -61,7 +63,7 @@ ACTION_MOUSE_LEFT_CLICK = 100
 
 def _set_textures(textures, kwargs):
     """Set texture arguments for controls."""
-    for texture in textures.keys():
+    for texture in textures:
         if kwargs.get(texture) is None:
             kwargs[texture] = textures[texture]
 
@@ -421,8 +423,8 @@ class AbstractWindow(object):
             self.x = pos_x
             self.y = pos_y
         else:
-            self.x = 640 - self.width/2
-            self.y = 360 - self.height/2
+            self.x = 640 - self.width // 2
+            self.y = 360 - self.height// 2
         self._setGrid()
 
     def _setGrid(self):
@@ -433,8 +435,8 @@ class AbstractWindow(object):
         """
         self.grid_x = self.x
         self.grid_y = self.y
-        self.tile_width = self.width / self.columns
-        self.tile_height = self.height / self.rows
+        self.tile_width = self.width // self.columns
+        self.tile_height = self.height // self.rows
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -739,9 +741,9 @@ class AddonWindow(AbstractWindow):
         """
         self.grid_x = self.x + skin.x_margin + self.win_padding
         self.grid_y = self.y + skin.y_margin + skin.title_back_y_shift + skin.header_height + self.win_padding
-        self.tile_width = (self.width - 2 * (skin.x_margin + self.win_padding)) / self.columns
+        self.tile_width = (self.width - 2 * (skin.x_margin + self.win_padding)) // self.columns
         self.tile_height = ((self.height - skin.header_height - skin.title_back_y_shift -
-                             2 * (skin.y_margin + self.win_padding)) / self.rows)
+                             2 * (skin.y_margin + self.win_padding)) // self.rows)
 
     def setWindowTitle(self, title=''):
         """

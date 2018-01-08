@@ -8,8 +8,9 @@ The framework uses image textures from Kodi Confluence skin.
 Licence: GPL v.3 http://www.gnu.org/licenses/gpl.html
 """
 
-from addonwindow import *
-from addonskin import BaseSkin
+from __future__ import absolute_import
+from .addonwindow import *
+from .addonskin import BaseSkin
 
 __all__ = [
     'ALIGN_LEFT',
