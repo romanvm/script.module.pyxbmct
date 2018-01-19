@@ -11,7 +11,7 @@ This module contains all classes and constants of PyXBMCt framework
 """
 
 from __future__ import absolute_import, division
-from builtins import range
+from future.builtins import range
 import os
 import xbmc
 import xbmcgui
