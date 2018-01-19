@@ -424,7 +424,7 @@ class AbstractWindow(object):
             self.y = pos_y
         else:
             self.x = 640 - self.width // 2
-            self.y = 360 - self.height// 2
+            self.y = 360 - self.height // 2
         self._setGrid()
 
     def _setGrid(self):
