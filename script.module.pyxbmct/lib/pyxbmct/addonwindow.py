@@ -785,7 +785,7 @@ class FullWindowMixin(xbmcgui.Window):
         ``control`` is an instance of :class:`xbmcgui.Control` class.
         """
         if (hasattr(self, 'window_close_button') and
-                control.getId() == self.window_close_button.geId()):
+                control.getId() == self.window_close_button.getId()):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
@@ -813,7 +813,7 @@ class DialogWindowMixin(xbmcgui.WindowDialog):
         ``control`` is an instance of :class:`xbmcgui.Control` class.
         """
         if (hasattr(self, 'window_close_button') and
-                control.getId() == self.window_close_button.geId()):
+                control.getId() == self.window_close_button.getId()):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
