@@ -202,7 +202,7 @@ class Skin(BaseSkin):
     def __init__(self):
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')[:2]
         # Kodistubs return an empty string
-        if kodi_version and int(kodi_version) >= 17:
+        if kodi_version and kodi_version >= '17':
             self._estuary = True
         else:
             self._estuary = False

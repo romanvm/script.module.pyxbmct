@@ -269,7 +269,7 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
         self.radiobutton = RadioButton('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
-        if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 13:
+        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
             textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
                         'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
                         'focusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
@@ -375,7 +375,7 @@ class Slider(CompareMixin, xbmcgui.ControlSlider):
                     'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
                     'texturefocus': os.path.join(skin.images, 'Slider', 'osd_slider_nib.png')}
         _set_textures(textures, kwargs)
-        if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) >= 17:
+        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '17':
             kwargs['orientation'] = xbmcgui.HORIZONTAL
         return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
