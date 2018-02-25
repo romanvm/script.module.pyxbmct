@@ -5,6 +5,7 @@
 # Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
 """Classes for defining the appearance of PyXBMCt Windows and Controls"""
 
+from __future__ import unicode_literals
 from future.utils import with_metaclass
 import os
 from abc import ABCMeta, abstractmethod

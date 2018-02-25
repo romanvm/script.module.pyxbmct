@@ -6,6 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="2.20.0"/>
     <import addon="script.module.future" />
+    <import addon="script.module.kodi-six" />
   </requires>
   <extension point="xbmc.python.module" library="lib" />
   <extension point="xbmc.addon.metadata">

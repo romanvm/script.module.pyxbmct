@@ -10,11 +10,10 @@
 This module contains all classes and constants of PyXBMCt framework
 """
 
-from __future__ import absolute_import, division
+from __future__ import absolute_import, division, unicode_literals
 from future.builtins import range
 import os
-import xbmc
-import xbmcgui
+from kodi_six import xbmc, xbmcgui
 from .addonskin import Skin
 
 skin = Skin()
