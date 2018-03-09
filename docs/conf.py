@@ -9,8 +9,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(basedir), 'xbmcstubs'))
 sys.path.insert(0, os.path.join(basedir, 'script.module.pyxbmct', 'lib'))
 
 import mock
+import xbmc
+import xbmcgui
 
-sys.modules['kodi_six'] = mock.MagicMock()
+kodi_six_mock = mock.MagicMock()
+kodi_six_mock.xbmc = xbmc
+kodi_six_mock.xbmcgui = xbmcgui
+
+sys.modules['kodi_six'] = kodi_six_mock
 
 import pyxbmct
 
