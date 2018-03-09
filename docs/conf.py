@@ -8,6 +8,10 @@ basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(basedir), 'xbmcstubs'))
 sys.path.insert(0, os.path.join(basedir, 'script.module.pyxbmct', 'lib'))
 
+import mock
+
+sys.modules['kodi_six'] = mock.MagicMock()
+
 import pyxbmct
 
 extensions = [
