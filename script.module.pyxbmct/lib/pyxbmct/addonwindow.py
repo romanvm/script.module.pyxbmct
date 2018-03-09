@@ -242,22 +242,38 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
     
     Implements a 2-state switch.
     
-    :param label: string or unicode - text string.
-    :param focusTexture: string - filename for focus texture.
-    :param noFocusTexture: string - filename for no focus texture.
-    :param textOffsetX: integer - x offset of label.
-    :param textOffsetY: integer - y offset of label.
-    :param _alignment: integer - alignment of label - *Note, see xbfont.h
-    :param font: string - font used for label text. (e.g. 'font13')
-    :param textColor: hexstring - color of enabled radio button's label. (e.g. '0xFFFFFFFF')
-    :param disabledColor: hexstring - color of disabled radio button's label. (e.g. '0xFFFF3300')
-    :param angle: integer - angle of control. (+ rotates CCW, - rotates CW)
-    :param shadowColor: hexstring - color of radio button's label's shadow. (e.g. '0xFF000000')
-    :param focusedColor: hexstring - color of focused radio button's label. (e.g. '0xFF00FFFF')
-    :param focusOnTexture: string - filename for radio focused/checked texture.
-    :param noFocusOnTexture: string - filename for radio not focused/checked texture.
-    :param focusOffTexture: string - filename for radio focused/unchecked texture.
-    :param noFocusOffTexture: string - filename for radio not focused/unchecked texture.
+    :param label: label text.
+    :type: str or unicode
+    :param focusTexture: filename for focus texture.
+    :type focusTexture: str
+    :param noFocusTexture: filename for no focus texture.
+    :type noFocusTexture: str
+    :param textOffsetX: x offset of label.
+    :type textOffsetX: int
+    :param textOffsetY: y offset of label.
+    :type textOffsetY: int
+    :param _alignment: alignment of label - *Note, see xbfont.h
+    :type _alignment: int
+    :param font: font used for label text. (e.g. 'font13')
+    :type font: str
+    :param textColor: hexstring -- color of enabled radio button's label. (e.g. '0xFFFFFFFF')
+    :type textColor: str
+    :param disabledColor: hexstring -- color of disabled radio button's label. (e.g. '0xFFFF3300')
+    :type disabledColor: str
+    :param angle: angle of control. (+ rotates CCW, - rotates CW)
+    :type angle: int
+    :param shadowColor: hexstring -- color of radio button's label's shadow. (e.g. '0xFF000000')
+    :type shadowColor: str
+    :param focusedColor: hexstring -- color of focused radio button's label. (e.g. '0xFF00FFFF')
+    :type focusedColor: str
+    :param focusOnTexture: filename for radio focused/checked texture.
+    :type focusOnTexture: str
+    :param noFocusOnTexture: filename for radio not focused/checked texture.
+    :type noFocusOnTexture: str
+    :param focusOffTexture: filename for radio focused/unchecked texture.
+    :type focusOffTexture: str
+    :param noFocusOffTexture: filename for radio not focused/unchecked texture.
+    :type noFocusOffTexture: str
     
     .. note:: To customize RadioButton all 4 abovementioned textures need to be provided.
     
@@ -292,14 +308,22 @@ class Edit(CompareMixin, xbmcgui.ControlEdit):
     
     Implements a clickable text entry field with an on-screen keyboard.
 
-    :param label: string or unicode - text string.
-    :param font: [opt] string - font used for label text. (e.g. 'font13')
-    :param textColor: [opt] hexstring - color of enabled label's label. (e.g. '0xFFFFFFFF')
-    :param disabledColor: [opt] hexstring - color of disabled label's label. (e.g. '0xFFFF3300')
-    :param _alignment: [opt] integer - alignment of label - *Note, see xbfont.h
-    :param focusTexture: [opt] string - filename for focus texture.
-    :param noFocusTexture: [opt] string - filename for no focus texture.
-    :param isPassword: [opt] bool - if true, mask text value.
+    :param label: text string.
+    :type label: str or unicode
+    :param font: [opt] font used for label text. (e.g. 'font13')
+    :type font: str
+    :param textColor: [opt] hexstring -- color of enabled label's label. (e.g. '0xFFFFFFFF')
+    :type textColor: str
+    :param disabledColor: [opt] hexstring -- color of disabled label's label. (e.g. '0xFFFF3300')
+    :type disabledColor: str
+    :param _alignment: [opt] lignment of label - *Note, see xbfont.h
+    :type _alignment: int
+    :param focusTexture: [opt] filename for focus texture.
+    :type focusTexture: str
+    :param noFocusTexture: [opt] filename for no focus texture.
+    :type noFocusTexture: str
+    :param isPassword: [opt] if ``True``, mask text value.
+    :type isPassword: bool
     
     .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
         Once you use a keyword, all following arguments require the keyword.
