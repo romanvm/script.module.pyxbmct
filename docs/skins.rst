@@ -8,7 +8,7 @@ To customize your UI skin you need to subclass one of those classes and
 set your custom skin instance as ``pyxbmct.skin`` module-level property (see below).
 
 :class:`BaseSkin<pyxbmct.addonskin.BaseSkin>` is an abstract class that allows you
-to fully customize the appearance of PyXBMCt *Window classes.
+to fully customize the appearance of PyXBMCt \*Window classes.
 You need to subclass it and define all your custom skin attributes -- image textures,
 coorditate offsets, etc. -- as properties of your derived class.
 
