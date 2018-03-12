@@ -32,3 +32,4 @@ class without altering other elements::
   # Then create your UI window class with the new background
   class MyCoolWindow(pyxbmct.AddonWindow):
     ...
+
