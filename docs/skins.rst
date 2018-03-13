@@ -26,7 +26,7 @@ class without altering other elements::
           return '/path/to/my/background_image.png'
 
 
-  pyxbmct.skin = MySkin()
+  pyxbmct.addonwindow.skin = MySkin()
 
 
   # Then create your UI window class with the new background
