@@ -70,7 +70,7 @@ html_theme_options = {
     'github_user': 'romanvm',
     'github_repo': 'script.module.pyxbmct',
     'github_banner': True,
-    'description': 'A GUI micro-framework for Kodi meidacenter addons',
+    'description': 'A GUI micro-framework for Kodi mediacenter addons',
     'font_family': 'Georgia',
 }
 
