@@ -6,20 +6,29 @@
 """Classes for defining the appearance of PyXBMCt Windows and Controls"""
 
 from __future__ import unicode_literals
-from future.utils import with_metaclass
+
+import platform
+XBMC4XBOX = platform.system() == "XBMC4Xbox"
+
+if not XBMC4XBOX:
+    from future.utils import with_metaclass
 import os
 from abc import ABCMeta, abstractmethod
 import xbmc
 from xbmcaddon import Addon
 
 
-class BaseSkin(with_metaclass(ABCMeta, object)):
+class BaseSkin(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """
     Abstract class for creating fully customized skins
 
     .. warning:: This class is meant for subclassing and cannot be instantiated directly!
         A sublcass must implement all the following properties.
     """
+
+    if XBMC4XBOX:
+        __metaclass__ = ABCMeta
+    
     @abstractmethod
     def images(self):
         """
@@ -203,7 +212,7 @@ class Skin(BaseSkin):
     def __init__(self):
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')[:2]
         # Kodistubs return an empty string
-        if kodi_version and kodi_version >= '17':
+        if not XBMC4XBOX and kodi_version and kodi_version >= '17':
             self._estuary = True
         else:
             self._estuary = False

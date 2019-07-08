@@ -10,10 +10,23 @@
 This module contains all classes and constants of PyXBMCt framework
 """
 
+
+
 from __future__ import absolute_import, division, unicode_literals
-from future.builtins import range
+
+import platform
+XBMC4XBOX = platform.system() == "XBMC4Xbox"
+
+if XBMC4XBOX:
+    range = xrange
+    import xbmc, xbmcgui
+else:
+    from future.builtins import range
+    from kodi_six import xbmc, xbmcgui
+    
 import os
-from kodi_six import xbmc, xbmcgui
+
+
 from .addonskin import Skin
 
 skin = Skin()
@@ -58,6 +71,8 @@ ACTION_MOUSE_MOVE = 107
 """Mouse move"""
 ACTION_MOUSE_LEFT_CLICK = 100
 """Mouse click"""
+
+
 
 
 def _set_textures(textures, kwargs):
@@ -284,7 +299,7 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
         self.radiobutton = RadioButton('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
-        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
+        if not XBMC4XBOX and xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
             textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
                         'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
                         'focusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
@@ -300,44 +315,45 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
         return super(RadioButton, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Edit(CompareMixin, xbmcgui.ControlEdit):
-    """
-    Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
-    
-    ControlEdit class.
-    
-    Implements a clickable text entry field with an on-screen keyboard.
+if not XBMC4XBOX:
+    class Edit(CompareMixin, xbmcgui.ControlEdit):
+        """
+        Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
+        
+        ControlEdit class.
+        
+        Implements a clickable text entry field with an on-screen keyboard.
 
-    :param label: text string.
-    :type label: str or unicode
-    :param font: [opt] font used for label text. (e.g. 'font13')
-    :type font: str
-    :param textColor: [opt] hexstring -- color of enabled label's label. (e.g. '0xFFFFFFFF')
-    :type textColor: str
-    :param disabledColor: [opt] hexstring -- color of disabled label's label. (e.g. '0xFFFF3300')
-    :type disabledColor: str
-    :param _alignment: [opt] lignment of label - *Note, see xbfont.h
-    :type _alignment: int
-    :param focusTexture: [opt] filename for focus texture.
-    :type focusTexture: str
-    :param noFocusTexture: [opt] filename for no focus texture.
-    :type noFocusTexture: str
-    :param isPassword: [opt] if ``True``, mask text value.
-    :type isPassword: bool
-    
-    .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
-        Once you use a keyword, all following arguments require the keyword.
-        After you create the control, you need to add it to the window with ``placeControl()``.
-    
-    Example::
-    
-        self.edit = Edit('Status')
-    """
-    def __new__(cls, *args, **kwargs):
-        textures = {'focusTexture': os.path.join(skin.images, 'Edit', 'button-focus.png'),
-                    'noFocusTexture': os.path.join(skin.images, 'Edit', 'black-back2.png')}
-        _set_textures(textures, kwargs)
-        return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+        :param label: text string.
+        :type label: str or unicode
+        :param font: [opt] font used for label text. (e.g. 'font13')
+        :type font: str
+        :param textColor: [opt] hexstring -- color of enabled label's label. (e.g. '0xFFFFFFFF')
+        :type textColor: str
+        :param disabledColor: [opt] hexstring -- color of disabled label's label. (e.g. '0xFFFF3300')
+        :type disabledColor: str
+        :param _alignment: [opt] lignment of label - *Note, see xbfont.h
+        :type _alignment: int
+        :param focusTexture: [opt] filename for focus texture.
+        :type focusTexture: str
+        :param noFocusTexture: [opt] filename for no focus texture.
+        :type noFocusTexture: str
+        :param isPassword: [opt] if ``True``, mask text value.
+        :type isPassword: bool
+        
+        .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
+            Once you use a keyword, all following arguments require the keyword.
+            After you create the control, you need to add it to the window with ``placeControl()``.
+        
+        Example::
+        
+            self.edit = Edit('Status')
+        """
+        def __new__(cls, *args, **kwargs):
+            textures = {'focusTexture': os.path.join(skin.images, 'Edit', 'button-focus.png'),
+                        'noFocusTexture': os.path.join(skin.images, 'Edit', 'black-back2.png')}
+            _set_textures(textures, kwargs)
+            return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
 class List(CompareMixin, xbmcgui.ControlList):
@@ -373,34 +389,34 @@ class List(CompareMixin, xbmcgui.ControlList):
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
-
-class Slider(CompareMixin, xbmcgui.ControlSlider):
-    """
-    Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
-    
-    ControlSlider class.
-    
-    Implements a movable slider for adjusting some value.
-    
-    :param textureback: string -- image filename.
-    :param texture: string -- image filename.
-    :param texturefocus: string -- image filename.
-    :param orientation: int -- slider orientation
-    
-    .. note:: After you create the control, you need to add it to the window with placeControl().
-    
-    Example::
-    
-        self.slider = Slider()
-    """
-    def __new__(cls, *args, **kwargs):
-        textures = {'textureback': os.path.join(skin.images, 'Slider', 'osd_slider_bg.png'),
-                    'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
-                    'texturefocus': os.path.join(skin.images, 'Slider', 'osd_slider_nib.png')}
-        _set_textures(textures, kwargs)
-        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '17':
-            kwargs['orientation'] = xbmcgui.HORIZONTAL
-        return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+if not XBMC4XBOX:
+    class Slider(CompareMixin, xbmcgui.ControlSlider):
+        """
+        Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
+        
+        ControlSlider class.
+        
+        Implements a movable slider for adjusting some value.
+        
+        :param textureback: string -- image filename.
+        :param texture: string -- image filename.
+        :param texturefocus: string -- image filename.
+        :param orientation: int -- slider orientation
+        
+        .. note:: After you create the control, you need to add it to the window with placeControl().
+        
+        Example::
+        
+            self.slider = Slider()
+        """
+        def __new__(cls, *args, **kwargs):
+            textures = {'textureback': os.path.join(skin.images, 'Slider', 'osd_slider_bg.png'),
+                        'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
+                        'texturefocus': os.path.join(skin.images, 'Slider', 'osd_slider_nib.png')}
+            _set_textures(textures, kwargs)
+            if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '17':
+                kwargs['orientation'] = xbmcgui.HORIZONTAL
+            return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
 class AbstractWindow(object):
