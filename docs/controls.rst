@@ -57,6 +57,11 @@ RadioButton
 
 :class:`RadioButton<pyxbmct.addonwindow.RadioButton>` is a 2-state switch. It generates a control event on click.
 
+Group
+-----------
+
+:class:`Group<pyxbmct.addonwindow.Group>` is container for other controls. It has its own grid coordinate system.
+
 Edit
 ----
 
