@@ -72,6 +72,8 @@ ACTION_MOUSE_MOVE = 107
 ACTION_MOUSE_LEFT_CLICK = 100
 """Mouse click"""
 
+KEY_BUTTON_A = 256
+"""XBMC4XBOX A button pressed"""
 
 
 
@@ -240,14 +242,16 @@ class Button(CompareMixin, xbmcgui.ControlButton):
     
         self.button = Button('Status', font='font14')
     """
+    
     def __new__(cls, *args, **kwargs):
         textures = {'focusTexture': os.path.join(skin.images, 'Button', 'KeyboardKey.png'),
                     'noFocusTexture': os.path.join(skin.images, 'Button', 'KeyboardKeyNF.png')}
         _set_textures(textures, kwargs)
         if kwargs.get('alignment') is None:
             kwargs['alignment'] = ALIGN_CENTER
-        return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+        x = super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+        return x
 
 class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
     """
@@ -315,6 +319,7 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
         return super(RadioButton, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
+# Edit is not supported on Xbox using the Python API
 if not XBMC4XBOX:
     class Edit(CompareMixin, xbmcgui.ControlEdit):
         """
@@ -389,6 +394,7 @@ class List(CompareMixin, xbmcgui.ControlList):
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+# Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
     class Slider(CompareMixin, xbmcgui.ControlSlider):
         """
@@ -801,11 +807,7 @@ class AddonWindow(AbstractWindow):
         """Get window title."""
         return self.title_bar.getLabel()
 
-
-class FullWindowMixin(xbmcgui.Window):
-
-    """An abstract class to define window event processing."""
-
+class WindowMixin(object):
     def onAction(self, action):
         """
         Catch button actions.
@@ -814,9 +816,15 @@ class FullWindowMixin(xbmcgui.Window):
         """
         if action == ACTION_PREVIOUS_MENU:
             self.close()
+        # On control is not called on XBMC4XBOX for subclasses of the built in
+        # controls. However onAction is.
+        elif XBMC4XBOX and hasattr(action, 'getButtonCode') and action.getButtonCode() in (KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
+            control = self.getFocus()
+            if type(control) in [Button, RadioButton, List]:
+                self.onControl(control)
         else:
             self._executeConnected(action, self.actions_connected)
-
+            
     def onControl(self, control):
         """
         Catch activated controls.
@@ -829,33 +837,19 @@ class FullWindowMixin(xbmcgui.Window):
         else:
             self._executeConnected(control, self.controls_connected)
 
-
-class DialogWindowMixin(xbmcgui.WindowDialog):
+# FullWindowMixin and DialogWindowMixin are almost identical
+# but they inherint from different types
+class FullWindowMixin(WindowMixin, xbmcgui.Window):
 
     """An abstract class to define window event processing."""
 
-    def onAction(self, action):
-        """
-        Catch button actions.
+    pass
+    
+class DialogWindowMixin(WindowMixin, xbmcgui.WindowDialog):
+    
+    """An abstract class to define window event processing."""
 
-        ``action`` is an instance of class:`xbmcgui.Action` class.
-        """
-        if action == ACTION_PREVIOUS_MENU:
-            self.close()
-        else:
-            self._executeConnected(action, self.actions_connected)
-
-    def onControl(self, control):
-        """
-        Catch activated controls.
-
-        ``control`` is an instance of :class:`xbmcgui.Control` class.
-        """
-        if (hasattr(self, 'window_close_button') and
-                control.getId() == self.window_close_button.getId()):
-            self.close()
-        else:
-            self._executeConnected(control, self.controls_connected)
+    pass
 
 
 class BlankFullWindow(FullWindowMixin, AbstractWindow):
