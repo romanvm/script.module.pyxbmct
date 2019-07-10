@@ -88,6 +88,90 @@ class AddonWindowError(Exception):
     """Custom exception"""
     pass
 
+class GridMixin(object):
+    """
+    Grid functionality mixin.
+    
+    Serves as a parent widget for other XBMC UI controls
+    much like Tkinter.Tk or PyQt QWidget class.
+    
+    .. warning:: This is an abstract class and is not supposed to be instantiated directly!
+    """
+
+    def __init__(self, window):
+        """
+        :param window: the window that the grid will exist in
+        """
+        self.window = window
+
+    def getRows(self):
+        """
+        Get grid rows count.
+
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+        """
+        try:
+            return self.rows
+        except AttributeError:
+            raise AddonWindowError('Grid layot is not set! Call setGeometry first.')
+
+    def getColumns(self):
+        """
+        Get grid columns count.
+
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+        """
+        try:
+            return self.columns
+        except AttributeError:
+            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
+
+    def _setGrid(self):
+        """
+        Set window grid layout of rows x columns.
+
+        This is a helper method not to be called directly.
+        """
+        self.grid_x = self.x
+        self.grid_y = self.y
+        self.tile_width = self.width // self.columns
+        self.tile_height = self.height // self.rows
+
+    def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
+        """
+        Place a control within the window grid layout.
+
+        :param control: control instance to be placed in the grid.
+        :param row: row number where to place the control (starts from 0).
+        :param column: column number where to place the control (starts from 0).
+        :param rowspan: set when the control needs to occupy several rows.
+        :param columnspan: set when the control needs to occupy several columns.
+        :param pad_x: horisontal padding.
+        :param pad_y: vertical padding.
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+
+        Use ``pad_x`` and ``pad_y`` to adjust control's aspect.
+        Negative padding values can be used to make a control overlap with grid cells next to it, if necessary.
+
+        Example::
+
+            self.placeControl(self.label, 0, 1)
+        """
+        try:
+            control_x = (self.grid_x + self.tile_width * column) + pad_x
+            control_y = (self.grid_y + self.tile_height * row) + pad_y
+            control_width = self.tile_width * columnspan - 2 * pad_x
+            control_height = self.tile_height * rowspan - 2 * pad_y
+        except AttributeError:
+            raise AddonWindowError('Grid geometry is not defined! Call setGeometry first.')
+        control.setPosition(control_x, control_y)
+        control.setWidth(control_width)
+        control.setHeight(control_height)
+        if hasattr(control, "_placedCallback"):
+            control._placedCallback()
+        self.window.addControl(control)
+        self.window.setAnimation(control)
+
 
 class Label(xbmcgui.ControlLabel):
     """
@@ -394,6 +478,70 @@ class List(CompareMixin, xbmcgui.ControlList):
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+class Group(GridMixin, xbmcgui.ControlGroup):
+    """
+    Group(rows, columns)
+    
+    ControlSlider class.
+    
+    Implements a secondary grid (with its own coordinate system) that controls can be placed in.
+    Allowing for finer control over where controls are placed in a window.
+    
+    :param window: the window in which this grid will be placed
+    
+    .. note:: After you create the control, you need to add it to the window with placeControl().
+
+    .. warning:: You must place Group in a window before adding controls to it!
+    
+    Example::
+    
+        self.grid = Grid(1,2)
+    """
+        
+    def __new__(cls, window, rows, columns, *args, **kwargs):
+        return super(Group, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+
+    def __init__(self, window, rows, columns, *args, **kwargs):
+        self.rows = rows
+        self.columns = columns
+        self._controls = []
+        GridMixin.__init__(self, window)
+
+    def placeControl(self, control, *args, **kwargs):
+        self._controls.append(control)
+        GridMixin.placeControl(self, control, *args, **kwargs)
+
+    def setVisible(self, visible):
+        xbmcgui.ControlGroup.setVisible(self, visible)
+        for control in self._controls:
+            control.setVisible(visible)
+
+    def setVisibleCondition(self, visible, allowHiddenFocus = False):
+        xbmcgui.ControlGroup.setVisibleCondition(self, visible, allowHiddenFocus)
+        for control in self._controls:
+            control.setVisibleCondition(visible, allowHiddenFocus)
+
+    def setEnabled(self, enable):
+        xbmcgui.ControlGroup.setEnabled(self, enable)
+        for control in self._controls:
+            control.setEnabled(enable)
+
+    def setEnableCondition(self, enable):
+        xbmcgui.ControlGroup.setEnableCondition(self, enable)
+        for control in self._controls:
+            control.setEnableCondition(enable)
+
+    def _placedCallback(self):
+        """
+        Called once the grid has been placed
+        """
+        self.x, self.y = self.getPosition()
+        self.width = self.getWidth()
+        self.height = self.getHeight()
+        self._setGrid()
+
+    
+
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
     class Slider(CompareMixin, xbmcgui.ControlSlider):
@@ -425,7 +573,7 @@ if not XBMC4XBOX:
             return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class AbstractWindow(object):
+class AbstractWindow(GridMixin):
 
     """
     Top-level control window.
@@ -439,6 +587,9 @@ class AbstractWindow(object):
     """
 
     def __init__(self):
+        # GridMixin
+        super(AbstractWindow, self).__init__(self)
+        
         self.actions_connected = []
         self.controls_connected = []
 
@@ -472,50 +623,6 @@ class AbstractWindow(object):
             self.y = 360 - self.height // 2
         self._setGrid()
 
-    def _setGrid(self):
-        """
-        Set window grid layout of rows x columns.
-
-        This is a helper method not to be called directly.
-        """
-        self.grid_x = self.x
-        self.grid_y = self.y
-        self.tile_width = self.width // self.columns
-        self.tile_height = self.height // self.rows
-
-    def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
-        """
-        Place a control within the window grid layout.
-
-        :param control: control instance to be placed in the grid.
-        :param row: row number where to place the control (starts from 0).
-        :param column: column number where to place the control (starts from 0).
-        :param rowspan: set when the control needs to occupy several rows.
-        :param columnspan: set when the control needs to occupy several columns.
-        :param pad_x: horisontal padding.
-        :param pad_y: vertical padding.
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
-
-        Use ``pad_x`` and ``pad_y`` to adjust control's aspect.
-        Negative padding values can be used to make a control overlap with grid cells next to it, if necessary.
-
-        Example::
-
-            self.placeControl(self.label, 0, 1)
-        """
-        try:
-            control_x = (self.grid_x + self.tile_width * column) + pad_x
-            control_y = (self.grid_y + self.tile_height * row) + pad_y
-            control_width = self.tile_width * columnspan - 2 * pad_x
-            control_height = self.tile_height * rowspan - 2 * pad_y
-        except AttributeError:
-            raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
-        control.setPosition(control_x, control_y)
-        control.setWidth(control_width)
-        control.setHeight(control_height)
-        self.addControl(control)
-        self.setAnimation(control)
-
     def getX(self):
         """Get X coordinate of the top-left corner of the window."""
         try:
@@ -544,27 +651,6 @@ class AbstractWindow(object):
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
-    def getRows(self):
-        """
-        Get grid rows count.
-
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
-        """
-        try:
-            return self.rows
-        except AttributeError:
-            raise AddonWindowError('Grid layot is not set! Call setGeometry first.')
-
-    def getColumns(self):
-        """
-        Get grid columns count.
-
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
-        """
-        try:
-            return self.columns
-        except AttributeError:
-            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
 
     def connect(self, event, callable):
         """
