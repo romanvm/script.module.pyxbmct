@@ -292,10 +292,11 @@ class ControlMixin(object):
 
             x, y = self.getMidpoint()
         """
-         x, y = self.getPosition()
-         width = self.getWidth()
-         height = self.getHeight()
-         return (x + (width / 2), y + (height / 2))
+        x = self.getX()
+        y = self.getY()
+        width = self.getWidth()
+        height = self.getHeight()
+        return (x + (width / 2), y + (height / 2))
 
 
 class Label(ControlMixin, xbmcgui.ControlLabel):
@@ -748,7 +749,8 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
         Called once the grid has been placed
         """
         GridMixin.__init__(self, window)
-        self.x, self.y = self.getPosition()
+        self.x = self.getX()
+        self.y = self.getY()
         self.width = self.getWidth()
         self.height = self.getHeight()
         self._setGrid()
@@ -876,13 +878,15 @@ class AbstractWindow(GridMixin):
             wrap_around_move_down = None
             wrap_around_move_up = None
             
-            control_x, control_y = control.getPosition()
+            control_x = control.getX()
+            control_y = control.getY()
             control_midpoint_x, control_midpoint_y = control.getMidpoint()
             control_width = control.getWidth()
             control_height = control.getHeight()
             
             for neighbour in controls:
-                neighbour_x, neighbour_y = neighbour.getPosition()
+                neighbour_x = neighbour.getX()
+                neighbour_y = neighbour.getY()
                 neighbour_midpoint_x, neighbour_midpoint_y = neighbour.getMidpoint()
                 neighbour_midpoint_x_dif = abs(neighbour_midpoint_x - control_midpoint_x)
                 neighbour_midpoint_y_dif = abs(neighbour_midpoint_y - control_midpoint_y)
