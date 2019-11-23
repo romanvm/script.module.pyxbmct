@@ -10,20 +10,19 @@
 This module contains all classes and constants of PyXBMCt framework
 """
 
-
-
 from __future__ import absolute_import, division, unicode_literals
 
 import platform
 XBMC4XBOX = platform.system() == "XBMC4Xbox"
 
+# kodi_six doesn't work on XBMC4XBOX
 if XBMC4XBOX:
     range = xrange
-    import xbmc, xbmcgui
+    import xbmc, xbmcgui, inspect
 else:
     from future.builtins import range
     from kodi_six import xbmc, xbmcgui
-    
+
 import os
 
 
@@ -92,7 +91,8 @@ class GridMixin(object):
     """
     Grid functionality mixin.
     
-    Serves as a parent widget for other XBMC UI controls
+
+    Mixin for parent widgets for other XBMC UI controls
     much like Tkinter.Tk or PyQt QWidget class.
     
     .. warning:: This is an abstract class and is not supposed to be instantiated directly!
@@ -102,7 +102,7 @@ class GridMixin(object):
         """
         :param window: the window that the grid will exist in
         """
-        self.window = window
+        self._window = window
 
     def getRows(self):
         """
@@ -113,7 +113,7 @@ class GridMixin(object):
         try:
             return self.rows
         except AttributeError:
-            raise AddonWindowError('Grid layot is not set! Call setGeometry first.')
+            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
 
     def getColumns(self):
         """
@@ -136,6 +136,7 @@ class GridMixin(object):
         self.grid_y = self.y
         self.tile_width = self.width // self.columns
         self.tile_height = self.height // self.rows
+        
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -168,17 +169,141 @@ class GridMixin(object):
         control.setWidth(control_width)
         control.setHeight(control_height)
         if hasattr(control, "_placedCallback"):
-            control._placedCallback()
-        self.window.addControl(control)
-        self.window.setAnimation(control)
+            control._placedCallback(self._window, row, column, rowspan, columnspan, pad_x, pad_y)
+
+        try:
+            self._window.addControl(control)
+            self._window.setAnimation(control)
+        except AttributeError:
+            raise AddonWindowError('Window is not set! Pass window when calling the constructor.')
+
+    def removeControl(self, control):
+        """
+        Remove a control from the window grid layout.
+
+        :param control: control instance to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        if hasattr(control, "_removedCallback"):
+            control._removedCallback(self._window)
+        self._window.removeControl(control)
+
+    def removeControls(self, controls):
+        """
+        Remove multiple controls from the window grid layout.
+
+        :param controls: an iterable of control instances to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        for control in controls:
+            self.removeControl(control)
+
+class ControlMixin(object):
+    """
+    Basic control functionality mixin.
+
+    Provides utility methdos and wrappers for some existing methods to support PyXBMCt
+
+    .. warning:: This is an mixin class and is not supposed to be instantiated directly!
+    """
+    
+    def isEnabled(self):
+        """
+        Determine if a control is enabled or not.
+
+        Example::
+
+            enabled = self.isEnabled()
+        """
+        # Test this way so that a constructor is not needed
+        # to set the intial values
+        return not hasattr(self, "_is_enabled") or self._is_enabled
+
+    if XBMC4XBOX:
+        def isVisible(self):
+            """
+            Determine if the control is visible or not.
+
+            Example::
+
+                enabled = self.isVisible()
+            """
+            return not hasattr(self, "_is_visible") or self._is_visible
+
+        def setVisible(self, is_visible):
+            """
+            Set whether the control is visible or not.
+
+            :param is_visible: boolean to determine if the control is visible.
+
+            Example::
+
+                self.setVisible(False)
+            """
+            self._is_visible = is_visible
+            for ancestor in inspect.getmro(self.__class__):
+                if inspect.getmodule(ancestor) == xbmcgui:
+                    ancestor.setVisible(self, is_visible)
+                    return
+
+        def setEnabled(self, is_enabled):
+            """
+            Set whether the control is enabled or not.
+
+            :param is_enabled: boolean to determine if the control is enabled.
+
+            Example::
+
+                self.setEnabled(False)
+            """
+            self._is_enabled = is_enabled
+            for ancestor in inspect.getmro(self.__class__):
+                if inspect.getmodule(ancestor) == xbmcgui:
+                    ancestor.setEnabled(self, is_enabled)
+                    return
+    else:
+        # isVisible is available by default so setVisible wrapper is not needed
+
+        def setEnabled(self, is_enabled):
+            """
+            Set whether the control is enabled or not.
+
+            :param is_enabled: boolean to determine if the control is enabled.
+
+            Example::
+
+                self.setEnabled(False)
+            """
+            self._is_enabled = is_enabled
+            xbmcgui.Control.setEnabled(self, is_enabled)
 
 
-class Label(xbmcgui.ControlLabel):
+    def getMidpoint(self):
+        """
+        Get the (x,y) coordinates of the controls midpoint.
+
+        Example::
+
+            x, y = self.getMidpoint()
+        """
+         x, y = self.getPosition()
+         width = self.getWidth()
+         height = self.getHeight()
+         return (x + (width / 2), y + (height / 2))
+
+
+class Label(ControlMixin, xbmcgui.ControlLabel):
     """
     Label(label, font=None, textColor=None, disabledColor=None, alignment=0,hasPath=False, angle=0)
-    
+
     ControlLabel class.
-    
+
     Implements a simple text label.
 
     :param label: text string
@@ -197,7 +322,7 @@ class Label(xbmcgui.ControlLabel):
     :type angle: int
 
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
 
         self.label = Label('Status', angle=45)
@@ -206,61 +331,61 @@ class Label(xbmcgui.ControlLabel):
         return super(Label, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class FadeLabel(xbmcgui.ControlFadeLabel):
+class FadeLabel(ControlMixin, xbmcgui.ControlFadeLabel):
     """
     FadeLabel(font=None, textColor=None, _alignment=0)
-    
+
     Control that scrolls label text.
-    
+
     Implements a text label that can auto-scroll very long text.
-    
+
     :param font: font used for label text. (e.g. ``'font13'``)
     :type font: str
     :param textColor: hex color code of fadelabel's labels. (e.g. ``'0xFFFFFFFF'``)
     :type textColor: str
     :param _alignment: alignment of label. **Note**: see ``xbfont.h``
     :type _alignment: int
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
-    
+
         self.fadelabel = FadeLabel(textColor='0xFFFFFFFF')
     """
     def __new__(cls, *args, **kwargs):
         return super(FadeLabel, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class TextBox(xbmcgui.ControlTextBox):
+class TextBox(ControlMixin, xbmcgui.ControlTextBox):
     """
     TextBox(font=None, textColor=None)
-    
+
     ControlTextBox class
-    
+
     Implements a box for displaying multi-line text.
     Long text is truncated from below. Also supports auto-scrolling.
-    
+
     :param font: font used for text. (e.g. ``'font13'``)
     :type font: str
     :param textColor: hex color code of textbox's text. (e.g. ``'0xFFFFFFFF'``)
     :type textColor: str
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
-    
+
         self.textbox = TextBox(textColor='0xFFFFFFFF')
     """
     def __new__(cls, *args, **kwargs):
         return super(TextBox, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Image(xbmcgui.ControlImage):
+class Image(ControlMixin, xbmcgui.ControlImage):
     """
     Image(filename, aspectRatio=0, colorDiffuse=None)
-    
+
     ControlImage class.
-    
+
     Implements a box for displaying ``.jpg``, ``.png``, and ``.gif`` images.
 
     :param filename: path or URL to an image file.
@@ -269,11 +394,11 @@ class Image(xbmcgui.ControlImage):
     :type aspectRatio: int
     :param colorDiffuse: for example, ``'0xC0FF0000'`` (red tint)
     :type colorDiffuse: str
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
-    
+
         self.image = Image('d:\images\picture.jpg', aspectRatio=2)
     """
     def __new__(cls, *args, **kwargs):
@@ -287,12 +412,12 @@ class CompareMixin(object):
         return False
 
 
-class Button(CompareMixin, xbmcgui.ControlButton):
+class Button(ControlMixin, CompareMixin, xbmcgui.ControlButton):
     """
     Button(label, focusTexture=None, noFocusTexture=None, textOffsetX=CONTROL_TEXT_OFFSET_X, textOffsetY=CONTROL_TEXT_OFFSET_Y, alignment=4, font=None, textColor=None, disabledColor=None, angle=0, shadowColor=None, focusedColor=None)
-    
+
     ControlButton class.
-    
+
     Implements a clickable button.
 
     :param label: button caption
@@ -319,32 +444,30 @@ class Button(CompareMixin, xbmcgui.ControlButton):
     :type shadowColor: str
     :param focusedColor: hex color code of focused button's label. (e.g. ``'0xFF00FFFF'``)
     :type focusedColor: str
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-        
+
     Example::
-    
+
         self.button = Button('Status', font='font14')
     """
-    
+
     def __new__(cls, *args, **kwargs):
         textures = {'focusTexture': os.path.join(skin.images, 'Button', 'KeyboardKey.png'),
                     'noFocusTexture': os.path.join(skin.images, 'Button', 'KeyboardKeyNF.png')}
         _set_textures(textures, kwargs)
         if kwargs.get('alignment') is None:
             kwargs['alignment'] = ALIGN_CENTER
-        x = super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+        return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
-        return x
-
-class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
+class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
     """
     RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)
-    
+
     ControlRadioButton class.
-    
+
     Implements a 2-state switch.
-    
+
     :param label: label text.
     :type: str or unicode
     :param focusTexture: filename for focus texture.
@@ -377,13 +500,13 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
     :type focusOffTexture: str
     :param noFocusOffTexture: filename for radio not focused/unchecked texture.
     :type noFocusOffTexture: str
-    
+
     .. note:: To customize RadioButton all 4 abovementioned textures need to be provided.
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
-    
+
         self.radiobutton = RadioButton('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
@@ -405,12 +528,12 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
 
 # Edit is not supported on Xbox using the Python API
 if not XBMC4XBOX:
-    class Edit(CompareMixin, xbmcgui.ControlEdit):
+    class Edit(ControlMixin, CompareMixin, xbmcgui.ControlEdit):
         """
         Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
-        
-        ControlEdit class.
-        
+
+        ControlEdit class. Edit is not supported on Xbox using the Python API
+
         Implements a clickable text entry field with an on-screen keyboard.
 
         :param label: text string.
@@ -429,13 +552,13 @@ if not XBMC4XBOX:
         :type noFocusTexture: str
         :param isPassword: [opt] if ``True``, mask text value.
         :type isPassword: bool
-        
+
         .. note:: You can use the above as keywords for arguments and skip certain optional arguments.
             Once you use a keyword, all following arguments require the keyword.
             After you create the control, you need to add it to the window with ``placeControl()``.
-        
+
         Example::
-        
+
             self.edit = Edit('Status')
         """
         def __new__(cls, *args, **kwargs):
@@ -445,14 +568,14 @@ if not XBMC4XBOX:
             return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class List(CompareMixin, xbmcgui.ControlList):
+class List(ControlMixin, CompareMixin, xbmcgui.ControlList):
     """
     List(font=None, textColor=None, buttonTexture=None, buttonFocusTexture=None, selectedColor=None, _imageWidth=10, _imageHeight=10, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4)
-    
+
     ControlList class.
-    
+
     Implements a scrollable list of items.
-    
+
     :param font: string - font used for items label. (e.g. 'font13')
     :param textColor: hexstring - color of items label. (e.g. '0xFFFFFFFF')
     :param buttonTexture: string - filename for no focus texture.
@@ -465,11 +588,11 @@ class List(CompareMixin, xbmcgui.ControlList):
     :param _itemHeight: integer - height of items.
     :param _space: integer - space between items.
     :param _alignmentY: integer - Y-axis alignment of items label - *Note, see xbfont.h
-    
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
-    
+
     Example::
-    
+
         self.cList = List('font14', space=5)
     """
     def __new__(cls, *args, **kwargs):
@@ -478,73 +601,170 @@ class List(CompareMixin, xbmcgui.ControlList):
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
-class Group(GridMixin, xbmcgui.ControlGroup):
+class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
     """
     Group(rows, columns)
-    
-    ControlSlider class.
-    
+
+    ControlGroup class.
+
     Implements a secondary grid (with its own coordinate system) that controls can be placed in.
     Allowing for finer control over where controls are placed in a window.
-    
-    :param window: the window in which this grid will be placed
-    
+
+    :param rows: integer - the number of rows in the grid
+    :param columns: integer - the number of columns in the grid
+
     .. note:: After you create the control, you need to add it to the window with placeControl().
 
     .. warning:: You must place Group in a window before adding controls to it!
-    
+
     Example::
-    
-        self.grid = Grid(1,2)
+
+        self.group = Group(1,2)
     """
-        
-    def __new__(cls, window, rows, columns, *args, **kwargs):
+
+    def __new__(cls, rows, columns, *args, **kwargs):
         return super(Group, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
-    def __init__(self, window, rows, columns, *args, **kwargs):
+    def __init__(self, rows, columns, *args, **kwargs):
         self.rows = rows
         self.columns = columns
         self._controls = []
-        GridMixin.__init__(self, window)
+
+    def addControl(self, control):
+        """
+        Wrapper for window.addControl.
+
+        :param control: the control to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            self.group.addControl(label)
+        """
+
+        self._controls.append(control)
+        self._window.addControl(control)
+
+    def addControls(self, controls):
+        """
+        Wrapper for xbmcgui.Window.addControls.
+
+        :param controls: iterable containing the controls to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            self.group.addControls([label, button])
+        """
+        for control in controls:
+            self.addControl(control)
 
     def placeControl(self, control, *args, **kwargs):
+        """
+        Place a control within the window grid layout.
+
+        :param control: control instance to be placed in the grid.
+        :param row: row number where to place the control (starts from 0).
+        :param column: column number where to place the control (starts from 0).
+        :param rowspan: set when the control needs to occupy several rows.
+        :param columnspan: set when the control needs to occupy several columns.
+        :param pad_x: horisontal padding.
+        :param pad_y: vertical padding.
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+
+        Use ``pad_x`` and ``pad_y`` to adjust control's aspect.
+        Negative padding values can be used to make a control overlap with grid cells next to it, if necessary.
+
+        Example::
+
+            group.placeControl(self.label, 0, 1)
+        """
         self._controls.append(control)
         GridMixin.placeControl(self, control, *args, **kwargs)
 
-    def setVisible(self, visible):
-        xbmcgui.ControlGroup.setVisible(self, visible)
-        for control in self._controls:
-            control.setVisible(visible)
+    def _removedCallback(self, window):
+        self.removeAllChildren()
 
-    def setVisibleCondition(self, visible, allowHiddenFocus = False):
-        xbmcgui.ControlGroup.setVisibleCondition(self, visible, allowHiddenFocus)
-        for control in self._controls:
-            control.setVisibleCondition(visible, allowHiddenFocus)
+    def removeAllChildren(self):
+        """
+        Removes all the Group's children (and all their children) from the window.
 
-    def setEnabled(self, enable):
-        xbmcgui.ControlGroup.setEnabled(self, enable)
+        Example::
+
+            group.removeAllChildren()
+        """
+        GridMixin.removeControls(self, self._controls)
+
+    def setVisible(self, is_visible):
+        """
+        Sets the group (and it all its current children) to be either visible or invisible.
+
+        :param is_visible: determines whether or the group and its current children should be visible or not.
+
+        Example::
+
+            group.setVisible(False)
+        """
+        xbmcgui.ControlGroup.setVisible(self, is_visible)
         for control in self._controls:
-            control.setEnabled(enable)
+            control.setVisible(is_visible)
+
+    def setVisibleCondition(self, is_visible, allow_hidden_focus = False):
+        """
+        See the XBMC documentation
+        """
+        xbmcgui.ControlGroup.setVisibleCondition(self, is_visible, allow_hidden_focus)
+        for control in self._controls:
+            control.setVisibleCondition(is_visible, allow_hidden_focus)
+
+    def setEnabled(self, is_enabled):
+        """
+        Sets the group (and it all its current children) to be either enabled or disabled.
+
+        :param is_enabled: determines whether or the group and its current children should be enabled or not.
+
+        Example::
+
+            group.setVisible(setEnabled)
+        """
+        xbmcgui.ControlGroup.setEnabled(self, is_enabled)
+        for control in self._controls:
+            control.setEnabled(is_enabled)
 
     def setEnableCondition(self, enable):
+        """
+        See the XBMC documentation
+        """
         xbmcgui.ControlGroup.setEnableCondition(self, enable)
         for control in self._controls:
             control.setEnableCondition(enable)
 
-    def _placedCallback(self):
+    def _placedCallback(self, window, *args, **kwargs):
         """
         Called once the grid has been placed
         """
+        GridMixin.__init__(self, window)
         self.x, self.y = self.getPosition()
         self.width = self.getWidth()
         self.height = self.getHeight()
         self._setGrid()
 
-    
+    def _focussedCallback(self):
+        # Want to divert focus to the first control if possible
+        # it doesn't really make sense for a container to have focus
+        if self._controls:
+            self._window.setFocus(self._controls[0])
+            return False
+        else:
+            return True
 
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
-    class Slider(CompareMixin, xbmcgui.ControlSlider):
+    class Slider(ControlMixin, CompareMixin, xbmcgui.ControlSlider):
         """
         Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
         
@@ -589,10 +809,148 @@ class AbstractWindow(GridMixin):
     def __init__(self):
         # GridMixin
         super(AbstractWindow, self).__init__(self)
-        
+        self.controls = []
         self.actions_connected = []
         self.controls_connected = []
 
+    def addControl(self, control):
+        """
+        Wrapper for xbmcgui.Window.addControl.
+
+        :param control: the control to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            window.addControls(label)
+        """
+        self.controls.append(control)
+        super(AbstractWindow, self).addControl(control)
+
+    def addControls(self, controls):
+        """
+        Wrapper for xbmcgui.Window.addControls.
+
+        :param controls: iterable containing the controls to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            window.addControls([label, button])
+        """
+        # addControls is not directly available on XBMC4XBOX
+        # so this implementation is the most portable
+        for control in controls:
+            self.addControl(control)
+
+    def autoNavigation(self, vertical_wrap_around = True,
+                       horizontal_wrap_around = True, include_disabled = False,
+                       include_invisible = False, controls_subset = None,
+                       control_types = (Button, List, RadioButton) if XBMC4XBOX\
+                                       else (Button, List, RadioButton, Slider, Edit)):
+        if controls_subset is None:
+            controls = self.controls
+        else:
+            controls = controls_subset
+
+        controls = [c for c in controls if\
+                    (control_types == None or isinstance(c, control_types)) and\
+                    (include_disabled or c.isEnabled()) and\
+                    (include_invisible or c.isVisible())]
+            
+        # Note: coordinates are measured from the top left of the window
+        # and a controls coordinates refer to its top left corner
+
+        for control in controls:
+            nearest_left = None
+            nearest_right = None
+            nearest_up = None
+            nearest_down = None
+            
+            wrap_around_move_left = None
+            wrap_around_move_right = None
+            wrap_around_move_down = None
+            wrap_around_move_up = None
+            
+            control_x, control_y = control.getPosition()
+            control_midpoint_x, control_midpoint_y = control.getMidpoint()
+            control_width = control.getWidth()
+            control_height = control.getHeight()
+            
+            for neighbour in controls:
+                neighbour_x, neighbour_y = neighbour.getPosition()
+                neighbour_midpoint_x, neighbour_midpoint_y = neighbour.getMidpoint()
+                neighbour_midpoint_x_dif = abs(neighbour_midpoint_x - control_midpoint_x)
+                neighbour_midpoint_y_dif = abs(neighbour_midpoint_y - control_midpoint_y)
+
+                # Ensure that the neighbour is not too high or low
+                if neighbour_y < control_y + control_height and neighbour_y + neighbour.getHeight() > control_y:
+                    if neighbour_x < control_x  and (nearest_left == None or nearest_left_x < neighbour_x or (nearest_left_x == neighbour_x and neighbour_midpoint_y_dif < nearest_left_midpoint_y_dif)):
+                        nearest_left = neighbour
+                        nearest_left_x = neighbour_x
+                        nearest_left_midpoint_y_dif = neighbour_midpoint_y_dif
+                    elif neighbour_x > control_x and (nearest_right == None or nearest_right_x > neighbour_x or (nearest_right_x == neighbour_x and neighbour_midpoint_y_dif < nearest_right_midpoint_y_dif)):
+                        nearest_right = neighbour
+                        nearest_right_x = neighbour_x
+                        nearest_right_midpoint_y_dif = neighbour_midpoint_y_dif
+
+                    if horizontal_wrap_around:
+                        # check if nearest_left/right is none as if a suitable
+                        # control to the left or right has been found there will
+                        # be no wrap around
+                        if nearest_left == None and neighbour_x > control_x and (wrap_around_move_left == None or wrap_around_move_left_x < neighbour_x or (wrap_around_move_left_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_left_midpoint_y_dif)):
+                            wrap_around_move_left = neighbour
+                            wrap_around_move_left_x = neighbour_x
+                            wrap_around_move_left_midpoint_y_dif = neighbour_midpoint_y_dif
+                        elif nearest_right == None and neighbour_x < control_x  and (wrap_around_move_right == None or wrap_around_move_right_x > neighbour_x or (wrap_around_move_right_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_right_midpoint_y_dif)):
+                            wrap_around_move_right = neighbour
+                            wrap_around_move_right_x = neighbour_x
+                            wrap_around_move_right_midpoint_y_dif = neighbour_midpoint_y_dif
+
+                if neighbour_x < control_x + control_width and neighbour_x + neighbour.getWidth() > control_x:    
+                    if neighbour_y > control_y and (nearest_down == None or nearest_down_y > neighbour_y or (nearest_down_y == neighbour_y and neighbour_midpoint_x_dif < nearest_down_midpoint_x_dif)):
+                        nearest_down = neighbour
+                        nearest_down_midpoint_x_dif = neighbour_midpoint_x_dif
+                        nearest_down_y = neighbour_y
+                    elif neighbour_y < control_y and (nearest_up == None or nearest_up_y < neighbour_y or (nearest_up_y == neighbour_y and neighbour_midpoint_x_dif < nearest_up_midpoint_x_dif)):
+                        nearest_up = neighbour
+                        nearest_up_midpoint_x_dif = neighbour_midpoint_x_dif
+                        nearest_up_y = neighbour_y
+
+                    if vertical_wrap_around:
+                        if nearest_down == None and neighbour_y < control_y and (wrap_around_move_down == None or wrap_around_move_down_y > neighbour_y or (wrap_around_move_down_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_down_midpoint_x_dif)):
+                            wrap_around_move_down = neighbour
+                            wrap_around_move_down_midpoint_x_dif = neighbour_midpoint_x_dif
+                            wrap_around_move_down_y = neighbour_y
+                        elif nearest_up == None and neighbour_y > control_y  and (wrap_around_move_up == None or wrap_around_move_up_y < neighbour_y or (wrap_around_move_up_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_up_midpoint_x_dif)):
+                            wrap_around_move_up = neighbour
+                            wrap_around_move_up_midpoint_x_dif = neighbour_midpoint_x_dif
+                            wrap_around_move_up_y = neighbour_y
+            
+            if nearest_left:
+                control.controlLeft(nearest_left)
+            elif wrap_around_move_left:
+                control.controlLeft(wrap_around_move_left)
+                
+            if nearest_right:
+                control.controlRight(nearest_right)
+            elif wrap_around_move_right:
+                control.controlRight(wrap_around_move_right)
+                
+            if nearest_down:
+                control.controlDown(nearest_down)
+            elif wrap_around_move_down:
+                control.controlDown(wrap_around_move_down)
+                
+            if nearest_up:
+                control.controlUp(nearest_up)
+            elif wrap_around_move_up:
+                control.controlUp(wrap_around_move_up)
+    
     def setGeometry(self, width_, height_, rows_, columns_, pos_x=-1, pos_y=-1):
         """
         Set width, height, Grid layout, and coordinates (optional) for a new control window.
@@ -652,12 +1010,12 @@ class AbstractWindow(GridMixin):
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
 
-    def connect(self, event, callable):
+    def connect(self, event, callback):
         """
         Connect an event to a function.
 
         :param event: event to be connected.
-        :param callable: callable object the event is connected to.
+        :param callback: callback object the event is connected to.
 
         An event can be an inctance of a Control object or an integer key action code.
         Several basic key action codes are provided by PyXBMCt. ``xbmcgui`` module
@@ -671,7 +1029,7 @@ class AbstractWindow(GridMixin):
         ``ACTION_MOVE_LEFT``, ``ACTION_MOVE_RIGHT`` and ``ACTION_MOUSE_DRAG``, and do a check
         whether the ``Slider`` instance is focused.
 
-        ``callable`` parameter is a function or a method to be executed on when the event is fired.
+        ``callback`` parameter is a function or a method to be executed on when the event is fired.
 
         .. warning:: For connection you must provide a function object without brackets ``()``,
             not a function call!
@@ -686,13 +1044,28 @@ class AbstractWindow(GridMixin):
 
             self.connect(ACTION_NAV_BACK, self.close)
         """
+        
+        if isinstance(event, int):
+            connect_list = self.actions_connected
+        else: # Event is actually a control
+            if hasattr(event, "_connectCallback"):
+                # Only connect the event if it returns true
+                # or a new callable.
+                should_connect = event._connectCallback(callback, self)
+                if callable(should_connect):
+                    callback = should_connect
+                elif not should_connect:
+                    return
+            connect_list = self.controls_connected
         try:
-            self.disconnect(event)
-        except AddonWindowError:
-            if isinstance(event, int):
-                self.actions_connected.append([event, callable])
+            entry = next(entry for entry in connect_list if entry[0] == event)
+
+            if not isinstance(entry[1], list):
+                entry[1] = [entry[1], callback]
             else:
-                self.controls_connected.append([event, callable])
+                entry[1].append(callback)
+        except:
+            connect_list.append([event, callback])
 
     def connectEventList(self, events, function):
         """
@@ -700,9 +1073,10 @@ class AbstractWindow(GridMixin):
 
         See :meth:`connect` docstring for more info.
         """
-        [self.connect(event, function) for event in events]
+        for event in events:
+            self.connect(event, function)
 
-    def disconnect(self, event):
+    def disconnect(self, event, callback = None):
         """
         Disconnect an event from a function.
 
@@ -710,6 +1084,7 @@ class AbstractWindow(GridMixin):
         which has previously been connected to a function or a method.
 
         :param event: event to be disconnected.
+        :param callback: callback related to the event to be disconnected (if None then all callbacks are disconnected).
         :raises: :class:`AddonWindowError` if an event is not connected to any function.
 
         Examples::
@@ -724,24 +1099,35 @@ class AbstractWindow(GridMixin):
              event_list = self.actions_connected
         else:
              event_list = self.controls_connected
-        for index in range(len(event_list)):
-            if event == event_list[index][0]:
-                event_list.pop(index)
-                break
-        else:
-            raise AddonWindowError('The action or control %s is not connected!' % event)
+             
+        for event_index in range(len(event_list)):
+            if event == event_list[event_index][0]:
+                if callback == None:
+                    event_list.pop(event_index)
+                    return
+                else:
+                    callback_list = event_list[event_index][1]
+                    for callback_index in range(len(callback_list)):
+                        if callback == callback_list[callback_index]:
+                            callback_list.pop(callback_index)
+                            return
+                    raise AddonWindowError('The action or control %s is not connected to function!' % str(callback))
+            
+        raise AddonWindowError('The action or control %s is not connected!' % event)
 
-    def disconnectEventList(self, events):
+    def disconnectEventList(self, events, callback = None):
         """
         Disconnect a list of controls/action codes from functions.
 
         See :func:`disconnect` docstring for more info.
 
         :param events: the list of events to be disconnected.
+        :param callback: callback related to each of the events to be disconnected (if None then all callbacks are disconnected).
         :raises: :class:`AddonWindowError` if at least one event in the list
             is not connected to any function.
         """
-        [self.disconnect(event) for event in events]
+        for event in events:
+            self.disconnect(event, callback)
 
     def _executeConnected(self, event, connected_list):
         """
@@ -751,7 +1137,11 @@ class AbstractWindow(GridMixin):
         """
         for item in connected_list:
             if item[0] == event:
-                item[1]()
+                if isinstance(item[1], list):
+                    for callback in item[1]:
+                        callback()
+                else:
+                    item[1]()
                 break
 
     def setAnimation(self, control):
@@ -894,11 +1284,19 @@ class AddonWindow(AbstractWindow):
         return self.title_bar.getLabel()
 
 class WindowMixin(object):
+        
+    def setFocus(self, control):
+        do_set_focus = True
+        if hasattr(control, '_focussedCallback'):
+            do_set_focus = control._focussedCallback()
+        if do_set_focus:
+            xbmcgui.Window.setFocus(self, control)
+    
     def onAction(self, action):
         """
         Catch button actions.
 
-        ``action`` is an instance of :class:`xbmcgui.Action` class.
+        :param action: an instance of :class:`xbmcgui.Action` class.
         """
         if action == ACTION_PREVIOUS_MENU:
             self.close()
@@ -906,7 +1304,7 @@ class WindowMixin(object):
         # controls. However onAction is.
         elif XBMC4XBOX and hasattr(action, 'getButtonCode') and action.getButtonCode() in (KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
             control = self.getFocus()
-            if type(control) in [Button, RadioButton, List]:
+            if isinstance(control,(Button, RadioButton, List)) and control.isEnabled():
                 self.onControl(control)
         else:
             self._executeConnected(action, self.actions_connected)
@@ -915,7 +1313,7 @@ class WindowMixin(object):
         """
         Catch activated controls.
 
-        ``control`` is an instance of :class:`xbmcgui.Control` class.
+        :param control: is an instance of :class:`xbmcgui.Control` class.
         """
         if (hasattr(self, 'window_close_button') and
                 control.getId() == self.window_close_button.getId()):
@@ -923,22 +1321,17 @@ class WindowMixin(object):
         else:
             self._executeConnected(control, self.controls_connected)
 
-# FullWindowMixin and DialogWindowMixin are almost identical
-# but they inherint from different types
-class FullWindowMixin(WindowMixin, xbmcgui.Window):
+    def onFocus(self, control):
+        """
+        Catch focused controls.
 
-    """An abstract class to define window event processing."""
-
-    pass
-    
-class DialogWindowMixin(WindowMixin, xbmcgui.WindowDialog):
-    
-    """An abstract class to define window event processing."""
-
-    pass
+        :param control: is an instance of :class:`xbmcgui.Control` class.
+        """
+        if hasattr(control, '_focussedCallback'):
+            control._focussedCallback()
 
 
-class BlankFullWindow(FullWindowMixin, AbstractWindow):
+class BlankFullWindow(WindowMixin, AbstractWindow, xbmcgui.Window):
     """
     BlankFullWindow()
 
@@ -951,7 +1344,7 @@ class BlankFullWindow(FullWindowMixin, AbstractWindow):
     pass
 
 
-class BlankDialogWindow(DialogWindowMixin, AbstractWindow):
+class BlankDialogWindow(WindowMixin, AbstractWindow, xbmcgui.WindowDialog):
     """
     BlankDialogWindow()
 
@@ -964,7 +1357,7 @@ class BlankDialogWindow(DialogWindowMixin, AbstractWindow):
     pass
 
 
-class AddonFullWindow(FullWindowMixin, AddonWindow):
+class AddonFullWindow(WindowMixin, AddonWindow, xbmcgui.Window):
 
     """
     AddonFullWindow(title='')
@@ -1008,7 +1401,7 @@ class AddonFullWindow(FullWindowMixin, AddonWindow):
         self.main_bg.setImage(image)
 
 
-class AddonDialogWindow(DialogWindowMixin, AddonWindow):
+class AddonDialogWindow(WindowMixin, AddonWindow, xbmcgui.WindowDialog):
     """
     AddonDialogWindow(title='')
 
