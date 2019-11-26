@@ -13,6 +13,7 @@ This module contains all classes and constants of PyXBMCt framework
 from __future__ import absolute_import, division, unicode_literals
 
 import platform
+
 XBMC4XBOX = platform.system() == "XBMC4Xbox"
 
 # kodi_six doesn't work on XBMC4XBOX
@@ -24,7 +25,6 @@ else:
     from kodi_six import xbmc, xbmcgui
 
 import os
-
 
 from .addonskin import Skin
 
@@ -75,7 +75,6 @@ KEY_BUTTON_A = 256
 """XBMC4XBOX A button pressed"""
 
 
-
 def _set_textures(textures, kwargs):
     """Set texture arguments for controls."""
     for texture in textures:
@@ -86,6 +85,7 @@ def _set_textures(textures, kwargs):
 class AddonWindowError(Exception):
     """Custom exception"""
     pass
+
 
 class GridMixin(object):
     """
@@ -136,7 +136,6 @@ class GridMixin(object):
         self.grid_y = self.y
         self.tile_width = self.width // self.columns
         self.tile_height = self.height // self.rows
-        
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -204,6 +203,7 @@ class GridMixin(object):
         for control in controls:
             self.removeControl(control)
 
+
 class ControlMixin(object):
     """
     Basic control functionality mixin.
@@ -212,7 +212,7 @@ class ControlMixin(object):
 
     .. warning:: This is an mixin class and is not supposed to be instantiated directly!
     """
-    
+
     def isEnabled(self):
         """
         Determine if a control is enabled or not.
@@ -283,7 +283,6 @@ class ControlMixin(object):
             self._is_enabled = is_enabled
             xbmcgui.Control.setEnabled(self, is_enabled)
 
-
     def getMidpoint(self):
         """
         Get the (x,y) coordinates of the controls midpoint.
@@ -328,6 +327,7 @@ class Label(ControlMixin, xbmcgui.ControlLabel):
 
         self.label = Label('Status', angle=45)
     """
+
     def __new__(cls, *args, **kwargs):
         return super(Label, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -353,6 +353,7 @@ class FadeLabel(ControlMixin, xbmcgui.ControlFadeLabel):
 
         self.fadelabel = FadeLabel(textColor='0xFFFFFFFF')
     """
+
     def __new__(cls, *args, **kwargs):
         return super(FadeLabel, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -377,6 +378,7 @@ class TextBox(ControlMixin, xbmcgui.ControlTextBox):
 
         self.textbox = TextBox(textColor='0xFFFFFFFF')
     """
+
     def __new__(cls, *args, **kwargs):
         return super(TextBox, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -402,6 +404,7 @@ class Image(ControlMixin, xbmcgui.ControlImage):
 
         self.image = Image('d:\images\picture.jpg', aspectRatio=2)
     """
+
     def __new__(cls, *args, **kwargs):
         return super(Image, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
@@ -461,6 +464,7 @@ class Button(ControlMixin, CompareMixin, xbmcgui.ControlButton):
             kwargs['alignment'] = ALIGN_CENTER
         return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+
 class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
     """
     RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)
@@ -510,6 +514,7 @@ class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
 
         self.radiobutton = RadioButton('Status', font='font14')
     """
+
     def __new__(cls, *args, **kwargs):
         if not XBMC4XBOX and xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
             textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
@@ -518,7 +523,7 @@ class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
                         'noFocusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
                         'focusOffTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png'),
                         'noFocusOffTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png')}
-        else: # This is for compatibility with Frodo and earlier versions.
+        else:  # This is for compatibility with Frodo and earlier versions.
             textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
                         'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
                         'TextureRadioFocus': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
@@ -562,6 +567,7 @@ if not XBMC4XBOX:
 
             self.edit = Edit('Status')
         """
+
         def __new__(cls, *args, **kwargs):
             textures = {'focusTexture': os.path.join(skin.images, 'Edit', 'button-focus.png'),
                         'noFocusTexture': os.path.join(skin.images, 'Edit', 'black-back2.png')}
@@ -596,11 +602,13 @@ class List(ControlMixin, CompareMixin, xbmcgui.ControlList):
 
         self.cList = List('font14', space=5)
     """
+
     def __new__(cls, *args, **kwargs):
         textures = {'buttonTexture': os.path.join(skin.images, 'List', 'MenuItemNF.png'),
                     'buttonFocusTexture': os.path.join(skin.images, 'List', 'MenuItemFO.png')}
         _set_textures(textures, kwargs)
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
+
 
 class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
     """
@@ -630,39 +638,6 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
         self.rows = rows
         self.columns = columns
         self._controls = []
-
-    def addControl(self, control):
-        """
-        Wrapper for window.addControl.
-
-        :param control: the control to add.
-
-        .. note:: In most circumstances you should use placeControl.
-        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
-
-        Example::
-
-            self.group.addControl(label)
-        """
-
-        self._controls.append(control)
-        self._window.addControl(control)
-
-    def addControls(self, controls):
-        """
-        Wrapper for xbmcgui.Window.addControls.
-
-        :param controls: iterable containing the controls to add.
-
-        .. note:: In most circumstances you should use placeControl.
-        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
-
-        Example::
-
-            self.group.addControls([label, button])
-        """
-        for control in controls:
-            self.addControl(control)
 
     def placeControl(self, control, *args, **kwargs):
         """
@@ -714,7 +689,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
         for control in self._controls:
             control.setVisible(is_visible)
 
-    def setVisibleCondition(self, is_visible, allow_hidden_focus = False):
+    def setVisibleCondition(self, is_visible, allow_hidden_focus=False):
         """
         See the XBMC documentation
         """
@@ -736,13 +711,13 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
         for control in self._controls:
             control.setEnabled(is_enabled)
 
-    def setEnableCondition(self, enable):
+    def setEnableCondition(self, is_enabled):
         """
         See the XBMC documentation
         """
-        xbmcgui.ControlGroup.setEnableCondition(self, enable)
+        xbmcgui.ControlGroup.setEnableCondition(self, is_enabled)
         for control in self._controls:
-            control.setEnableCondition(enable)
+            control.setEnableCondition(is_enabled)
 
     def _placedCallback(self, window, *args, **kwargs):
         """
@@ -763,6 +738,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
             return False
         else:
             return True
+
 
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
@@ -785,6 +761,7 @@ if not XBMC4XBOX:
         
             self.slider = Slider()
         """
+
         def __new__(cls, *args, **kwargs):
             textures = {'textureback': os.path.join(skin.images, 'Slider', 'osd_slider_bg.png'),
                         'texture': os.path.join(skin.images, 'Slider', 'osd_slider_nibNF.png'),
@@ -796,7 +773,6 @@ if not XBMC4XBOX:
 
 
 class AbstractWindow(GridMixin):
-
     """
     Top-level control window.
     
@@ -849,21 +825,21 @@ class AbstractWindow(GridMixin):
         for control in controls:
             self.addControl(control)
 
-    def autoNavigation(self, vertical_wrap_around = True,
-                       horizontal_wrap_around = True, include_disabled = False,
-                       include_invisible = False, controls_subset = None,
-                       control_types = (Button, List, RadioButton) if XBMC4XBOX\
-                                       else (Button, List, RadioButton, Slider, Edit)):
+    def autoNavigation(self, vertical_wrap_around=True,
+                       horizontal_wrap_around=True, include_disabled=False,
+                       include_invisible=False, controls_subset=None,
+                       control_types=(Button, List, RadioButton) if XBMC4XBOX \
+                               else (Button, List, RadioButton, Slider, Edit)):
         if controls_subset is None:
             controls = self.controls
         else:
             controls = controls_subset
 
-        controls = [c for c in controls if\
-                    (control_types == None or isinstance(c, control_types)) and\
-                    (include_disabled or c.isEnabled()) and\
+        controls = [c for c in controls if \
+                    (control_types == None or isinstance(c, control_types)) and \
+                    (include_disabled or c.isEnabled()) and \
                     (include_invisible or c.isVisible())]
-            
+
         # Note: coordinates are measured from the top left of the window
         # and a controls coordinates refer to its top left corner
 
@@ -872,18 +848,18 @@ class AbstractWindow(GridMixin):
             nearest_right = None
             nearest_up = None
             nearest_down = None
-            
+
             wrap_around_move_left = None
             wrap_around_move_right = None
             wrap_around_move_down = None
             wrap_around_move_up = None
-            
+
             control_x = control.getX()
             control_y = control.getY()
             control_midpoint_x, control_midpoint_y = control.getMidpoint()
             control_width = control.getWidth()
             control_height = control.getHeight()
-            
+
             for neighbour in controls:
                 neighbour_x = neighbour.getX()
                 neighbour_y = neighbour.getY()
@@ -893,11 +869,13 @@ class AbstractWindow(GridMixin):
 
                 # Ensure that the neighbour is not too high or low
                 if neighbour_y < control_y + control_height and neighbour_y + neighbour.getHeight() > control_y:
-                    if neighbour_x < control_x  and (nearest_left == None or nearest_left_x < neighbour_x or (nearest_left_x == neighbour_x and neighbour_midpoint_y_dif < nearest_left_midpoint_y_dif)):
+                    if neighbour_x < control_x and (nearest_left == None or nearest_left_x < neighbour_x or (
+                            nearest_left_x == neighbour_x and neighbour_midpoint_y_dif < nearest_left_midpoint_y_dif)):
                         nearest_left = neighbour
                         nearest_left_x = neighbour_x
                         nearest_left_midpoint_y_dif = neighbour_midpoint_y_dif
-                    elif neighbour_x > control_x and (nearest_right == None or nearest_right_x > neighbour_x or (nearest_right_x == neighbour_x and neighbour_midpoint_y_dif < nearest_right_midpoint_y_dif)):
+                    elif neighbour_x > control_x and (nearest_right == None or nearest_right_x > neighbour_x or (
+                            nearest_right_x == neighbour_x and neighbour_midpoint_y_dif < nearest_right_midpoint_y_dif)):
                         nearest_right = neighbour
                         nearest_right_x = neighbour_x
                         nearest_right_midpoint_y_dif = neighbour_midpoint_y_dif
@@ -906,55 +884,65 @@ class AbstractWindow(GridMixin):
                         # check if nearest_left/right is none as if a suitable
                         # control to the left or right has been found there will
                         # be no wrap around
-                        if nearest_left == None and neighbour_x > control_x and (wrap_around_move_left == None or wrap_around_move_left_x < neighbour_x or (wrap_around_move_left_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_left_midpoint_y_dif)):
+                        if nearest_left == None and neighbour_x > control_x and (
+                                wrap_around_move_left == None or wrap_around_move_left_x < neighbour_x or (
+                                wrap_around_move_left_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_left_midpoint_y_dif)):
                             wrap_around_move_left = neighbour
                             wrap_around_move_left_x = neighbour_x
                             wrap_around_move_left_midpoint_y_dif = neighbour_midpoint_y_dif
-                        elif nearest_right == None and neighbour_x < control_x  and (wrap_around_move_right == None or wrap_around_move_right_x > neighbour_x or (wrap_around_move_right_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_right_midpoint_y_dif)):
+                        elif nearest_right == None and neighbour_x < control_x and (
+                                wrap_around_move_right == None or wrap_around_move_right_x > neighbour_x or (
+                                wrap_around_move_right_x == neighbour_x and neighbour_midpoint_y_dif < wrap_around_move_right_midpoint_y_dif)):
                             wrap_around_move_right = neighbour
                             wrap_around_move_right_x = neighbour_x
                             wrap_around_move_right_midpoint_y_dif = neighbour_midpoint_y_dif
 
-                if neighbour_x < control_x + control_width and neighbour_x + neighbour.getWidth() > control_x:    
-                    if neighbour_y > control_y and (nearest_down == None or nearest_down_y > neighbour_y or (nearest_down_y == neighbour_y and neighbour_midpoint_x_dif < nearest_down_midpoint_x_dif)):
+                if neighbour_x < control_x + control_width and neighbour_x + neighbour.getWidth() > control_x:
+                    if neighbour_y > control_y and (nearest_down == None or nearest_down_y > neighbour_y or (
+                            nearest_down_y == neighbour_y and neighbour_midpoint_x_dif < nearest_down_midpoint_x_dif)):
                         nearest_down = neighbour
                         nearest_down_midpoint_x_dif = neighbour_midpoint_x_dif
                         nearest_down_y = neighbour_y
-                    elif neighbour_y < control_y and (nearest_up == None or nearest_up_y < neighbour_y or (nearest_up_y == neighbour_y and neighbour_midpoint_x_dif < nearest_up_midpoint_x_dif)):
+                    elif neighbour_y < control_y and (nearest_up == None or nearest_up_y < neighbour_y or (
+                            nearest_up_y == neighbour_y and neighbour_midpoint_x_dif < nearest_up_midpoint_x_dif)):
                         nearest_up = neighbour
                         nearest_up_midpoint_x_dif = neighbour_midpoint_x_dif
                         nearest_up_y = neighbour_y
 
                     if vertical_wrap_around:
-                        if nearest_down == None and neighbour_y < control_y and (wrap_around_move_down == None or wrap_around_move_down_y > neighbour_y or (wrap_around_move_down_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_down_midpoint_x_dif)):
+                        if nearest_down == None and neighbour_y < control_y and (
+                                wrap_around_move_down == None or wrap_around_move_down_y > neighbour_y or (
+                                wrap_around_move_down_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_down_midpoint_x_dif)):
                             wrap_around_move_down = neighbour
                             wrap_around_move_down_midpoint_x_dif = neighbour_midpoint_x_dif
                             wrap_around_move_down_y = neighbour_y
-                        elif nearest_up == None and neighbour_y > control_y  and (wrap_around_move_up == None or wrap_around_move_up_y < neighbour_y or (wrap_around_move_up_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_up_midpoint_x_dif)):
+                        elif nearest_up == None and neighbour_y > control_y and (
+                                wrap_around_move_up == None or wrap_around_move_up_y < neighbour_y or (
+                                wrap_around_move_up_y == neighbour_y and neighbour_midpoint_x_dif < wrap_around_move_up_midpoint_x_dif)):
                             wrap_around_move_up = neighbour
                             wrap_around_move_up_midpoint_x_dif = neighbour_midpoint_x_dif
                             wrap_around_move_up_y = neighbour_y
-            
+
             if nearest_left:
                 control.controlLeft(nearest_left)
             elif wrap_around_move_left:
                 control.controlLeft(wrap_around_move_left)
-                
+
             if nearest_right:
                 control.controlRight(nearest_right)
             elif wrap_around_move_right:
                 control.controlRight(wrap_around_move_right)
-                
+
             if nearest_down:
                 control.controlDown(nearest_down)
             elif wrap_around_move_down:
                 control.controlDown(wrap_around_move_down)
-                
+
             if nearest_up:
                 control.controlUp(nearest_up)
             elif wrap_around_move_up:
                 control.controlUp(wrap_around_move_up)
-    
+
     def setGeometry(self, width_, height_, rows_, columns_, pos_x=-1, pos_y=-1):
         """
         Set width, height, Grid layout, and coordinates (optional) for a new control window.
@@ -1013,7 +1001,6 @@ class AbstractWindow(GridMixin):
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
-
     def connect(self, event, callback):
         """
         Connect an event to a function.
@@ -1048,10 +1035,10 @@ class AbstractWindow(GridMixin):
 
             self.connect(ACTION_NAV_BACK, self.close)
         """
-        
+
         if isinstance(event, int):
             connect_list = self.actions_connected
-        else: # Event is actually a control
+        else:  # Event is actually a control
             if hasattr(event, "_connectCallback"):
                 # Only connect the event if it returns true
                 # or a new callable.
@@ -1080,7 +1067,7 @@ class AbstractWindow(GridMixin):
         for event in events:
             self.connect(event, function)
 
-    def disconnect(self, event, callback = None):
+    def disconnect(self, event, callback=None):
         """
         Disconnect an event from a function.
 
@@ -1100,10 +1087,10 @@ class AbstractWindow(GridMixin):
             self.disconnect(ACTION_NAV_BACK)
         """
         if isinstance(event, int):
-             event_list = self.actions_connected
+            event_list = self.actions_connected
         else:
-             event_list = self.controls_connected
-             
+            event_list = self.controls_connected
+
         for event_index in range(len(event_list)):
             if event == event_list[event_index][0]:
                 if callback == None:
@@ -1116,10 +1103,10 @@ class AbstractWindow(GridMixin):
                             callback_list.pop(callback_index)
                             return
                     raise AddonWindowError('The action or control %s is not connected to function!' % str(callback))
-            
+
         raise AddonWindowError('The action or control %s is not connected!' % event)
 
-    def disconnectEventList(self, events, callback = None):
+    def disconnectEventList(self, events, callback=None):
         """
         Disconnect a list of controls/action codes from functions.
 
@@ -1172,7 +1159,6 @@ class AbstractWindow(GridMixin):
 
 
 class AddonWindow(AbstractWindow):
-
     """
     Top-level control window.
 
@@ -1218,8 +1204,8 @@ class AddonWindow(AbstractWindow):
         self.addControl(self.title_bar)
         self.setAnimation(self.title_bar)
         self.window_close_button = xbmcgui.ControlButton(-100, -100, skin.close_btn_width, skin.close_btn_height, '',
-                        focusTexture=skin.close_button_focus,
-                        noFocusTexture=skin.close_button_no_focus)
+                                                         focusTexture=skin.close_button_focus,
+                                                         noFocusTexture=skin.close_button_no_focus)
         self.addControl(self.window_close_button)
         self.setAnimation(self.window_close_button)
 
@@ -1287,15 +1273,16 @@ class AddonWindow(AbstractWindow):
         """Get window title."""
         return self.title_bar.getLabel()
 
+
 class WindowMixin(object):
-        
+
     def setFocus(self, control):
         do_set_focus = True
         if hasattr(control, '_focussedCallback'):
             do_set_focus = control._focussedCallback()
         if do_set_focus:
             xbmcgui.Window.setFocus(self, control)
-    
+
     def onAction(self, action):
         """
         Catch button actions.
@@ -1306,13 +1293,14 @@ class WindowMixin(object):
             self.close()
         # On control is not called on XBMC4XBOX for subclasses of the built in
         # controls. However onAction is.
-        elif XBMC4XBOX and hasattr(action, 'getButtonCode') and action.getButtonCode() in (KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
+        elif XBMC4XBOX and hasattr(action, 'getButtonCode') and action.getButtonCode() in (
+        KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
             control = self.getFocus()
-            if isinstance(control,(Button, RadioButton, List)) and control.isEnabled():
+            if isinstance(control, (Button, RadioButton, List)) and control.isEnabled():
                 self.onControl(control)
         else:
             self._executeConnected(action, self.actions_connected)
-            
+
     def onControl(self, control):
         """
         Catch activated controls.
@@ -1362,7 +1350,6 @@ class BlankDialogWindow(WindowMixin, AbstractWindow, xbmcgui.WindowDialog):
 
 
 class AddonFullWindow(WindowMixin, AddonWindow, xbmcgui.Window):
-
     """
     AddonFullWindow(title='')
 
