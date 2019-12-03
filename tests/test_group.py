@@ -11,13 +11,13 @@ WINDOW_COLUMNS = 4
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
-
 class TestGroup(unittest2.TestCase):
 
     def setUp(self):
         self._window = pyxbmct.AddonFullWindow()
         self._window.getWidth = mock.MagicMock(return_value=WINDOW_WIDTH)
         self._window.getHeight = mock.MagicMock(return_value=WINDOW_HEIGHT)
+        self._window.removeControl = mock.Mock(wraps=self._window.removeControl)
 
         self._window.setGeometry(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_ROWS, WINDOW_COLUMNS)
 
@@ -53,7 +53,6 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback not called (before removal)"):
             control._removedCallback.assert_not_called()
 
-        self._window.removeControl = mock.MagicMock()
         group.removeControl(control)
 
         # Exact values and the fact that is called on placement are tested elsewhere
@@ -89,7 +88,6 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback not called (before removal)"):
             control._removedCallback.assert_not_called()
 
-        self._window.removeControl = mock.MagicMock()
         group.removeAllChildren()
 
         with self.subTest("Control removed"):
@@ -109,6 +107,146 @@ class TestGroup(unittest2.TestCase):
 
         with self.subTest("Removed callback called (control that is removed)"):
             control3._removedCallback.assert_called_once_with(self._window)
+
+    def test_remove_group_removes_all_children(self):
+        group = pyxbmct.Group(2, 4)
+
+        control = pyxbmct.Label(None, None, None, None, None, None)
+        control._removedCallback = mock.MagicMock()
+
+        control2 = pyxbmct.Label(None, None, None, None, None, None)
+
+        control3 = pyxbmct.Label(None, None, None, None, None, None)
+        control3._removedCallback = mock.MagicMock()
+
+        self._window.placeControl(group, 0, 0)
+        group.placeControl(control, 0, 0)
+        group.placeControl(control2, 1, 0)
+        group.placeControl(control3, 1, 1)
+
+        # Added later so it they be called when the control is placed
+        control2._placedCallback = mock.MagicMock()
+        control3._placedCallback = mock.MagicMock()
+
+        with self.subTest("Removed callback not called (before removal)"):
+            control._removedCallback.assert_not_called()
+
+        self._window.removeControl(group)
+
+        with self.subTest("Control removed"):
+            self._window.removeControl.assert_any_call(control)
+            self._window.removeControl.assert_any_call(control2)
+            self._window.removeControl.assert_any_call(control3)
+            self._window.removeControl.assert_any_call(group)
+            self.assertEqual(self._window.removeControl.call_count, 4)
+
+        with self.subTest("Removed callback called once on control that is removed (after removal)"):
+            control._removedCallback.assert_called_once_with(self._window)
+
+        with self.subTest("Placed callback not called (control that is removed)"):
+            control2._placedCallback.assert_not_called()
+
+        with self.subTest("Placed callback not called (control that is not removed)"):
+            control3._placedCallback.assert_not_called()
+
+        with self.subTest("Removed callback called (control that is removed)"):
+            control3._removedCallback.assert_called_once_with(self._window)
+
+    def test_set_visible(self):
+        group = pyxbmct.Group(2, 4)
+
+        control = pyxbmct.Label(None, None, None, None, None, None)
+        control.setVisible = mock.MagicMock()
+
+        control2 = pyxbmct.Label(None, None, None, None, None, None)
+        control2.setVisible = mock.MagicMock()
+
+        control3 = pyxbmct.Label(None, None, None, None, None, None)
+        control3.setVisible = mock.MagicMock()
+
+        self._window.placeControl(group, 0, 0)
+        group.placeControl(control, 0, 0)
+        group.placeControl(control2, 1, 0)
+        group.placeControl(control3, 1, 1)
+
+        group.setVisible(False)
+
+        with self.subTest("control1 setVisible called with False"):
+            control.setVisible.assert_called_once_with(False)
+
+        with self.subTest("control2 setVisible called with False"):
+            control2.setVisible.assert_called_once_with(False)
+
+        with self.subTest("control3 setVisible called with False"):
+            control3.setVisible.assert_called_once_with(False)
+
+        group.setVisible(True)
+
+        with self.subTest("control1 setVisible called with True"):
+            control.setVisible.assert_called_with(True)
+
+        with self.subTest("control2 setVisible called with True"):
+            control2.setVisible.assert_called_with(True)
+
+        with self.subTest("control3 setVisible called with True"):
+            control3.setVisible.assert_called_with(True)
+
+        with self.subTest("control1 setVisible called exactly twice"):
+            self.assertEqual(control.setVisible.call_count, 2)
+
+        with self.subTest("control2 setVisible called exactly twice"):
+            self.assertEqual(control2.setVisible.call_count, 2)
+
+        with self.subTest("control3 setVisible called exactly twice"):
+            self.assertEqual(control3.setVisible.call_count, 2)
+
+    def test_set_enabled(self):
+        group = pyxbmct.Group(2, 4)
+
+        control = pyxbmct.Label(None, None, None, None, None, None)
+        control.setEnabled = mock.MagicMock()
+
+        control2 = pyxbmct.Label(None, None, None, None, None, None)
+        control2.setEnabled = mock.MagicMock()
+
+        control3 = pyxbmct.Label(None, None, None, None, None, None)
+        control3.setEnabled = mock.MagicMock()
+
+        self._window.placeControl(group, 0, 0)
+        group.placeControl(control, 0, 0)
+        group.placeControl(control2, 1, 0)
+        group.placeControl(control3, 1, 1)
+
+        group.setEnabled(False)
+
+        with self.subTest("control1 setVisible called with False"):
+            control.setEnabled.assert_called_once_with(False)
+
+        with self.subTest("control2 setVisible called with False"):
+            control2.setEnabled.assert_called_once_with(False)
+
+        with self.subTest("control3 setVisible called with False"):
+            control3.setEnabled.assert_called_once_with(False)
+
+        group.setEnabled(True)
+
+        with self.subTest("control1 setVisible called with True"):
+            control.setEnabled.assert_called_with(True)
+
+        with self.subTest("control2 setVisible called with True"):
+            control2.setEnabled.assert_called_with(True)
+
+        with self.subTest("control3 setVisible called with True"):
+            control3.setEnabled.assert_called_with(True)
+
+        with self.subTest("control1 setVisible called exactly twice"):
+            self.assertEqual(control.setEnabled.call_count, 2)
+
+        with self.subTest("control2 setVisible called exactly twice"):
+            self.assertEqual(control2.setEnabled.call_count, 2)
+
+        with self.subTest("control3 setVisible called exactly twice"):
+            self.assertEqual(control3.setEnabled.call_count, 2)
 
     def test_remove_controls(self):
         group = pyxbmct.Group(2, 4)
@@ -133,7 +271,6 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback not called (before removal)"):
             control._removedCallback.assert_not_called()
 
-        self._window.removeControl = mock.MagicMock()
         group.removeControls((control, control2))
 
         with self.subTest("Control removed"):

@@ -176,34 +176,6 @@ class GridMixin(object):
         except AttributeError:
             raise AddonWindowError('Window is not set! Pass window when calling the constructor.')
 
-    def removeControl(self, control):
-        """
-        Remove a control from the window grid layout.
-
-        :param control: control instance to be removed from the grid.
-
-        Example::
-
-            self.removeControl(self.label)
-        """
-        if hasattr(control, "_removedCallback"):
-            control._removedCallback(self._window)
-        self._window.removeControl(control)
-
-    def removeControls(self, controls):
-        """
-        Remove multiple controls from the window grid layout.
-
-        :param controls: an iterable of control instances to be removed from the grid.
-
-        Example::
-
-            self.removeControl(self.label)
-        """
-        for control in controls:
-            self.removeControl(control)
-
-
 class ControlMixin(object):
     """
     Basic control functionality mixin.
@@ -637,7 +609,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
     def __init__(self, rows, columns, *args, **kwargs):
         self.rows = rows
         self.columns = columns
-        self._controls = []
+        self._controls = set()
 
     def placeControl(self, control, *args, **kwargs):
         """
@@ -659,11 +631,37 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
 
             group.placeControl(self.label, 0, 1)
         """
-        self._controls.append(control)
+        self._controls.add(control)
         GridMixin.placeControl(self, control, *args, **kwargs)
 
     def _removedCallback(self, window):
         self.removeAllChildren()
+
+    def removeControl(self, control):
+        """
+        Remove a control from the window grid layout.
+
+        :param control: control instance to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        self._controls.remove(control)
+        self._window.removeControl(control)
+
+    def removeControls(self, controls):
+        """
+        Remove multiple controls from the window grid layout.
+
+        :param controls: an iterable of control instances to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        for control in controls:
+            self.removeControl(control)
 
     def removeAllChildren(self):
         """
@@ -673,7 +671,8 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
 
             group.removeAllChildren()
         """
-        GridMixin.removeControls(self, self._controls)
+        # Must take a copy of controls to avoid RuntimeError: Set changed size during iteration
+        self.removeControls(self._controls.copy())
 
     def setVisible(self, is_visible):
         """
@@ -1275,6 +1274,33 @@ class AddonWindow(AbstractWindow):
 
 
 class WindowMixin(object):
+
+    def removeControl(self, control):
+        """
+        Remove a control from the window grid layout.
+
+        :param control: control instance to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        if hasattr(control, "_removedCallback"):
+            control._removedCallback(self)
+        xbmcgui.Window.removeControl(self, control)
+
+    def removeControls(self, controls):
+        """
+        Remove multiple controls from the window grid layout.
+
+        :param controls: an iterable of control instances to be removed from the grid.
+
+        Example::
+
+            self.removeControl(self.label)
+        """
+        for control in controls:
+            self.removeControl(control)
 
     def setFocus(self, control):
         do_set_focus = True
