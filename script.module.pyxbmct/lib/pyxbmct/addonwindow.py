@@ -25,12 +25,13 @@ else:
     from kodi_six import xbmc, xbmcgui
 
 import os
+from abc import ABCMeta, abstractmethod
 
 from .addonskin import Skin
 
 skin = Skin()
 
-# Text alighnment constants. Mixed variants are obtained by bit OR (|)
+# Text alignment constants. Mixed variants are obtained by bit OR (|)
 ALIGN_LEFT = 0
 """Align left"""
 ALIGN_RIGHT = 1
@@ -87,7 +88,7 @@ class AddonWindowError(Exception):
     pass
 
 
-class GridMixin(object):
+class AbstractGrid(object):
     """
     Grid functionality mixin.
     
@@ -97,6 +98,7 @@ class GridMixin(object):
     
     .. warning:: This is an abstract class and is not supposed to be instantiated directly!
     """
+    __metaclass__ = ABCMeta
 
     def __init__(self, window):
         """
@@ -104,27 +106,35 @@ class GridMixin(object):
         """
         self._window = window
 
+    @abstractmethod
     def getRows(self):
         """
         Get grid rows count.
-
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
-        try:
-            return self.rows
-        except AttributeError:
-            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
+        raise NotImplementedError
 
+    @abstractmethod
     def getColumns(self):
         """
         Get grid columns count.
-
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
-        try:
-            return self.columns
-        except AttributeError:
-            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
+        raise NotImplementedError
+
+    @abstractmethod
+    def getGridX(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def getGridY(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def getGridWidth(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def getGridHeight(self):
+        raise NotImplementedError
 
     def _setGrid(self):
         """
@@ -132,10 +142,16 @@ class GridMixin(object):
 
         This is a helper method not to be called directly.
         """
-        self.grid_x = self.x
-        self.grid_y = self.y
-        self.tile_width = self.width // self.columns
-        self.tile_height = self.height // self.rows
+        self.tile_width = self.getGridWidth() // self.getColumns()
+        self.tile_height = self.getGridHeight() // self.getRows()
+
+    @abstractmethod
+    def addControl(self, control):
+        raise NotImplementedError
+
+    @abstractmethod
+    def setAnimation(self, control):
+        raise NotImplementedError
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
         """
@@ -157,13 +173,10 @@ class GridMixin(object):
 
             self.placeControl(self.label, 0, 1)
         """
-        try:
-            control_x = (self.grid_x + self.tile_width * column) + pad_x
-            control_y = (self.grid_y + self.tile_height * row) + pad_y
-            control_width = self.tile_width * columnspan - 2 * pad_x
-            control_height = self.tile_height * rowspan - 2 * pad_y
-        except AttributeError:
-            raise AddonWindowError('Grid geometry is not defined! Call setGeometry first.')
+        control_x = (self.getGridX() + self.tile_width * column) + pad_x
+        control_y = (self.getGridY() + self.tile_height * row) + pad_y
+        control_width = self.tile_width * columnspan - 2 * pad_x
+        control_height = self.tile_height * rowspan - 2 * pad_y
         control.setPosition(control_x, control_y)
         control.setWidth(control_width)
         control.setHeight(control_height)
@@ -171,12 +184,14 @@ class GridMixin(object):
             control._placedCallback(self._window, row, column, rowspan, columnspan, pad_x, pad_y)
 
         try:
-            self._window.addControl(control)
-            self._window.setAnimation(control)
+            self.addControl(control)
+            self.setAnimation(control)
         except AttributeError:
             raise AddonWindowError('Window is not set! Pass window when calling the constructor.')
 
-class ControlMixin(object):
+
+# Inheritance for the sake of pytype seeing getX etc. xbmcgui.Control does not exist on XBMC4XBOX
+class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
     """
     Basic control functionality mixin.
 
@@ -184,6 +199,11 @@ class ControlMixin(object):
 
     .. warning:: This is an mixin class and is not supposed to be instantiated directly!
     """
+
+    def __eq__(self, other):
+        if hasattr(other, 'getId'):
+            return self.getId() == other.getId()
+        return False
 
     def isEnabled(self):
         """
@@ -207,6 +227,12 @@ class ControlMixin(object):
                 enabled = self.isVisible()
             """
             return not hasattr(self, "_is_visible") or self._is_visible
+
+        def getX(self):
+            return self.getPosition()[0]
+
+        def getY(self):
+            return self.getPosition()[1]
 
         def setVisible(self, is_visible):
             """
@@ -381,14 +407,7 @@ class Image(ControlMixin, xbmcgui.ControlImage):
         return super(Image, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class CompareMixin(object):
-    def __eq__(self, other):
-        if hasattr(other, 'getId'):
-            return self.getId() == other.getId()
-        return False
-
-
-class Button(ControlMixin, CompareMixin, xbmcgui.ControlButton):
+class Button(ControlMixin, xbmcgui.ControlButton):
     """
     Button(label, focusTexture=None, noFocusTexture=None, textOffsetX=CONTROL_TEXT_OFFSET_X, textOffsetY=CONTROL_TEXT_OFFSET_Y, alignment=4, font=None, textColor=None, disabledColor=None, angle=0, shadowColor=None, focusedColor=None)
 
@@ -437,7 +456,7 @@ class Button(ControlMixin, CompareMixin, xbmcgui.ControlButton):
         return super(Button, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
+class RadioButton(ControlMixin, xbmcgui.ControlRadioButton):
     """
     RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)
 
@@ -506,7 +525,7 @@ class RadioButton(ControlMixin, CompareMixin, xbmcgui.ControlRadioButton):
 
 # Edit is not supported on Xbox using the Python API
 if not XBMC4XBOX:
-    class Edit(ControlMixin, CompareMixin, xbmcgui.ControlEdit):
+    class Edit(ControlMixin, xbmcgui.ControlEdit):
         """
         Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)
 
@@ -547,7 +566,7 @@ if not XBMC4XBOX:
             return super(Edit, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class List(ControlMixin, CompareMixin, xbmcgui.ControlList):
+class List(ControlMixin, xbmcgui.ControlList):
     """
     List(font=None, textColor=None, buttonTexture=None, buttonFocusTexture=None, selectedColor=None, _imageWidth=10, _imageHeight=10, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4)
 
@@ -582,7 +601,7 @@ class List(ControlMixin, CompareMixin, xbmcgui.ControlList):
         return super(List, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
+class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
     """
     Group(rows, columns)
 
@@ -606,33 +625,41 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
     def __new__(cls, rows, columns, *args, **kwargs):
         return super(Group, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+    def getGridX(self):
+        return self.getX()
+
+    def getGridY(self):
+        return self.getY()
+
+    def getGridWidth(self):
+        return self.getWidth()
+
+    def getGridHeight(self):
+        return self.getHeight()
+
+    def getRows(self):
+        """
+        Get grid rows count.
+        """
+        return self._rows
+
+    def getColumns(self):
+        """
+        Get grid columns count.
+        """
+        return self._columns
+
     def __init__(self, rows, columns, *args, **kwargs):
-        self.rows = rows
-        self.columns = columns
-        self._controls = set()
+        self._rows = rows
+        self._columns = columns
+        self._controls = []
 
-    def placeControl(self, control, *args, **kwargs):
-        """
-        Place a control within the window grid layout.
+    def addControl(self, control):
+        self._controls.append(control)
+        self._window.addControl(control)
 
-        :param control: control instance to be placed in the grid.
-        :param row: row number where to place the control (starts from 0).
-        :param column: column number where to place the control (starts from 0).
-        :param rowspan: set when the control needs to occupy several rows.
-        :param columnspan: set when the control needs to occupy several columns.
-        :param pad_x: horisontal padding.
-        :param pad_y: vertical padding.
-        :raises: :class:`AddonWindowError` if a grid has not yet been set.
-
-        Use ``pad_x`` and ``pad_y`` to adjust control's aspect.
-        Negative padding values can be used to make a control overlap with grid cells next to it, if necessary.
-
-        Example::
-
-            group.placeControl(self.label, 0, 1)
-        """
-        self._controls.add(control)
-        GridMixin.placeControl(self, control, *args, **kwargs)
+    def setAnimation(self, control):
+        self._window.setAnimation(control)
 
     def _removedCallback(self, window):
         self.removeAllChildren()
@@ -671,8 +698,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
 
             group.removeAllChildren()
         """
-        # Must take a copy of controls to avoid RuntimeError: Set changed size during iteration
-        self.removeControls(self._controls.copy())
+        self.removeControls(self._controls)
 
     def setVisible(self, is_visible):
         """
@@ -722,11 +748,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
         """
         Called once the grid has been placed
         """
-        GridMixin.__init__(self, window)
-        self.x = self.getX()
-        self.y = self.getY()
-        self.width = self.getWidth()
-        self.height = self.getHeight()
+        AbstractGrid.__init__(self, window)
         self._setGrid()
 
     def _focussedCallback(self):
@@ -741,7 +763,7 @@ class Group(ControlMixin, GridMixin, xbmcgui.ControlGroup):
 
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
-    class Slider(ControlMixin, CompareMixin, xbmcgui.ControlSlider):
+    class Slider(ControlMixin, xbmcgui.ControlSlider):
         """
         Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)
         
@@ -771,7 +793,7 @@ if not XBMC4XBOX:
             return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class AbstractWindow(GridMixin):
+class AbstractWindow(AbstractGrid):
     """
     Top-level control window.
     
@@ -789,40 +811,6 @@ class AbstractWindow(GridMixin):
         self.controls = []
         self.actions_connected = []
         self.controls_connected = []
-
-    def addControl(self, control):
-        """
-        Wrapper for xbmcgui.Window.addControl.
-
-        :param control: the control to add.
-
-        .. note:: In most circumstances you should use placeControl.
-        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
-
-        Example::
-
-            window.addControls(label)
-        """
-        self.controls.append(control)
-        super(AbstractWindow, self).addControl(control)
-
-    def addControls(self, controls):
-        """
-        Wrapper for xbmcgui.Window.addControls.
-
-        :param controls: iterable containing the controls to add.
-
-        .. note:: In most circumstances you should use placeControl.
-        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
-
-        Example::
-
-            window.addControls([label, button])
-        """
-        # addControls is not directly available on XBMC4XBOX
-        # so this implementation is the most portable
-        for control in controls:
-            self.addControl(control)
 
     def autoNavigation(self, vertical_wrap_around=True,
                        horizontal_wrap_around=True, include_disabled=False,
@@ -960,43 +948,65 @@ class AbstractWindow(GridMixin):
         
             self.setGeometry(400, 500, 5, 4)
         """
-        self.width = width_
-        self.height = height_
+        self._width = width_
+        self._height = height_
         self.rows = rows_
         self.columns = columns_
         if pos_x > 0 and pos_y > 0:
             self.x = pos_x
             self.y = pos_y
         else:
-            self.x = 640 - self.width // 2
-            self.y = 360 - self.height // 2
+            self.x = 640 - width_ // 2
+            self.y = 360 - height_ // 2
         self._setGrid()
+
+    def getRows(self):
+        """
+        Get grid rows count.
+
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+        """
+        try:
+            return self.rows  # pytype: disable=attribute-error
+        except AttributeError:
+            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
+
+    def getColumns(self):
+        """
+        Get grid columns count.
+
+        :raises: :class:`AddonWindowError` if a grid has not yet been set.
+        """
+        try:
+            return self.columns  # pytype: disable=attribute-error
+        except AttributeError:
+            raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
 
     def getX(self):
         """Get X coordinate of the top-left corner of the window."""
         try:
-            return self.x
+            return self.x # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getY(self):
         """Get Y coordinate of the top-left corner of the window."""
         try:
-            return self.y
+            return self.y # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getWindowWidth(self):
         """Get window width."""
         try:
-            return self.width
+            return self._width # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getWindowHeight(self):
         """Get window height."""
         try:
-            return self.height
+            return self._height # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
@@ -1231,29 +1241,53 @@ class AddonWindow(AbstractWindow):
         self.win_padding = padding
         super(AddonWindow, self).setGeometry(width_, height_, rows_, columns_, pos_x, pos_y)
         self.background.setPosition(self.x, self.y)
-        self.background.setWidth(self.width)
-        self.background.setHeight(self.height)
+        self.background.setWidth(self._width)
+        self.background.setHeight(self._height)
         self.title_background.setPosition(self.x + skin.x_margin, self.y + skin.y_margin + skin.title_back_y_shift)
-        self.title_background.setWidth(self.width - 2 * skin.x_margin)
+        self.title_background.setWidth(self._width - 2 * skin.x_margin)
         self.title_background.setHeight(skin.header_height)
         self.title_bar.setPosition(self.x + skin.x_margin + skin.title_bar_x_shift,
                                    self.y + skin.y_margin + skin.title_bar_y_shift)
-        self.title_bar.setWidth(self.width - 2 * skin.x_margin)
+        self.title_bar.setWidth(self._width - 2 * skin.x_margin)
         self.title_bar.setHeight(skin.header_height)
-        self.window_close_button.setPosition(self.x + self.width - skin.close_btn_x_offset,
+        self.window_close_button.setPosition(self.x + self._width - skin.close_btn_x_offset,
                                              self.y + skin.y_margin + skin.close_btn_y_offset)
 
-    def _setGrid(self):
+    def _ifSetGeometryNotCalledRaiseError(self):
         """
-        Set window grid layout of rows * columns.
+        Helper method that raises an AddonWindowError  that states that setGeometry needs to be called. Used by methods
+        that will fail if the window geometry is not defined.
+        :raises AddonWindowError
+        """
+        raise  AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
-        This is a helper method not to be called directly.
-        """
-        self.grid_x = self.x + skin.x_margin + self.win_padding
-        self.grid_y = self.y + skin.y_margin + skin.title_back_y_shift + skin.header_height + self.win_padding
-        self.tile_width = (self.width - 2 * (skin.x_margin + self.win_padding)) // self.columns
-        self.tile_height = ((self.height - skin.header_height - skin.title_back_y_shift -
-                             2 * (skin.y_margin + self.win_padding)) // self.rows)
+    def getGridX(self):
+        try:
+            val = self.x + self.win_padding
+        except:
+            self._ifSetGeometryNotCalledRaiseError()
+        return val + skin.x_margin
+
+    def getGridY(self):
+        try:
+            val = self.y + self.win_padding
+        except:
+            self._ifSetGeometryNotCalledRaiseError()
+        return val + skin.y_margin + skin.title_back_y_shift + skin.header_height
+
+    def getGridWidth(self):
+        try:
+            val = self._width - 2 * self.win_padding
+        except:
+            self._ifSetGeometryNotCalledRaiseError()
+        return val - 2 * skin.x_margin
+
+    def getGridHeight(self):
+        try:
+            val = self._height - 2 * self.win_padding
+        except:
+            self._ifSetGeometryNotCalledRaiseError()
+        return val - skin.header_height - skin.title_back_y_shift - 2 * skin.y_margin
 
     def setWindowTitle(self, title=''):
         """
@@ -1272,8 +1306,39 @@ class AddonWindow(AbstractWindow):
         """Get window title."""
         return self.title_bar.getLabel()
 
+    def addControl(self, control):
+        """
+        Wrapper for xbmcgui.Window.addControl.
 
-class WindowMixin(object):
+        :param control: the control to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            window.addControls(label)
+        """
+        self.controls.append(control)
+        xbmcgui.Window.addControl(self, control)
+
+    def addControls(self, controls):
+        """
+        Wrapper for xbmcgui.Window.addControls.
+
+        :param controls: iterable containing the controls to add.
+
+        .. note:: In most circumstances you should use placeControl.
+        .. note:: Only use this method if want to to place and element in a Group it using pixel coordinates
+
+        Example::
+
+            window.addControls([label, button])
+        """
+        # addControls is not directly available on XBMC4XBOX
+        # so this implementation is the most portable
+        for control in controls:
+            self.addControl(control)
 
     def removeControl(self, control):
         """
@@ -1320,7 +1385,7 @@ class WindowMixin(object):
         # On control is not called on XBMC4XBOX for subclasses of the built in
         # controls. However onAction is.
         elif XBMC4XBOX and hasattr(action, 'getButtonCode') and action.getButtonCode() in (
-        KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
+                KEY_BUTTON_A, ACTION_MOUSE_LEFT_CLICK):
             control = self.getFocus()
             if isinstance(control, (Button, RadioButton, List)) and control.isEnabled():
                 self.onControl(control)
@@ -1349,7 +1414,7 @@ class WindowMixin(object):
             control._focussedCallback()
 
 
-class BlankFullWindow(WindowMixin, AbstractWindow, xbmcgui.Window):
+class BlankFullWindow(AbstractWindow, xbmcgui.Window):
     """
     BlankFullWindow()
 
@@ -1362,7 +1427,7 @@ class BlankFullWindow(WindowMixin, AbstractWindow, xbmcgui.Window):
     pass
 
 
-class BlankDialogWindow(WindowMixin, AbstractWindow, xbmcgui.WindowDialog):
+class BlankDialogWindow(AbstractWindow, xbmcgui.WindowDialog):
     """
     BlankDialogWindow()
 
@@ -1375,7 +1440,7 @@ class BlankDialogWindow(WindowMixin, AbstractWindow, xbmcgui.WindowDialog):
     pass
 
 
-class AddonFullWindow(WindowMixin, AddonWindow, xbmcgui.Window):
+class AddonFullWindow(AddonWindow, xbmcgui.Window):
     """
     AddonFullWindow(title='')
 
@@ -1418,7 +1483,7 @@ class AddonFullWindow(WindowMixin, AddonWindow, xbmcgui.Window):
         self.main_bg.setImage(image)
 
 
-class AddonDialogWindow(WindowMixin, AddonWindow, xbmcgui.WindowDialog):
+class AddonDialogWindow(AddonWindow, xbmcgui.WindowDialog):
     """
     AddonDialogWindow(title='')
 
@@ -1433,4 +1498,3 @@ class AddonDialogWindow(WindowMixin, AddonWindow, xbmcgui.WindowDialog):
         addon.setGeometry(400, 300, 4, 3)
         addon.doModal()
     """
-    pass

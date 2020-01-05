@@ -1,27 +1,42 @@
+# -*- coding: utf-8 -*-
+# PyXBMCt framework module
+#
+# PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons
+# with arbitrary UI made of Controls - decendants of xbmcgui.Control class.
+# The framework uses image textures from Kodi Confluence skin.
+#
+# Licence: GPL v.3 <http://www.gnu.org/licenses/gpl.html>
+"""
+This test case is for pyxbmct.Group
+"""
+
 import unittest2
 import mock
-import sys
 import itertools
-
-sys.path.append("../script.module.pyxbmct/lib")
-import pyxbmct
-
-WINDOW_ROWS = 4
-WINDOW_COLUMNS = 4
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+from import_pyxbmct import pyxbmct
 
 class TestGroup(unittest2.TestCase):
+    """
+    This test case is for pyxbmct.Group
+    """
 
     def setUp(self):
+        window_rows = 4
+        window_columns = 4
+        window_width = 1280
+        window_height = 720
+
         self._window = pyxbmct.AddonFullWindow()
-        self._window.getWidth = mock.MagicMock(return_value=WINDOW_WIDTH)
-        self._window.getHeight = mock.MagicMock(return_value=WINDOW_HEIGHT)
+        self._window.getWidth = mock.MagicMock(return_value=window_width)
+        self._window.getHeight = mock.MagicMock(return_value=window_height)
         self._window.removeControl = mock.Mock(wraps=self._window.removeControl)
 
-        self._window.setGeometry(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_ROWS, WINDOW_COLUMNS)
+        self._window.setGeometry(window_width, window_height, window_rows, window_columns)
 
-    def test_place_control_grid_not_placed(self):
+    def test_place_control_group_not_placed(self):
+        """
+        Ensure that controls can't be placed in a Group that has not yet been placed itself
+        """
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -41,6 +56,9 @@ class TestGroup(unittest2.TestCase):
             placed_callback.assert_not_called()
 
     def test_place_and_remove_control_callbacks(self):
+        """
+        Ensure that controls place and remove callbacks are called (only) when they are placed or removed
+        """
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -66,7 +84,12 @@ class TestGroup(unittest2.TestCase):
             control._removedCallback.assert_called_once_with(self._window)
 
     def test_remove_all_children(self):
+        """
+        Tests Group.removeAllChildren and ensures that it does remove all its children and calls the appropriate
+        callbacks
+        """
         group = pyxbmct.Group(2, 4)
+        group._removedCallback = mock.MagicMock()
 
         control = pyxbmct.Label(None, None, None, None, None, None)
         control._removedCallback = mock.MagicMock()
@@ -108,7 +131,14 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback called (control that is removed)"):
             control3._removedCallback.assert_called_once_with(self._window)
 
+        with self.subTest("Group removed callback not called"):
+            group._removedCallback.assert_not_called()
+
     def test_remove_group_removes_all_children(self):
+        """
+        Ensures that when a Group is removed from the window all of its children are removed too (and their removed
+        callbacks are called)
+        """
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -153,6 +183,9 @@ class TestGroup(unittest2.TestCase):
             control3._removedCallback.assert_called_once_with(self._window)
 
     def test_set_visible(self):
+        """
+        Ensures that setVisible is called for every child of a Group when it is called for the Group
+        """
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -201,6 +234,9 @@ class TestGroup(unittest2.TestCase):
             self.assertEqual(control3.setVisible.call_count, 2)
 
     def test_set_enabled(self):
+        """
+        Ensures that setEnabled is called for every child of a Group when it is called for the Group
+        """
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -249,6 +285,12 @@ class TestGroup(unittest2.TestCase):
             self.assertEqual(control3.setEnabled.call_count, 2)
 
     def test_remove_controls(self):
+        """
+        Tests Group.removeControls. Ensures that controls are actually removed from the window when they are removed
+        from the Group. Ensures that only the correct controls are removed and the only the removed callbacks that are
+        called are the ones for those controls, and that they are called with the correct parameters.
+        """
+
         group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
@@ -259,10 +301,14 @@ class TestGroup(unittest2.TestCase):
         control3 = pyxbmct.Label(None, None, None, None, None, None)
         control3._removedCallback = mock.MagicMock()
 
+        control4 = pyxbmct.Label(None, None, None, None, None, None)
+        control4._removedCallback = mock.MagicMock()
+
         self._window.placeControl(group, 0, 0)
         group.placeControl(control, 0, 0)
         group.placeControl(control2, 1, 0)
         group.placeControl(control3, 1, 1)
+        group.placeControl(control4, 2, 1)
 
         # Added later so it they be called when the control is placed
         control2._placedCallback = mock.MagicMock()
@@ -271,15 +317,22 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback not called (before removal)"):
             control._removedCallback.assert_not_called()
 
-        group.removeControls((control, control2))
+        with self.subTest("Removed callback not called (before removal)"):
+            control4._removedCallback.assert_not_called()
+
+        group.removeControls((control, control2, control4))
 
         with self.subTest("Control removed"):
             self._window.removeControl.assert_any_call(control)
             self._window.removeControl.assert_any_call(control2)
-            self.assertEqual(self._window.removeControl.call_count, 2)
+            self._window.removeControl.assert_any_call(control4)
+            self.assertEqual(self._window.removeControl.call_count, 3)
 
         with self.subTest("Removed callback called once on control that is removed (after removal)"):
             control._removedCallback.assert_called_once_with(self._window)
+
+        with self.subTest("Removed callback called once on control that is removed (after removal)"):
+            control4._removedCallback.assert_called_once_with(self._window)
 
         with self.subTest("Placed callback not called (control that is removed)"):
             control2._placedCallback.assert_not_called()
@@ -291,9 +344,11 @@ class TestGroup(unittest2.TestCase):
             control3._removedCallback.assert_not_called()
 
     def test_remove_control_without_callbacks(self):
-        rows = 2
-        columns = 4
-        group = pyxbmct.Group(rows, columns)
+        """
+        Tests Group.removeControl. Ensures that controls can be removed from the window even if they don't have removed
+        callbacks.
+        """
+        group = pyxbmct.Group(2, 4)
 
         control = pyxbmct.Label(None, None, None, None, None, None)
 
@@ -307,6 +362,11 @@ class TestGroup(unittest2.TestCase):
             self._window.removeControl.assert_called_once_with(control)
 
     def test_place_control_coordinates_and_dimensions(self):
+        """
+        Tests Group.placeControl. Ensures that controls are placed at the correct screen coordinates with the correct
+        dimensions based on the dimensions of the Group, the location of the Group within the window and the location of
+        the Window itself.
+        """
         self._window.addControl = mock.MagicMock()
 
         for group_row, group_col, rows, columns in ((0, 0, 4, 3), (1, 2, 5, 5), (3, 2, 4, 10)):
@@ -365,7 +425,7 @@ class TestGroup(unittest2.TestCase):
                         if with_placed_callback:
                             with self.subTest("Placed callback called"):
                                 control._placedCallback.assert_called_once_with(self._window, row, column, row_span,
-                                                                        column_span, pad_x, pad_y)
+                                                                                column_span, pad_x, pad_y)
 
 
 if __name__ == '__main__':
