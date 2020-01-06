@@ -14,7 +14,7 @@
     <summary lang="en_GB">PyXBMCt UI framework</summary>
     <description lang="en_GB">PyXBMCt is a mini-framework for simple XBMC addon UI buliding. It is similar to PyQt and provides parent windows, a number of UI controls (widgets) and a grid layout manager to place controls.</description>
     <license>GNU GPL v.3</license>
-    <forum>https://forum.xbmc.org/showthread.php?tid=174859</forum>
+    <forum>https://forum.kodi.tv/showthread.php?tid=174859</forum>
     <website>http://romanvm.github.io/script.module.pyxbmct/</website>
     <email>roman1972@gmail.com</email>
     <source>https://github.com/romanvm/script.module.pyxbmct</source>
