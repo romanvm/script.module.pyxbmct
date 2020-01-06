@@ -19,5 +19,8 @@
     <email>roman1972@gmail.com</email>
     <source>https://github.com/romanvm/script.module.pyxbmct</source>
     <news>Added compatibility with Python 3</news>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
   </extension>  
 </addon>
