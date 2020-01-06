@@ -1,32 +1,34 @@
 branches:
   only:
     - master
-    - /v\.\d+\.\d+\.\d+/
+    - /\d+\.\d+\.\d+/
 language: python
 python: "2.7"
-install: true
-script: echo "Nothing to build"
+env:
+  - ADDON_ID=script.module.pyxbmct
+    BRANCH=leia
+install:
+  - pip install kodi-addon-checker
+script:
+  - kodi-addon-checker --branch $BRANCH $ADDON_ID
 before_deploy:
   - pip install Sphinx future mock git+https://github.com/romanvm/Kodistubs.git#egg=Kodistubs
-  - wget https://raw.githubusercontent.com/romanvm/travis_scripts/master/deploy_addon.py
-  - python deploy_addon.py -z script.module.pyxbmct
-  - export RELEASE_ZIP=$(ls *.zip)
+  - pip install -q git+https://github.com/romanvm/kodi-addon-submitter.git
+  - cd docs
+  - make html
+  - cd $TRAVIS_BUILD_DIR
 deploy:
-  - provider: releases
-    api_key: $GH_TOKEN
-    file_glob: true
-    file: $RELEASE_ZIP
+  # Publish docs to GH Pages
+  - provider: pages
+    local-dir: docs/_build/html
+    github-token: $GH_TOKEN
     skip_cleanup: true
     on:
-      tags: true
-  # Publish docs to GH Pages
-  - provider: script
-    skip_cleanup: true
-    script: python deploy_addon.py -d script.module.pyxbmct
+      branch: master
   # Prepare for submitting to the official Kodi repo
   - provider: script
     skip_cleanup: true
-    script: python deploy_addon.py -k repo-scripts -b leia script.module.pyxbmct
+    script: submit-addon -r repo-scrapers -b $BRANCH -s --pull-request $ADDON_ID
     on:
       tags: true
 notifications:
