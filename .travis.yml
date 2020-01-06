@@ -3,7 +3,7 @@ branches:
     - master
     - /\d+\.\d+\.\d+/
 language: python
-python: "2.7"
+python: "3.6"
 env:
   - ADDON_ID=script.module.pyxbmct
     BRANCH=leia
