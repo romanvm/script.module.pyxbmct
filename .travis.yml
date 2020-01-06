@@ -12,7 +12,7 @@ install:
 script:
   - kodi-addon-checker --branch $BRANCH $ADDON_ID
 before_deploy:
-  - pip install Sphinx future mock git+https://github.com/romanvm/Kodistubs.git#egg=Kodistubs
+  - pip install Sphinx six mock git+https://github.com/romanvm/Kodistubs.git#egg=Kodistubs
   - pip install -q git+https://github.com/romanvm/kodi-addon-submitter.git
   - cd docs
   - make html
