@@ -31,7 +31,7 @@ matrix:
         - pip install -q git+https://github.com/romanvm/kodi-addon-submitter.git
       deploy:
         - provider: script
-          script: submit-addon -r repo-scrapers -b $BRANCH -s --pull-request $ADDON_ID
+          script: submit-addon -r repo-scripts -b $BRANCH -s --pull-request $ADDON_ID
           on:
             tags: true
 notifications:
