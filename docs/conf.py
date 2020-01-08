@@ -2,7 +2,7 @@
 
 import sys
 import os
-from unittest import mock
+import mock
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
