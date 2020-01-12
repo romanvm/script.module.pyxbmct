@@ -55,6 +55,30 @@ class TestGroup(unittest2.TestCase):
         with self.subTest("Removed callback not called"):
             placed_callback.assert_not_called()
 
+    def test_place_control_after_group_removed_from_window(self):
+        """
+        Ensure that controls can't be placed in a Group that has not yet been placed itself
+        """
+        group = pyxbmct.Group(2, 4)
+        self._window.placeControl(group, 0, 0)
+        self._window.removeControl(group)
+
+        control = pyxbmct.Label(None, None, None, None, None, None)
+        placed_callback = mock.MagicMock()
+        removed_callback = mock.MagicMock()
+        control._placedCallback = placed_callback
+        control._removedCallback = removed_callback
+
+        with self.subTest("AddonWindowError thrown"):
+            with self.assertRaises(pyxbmct.AddonWindowError):
+                group.placeControl(control, 0, 0)
+
+        with self.subTest("Placed callback not called"):
+            placed_callback.assert_not_called()
+
+        with self.subTest("Removed callback not called"):
+            placed_callback.assert_not_called()
+
     def test_place_and_remove_control_callbacks(self):
         """
         Ensure that controls place and remove callbacks are called (only) when they are placed or removed
@@ -92,12 +116,15 @@ class TestGroup(unittest2.TestCase):
         group._removedCallback = mock.MagicMock()
 
         control = pyxbmct.Label(None, None, None, None, None, None)
+        control.getId = lambda: 1
         control._removedCallback = mock.MagicMock()
 
-        control2 = pyxbmct.Label(None, None, None, None, None, None)
+        control2 = pyxbmct.Button(None, None, None, None, None, None)
+        control2.getId = lambda: 2
 
-        control3 = pyxbmct.Label(None, None, None, None, None, None)
+        control3 = pyxbmct.Image(None, None, None, None, None, None)
         control3._removedCallback = mock.MagicMock()
+        control3.getId = lambda: 3
 
         self._window.placeControl(group, 0, 0)
         group.placeControl(control, 0, 0)
@@ -144,9 +171,9 @@ class TestGroup(unittest2.TestCase):
         control = pyxbmct.Label(None, None, None, None, None, None)
         control._removedCallback = mock.MagicMock()
 
-        control2 = pyxbmct.Label(None, None, None, None, None, None)
+        control2 = pyxbmct.Button(None, None, None, None, None, None)
 
-        control3 = pyxbmct.Label(None, None, None, None, None, None)
+        control3 = pyxbmct.Image(None, None, None, None, None, None)
         control3._removedCallback = mock.MagicMock()
 
         self._window.placeControl(group, 0, 0)

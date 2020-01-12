@@ -14,6 +14,12 @@ from __future__ import absolute_import, division, unicode_literals
 
 import platform
 
+# typing module only needed when running pytype and is not available on XBMC4XBOX AFAIK
+try:
+    import typing
+except:
+    pass
+
 XBMC4XBOX = platform.system() == "XBMC4Xbox"
 
 # kodi_six doesn't work on XBMC4XBOX
@@ -100,17 +106,12 @@ class AbstractGrid(object):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, window):
-        """
-        :param window: the window that the grid will exist in
-        """
-        self._window = window
-
     @abstractmethod
     def getRows(self):
         """
         Get grid rows count.
         """
+        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
@@ -118,39 +119,52 @@ class AbstractGrid(object):
         """
         Get grid columns count.
         """
+        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
     def getGridX(self):
+        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
     def getGridY(self):
+        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
     def getGridWidth(self):
+        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
     def getGridHeight(self):
+        # type: () -> int
         raise NotImplementedError
 
-    def _setGrid(self):
-        """
-        Set window grid layout of rows x columns.
+    def getTileWidth(self):
+        if not hasattr(self, "_tile_width"):
+            self._tile_width = self.getGridWidth() // self.getColumns()
+        return self._tile_width
 
-        This is a helper method not to be called directly.
-        """
-        self.tile_width = self.getGridWidth() // self.getColumns()
-        self.tile_height = self.getGridHeight() // self.getRows()
+    def getTileHeight(self):
+        if not hasattr(self, "_tile_height"):
+            self._tile_height = self.getGridHeight() // self.getRows()
+        return self._tile_height
 
     @abstractmethod
     def addControl(self, control):
+        # type: (xbmcgui.Control) -> None
         raise NotImplementedError
 
     @abstractmethod
     def setAnimation(self, control):
+        # type: (xbmcgui.Control) -> None
+        raise NotImplementedError
+
+    @abstractmethod
+    def getWindow(self):
+        # type: () -> xbmcgui.Window
         raise NotImplementedError
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
@@ -173,21 +187,22 @@ class AbstractGrid(object):
 
             self.placeControl(self.label, 0, 1)
         """
-        control_x = (self.getGridX() + self.tile_width * column) + pad_x
-        control_y = (self.getGridY() + self.tile_height * row) + pad_y
-        control_width = self.tile_width * columnspan - 2 * pad_x
-        control_height = self.tile_height * rowspan - 2 * pad_y
+        # type: (xbmcgui.Control, int, int, int, int, int, int) -> None
+        tile_width = self.getTileWidth()
+        tile_height = self.getTileHeight()
+        control_x = (self.getGridX() + tile_width * column) + pad_x
+        control_y = (self.getGridY() + tile_height * row) + pad_y
+        control_width = tile_width * columnspan - 2 * pad_x
+        control_height = tile_height * rowspan - 2 * pad_y
         control.setPosition(control_x, control_y)
         control.setWidth(control_width)
         control.setHeight(control_height)
-        if hasattr(control, "_placedCallback"):
-            control._placedCallback(self._window, row, column, rowspan, columnspan, pad_x, pad_y)
 
-        try:
-            self.addControl(control)
-            self.setAnimation(control)
-        except AttributeError:
-            raise AddonWindowError('Window is not set! Pass window when calling the constructor.')
+        self.addControl(control)
+        self.setAnimation(control)
+
+        if hasattr(control, "_placedCallback"):
+            control._placedCallback(self.getWindow(), row, column, rowspan, columnspan, pad_x, pad_y)
 
 
 # Inheritance for the sake of pytype seeing getX etc. xbmcgui.Control does not exist on XBMC4XBOX
@@ -195,9 +210,9 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
     """
     Basic control functionality mixin.
 
-    Provides utility methdos and wrappers for some existing methods to support PyXBMCt
+    Provides utility methods and wrappers for some existing methods to support PyXBMCt
 
-    .. warning:: This is an mixin class and is not supposed to be instantiated directly!
+    .. warning:: This is a mixin class and is not supposed to be instantiated directly!
     """
 
     def __eq__(self, other):
@@ -213,6 +228,7 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
             enabled = self.isEnabled()
         """
+        # type: () -> bool
         # Test this way so that a constructor is not needed
         # to set the intial values
         return not hasattr(self, "_is_enabled") or self._is_enabled
@@ -226,12 +242,15 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
                 enabled = self.isVisible()
             """
+            # type: () -> bool
             return not hasattr(self, "_is_visible") or self._is_visible
 
         def getX(self):
+            # type: () -> int
             return self.getPosition()[0]
 
         def getY(self):
+            # type: () -> int
             return self.getPosition()[1]
 
         def setVisible(self, is_visible):
@@ -244,6 +263,7 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
                 self.setVisible(False)
             """
+            # type: (bool) -> None
             self._is_visible = is_visible
             for ancestor in inspect.getmro(self.__class__):
                 if inspect.getmodule(ancestor) == xbmcgui:
@@ -260,6 +280,7 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
                 self.setEnabled(False)
             """
+            # type: (bool) -> None
             self._is_enabled = is_enabled
             for ancestor in inspect.getmro(self.__class__):
                 if inspect.getmodule(ancestor) == xbmcgui:
@@ -278,6 +299,7 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
                 self.setEnabled(False)
             """
+            # type: (bool) -> None
             self._is_enabled = is_enabled
             xbmcgui.Control.setEnabled(self, is_enabled)
 
@@ -289,6 +311,7 @@ class ControlMixin(object if XBMC4XBOX else xbmcgui.Control):
 
             x, y = self.getMidpoint()
         """
+        # type: () -> typing.Tuple[int, int]
         x = self.getX()
         y = self.getY()
         width = self.getWidth()
@@ -623,46 +646,66 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
     """
 
     def __new__(cls, rows, columns, *args, **kwargs):
+        # type: (int, int, typing.Any, typing.Any) -> None
         return super(Group, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
+    def __init__(self, rows, columns, *args, **kwargs):
+        # type: (int, int, typing.Any, typing.Any) -> None
+        self._rows = rows
+        self._columns = columns
+        self._controls = []
+        self._window = None
+
+    def getWindow(self):
+        # type: () -> xbmcgui.Window
+        if not self._window:
+            raise AddonWindowError("Group not placed!")
+        else:
+            return self._window
+
     def getGridX(self):
+        # type: (None) -> int
         return self.getX()
 
     def getGridY(self):
+        # type: (None) -> int
         return self.getY()
 
     def getGridWidth(self):
+        # type: (None) -> int
         return self.getWidth()
 
     def getGridHeight(self):
+        # type: (None) -> int
         return self.getHeight()
 
     def getRows(self):
         """
         Get grid rows count.
         """
+        # type: (None) -> int
         return self._rows
 
     def getColumns(self):
         """
         Get grid columns count.
         """
+        # type: (None) -> int
         return self._columns
 
-    def __init__(self, rows, columns, *args, **kwargs):
-        self._rows = rows
-        self._columns = columns
-        self._controls = []
-
     def addControl(self, control):
+        # type: (xbmcgui.Control) -> None
+        # getWindow will throw an error if the Group is not placed
+        self.getWindow().addControl(control)
         self._controls.append(control)
-        self._window.addControl(control)
 
     def setAnimation(self, control):
+        # type: (xbmcgui.Control) -> None
         self._window.setAnimation(control)
 
     def _removedCallback(self, window):
         self.removeAllChildren()
+        self._window = None
 
     def removeControl(self, control):
         """
@@ -674,8 +717,10 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
 
             self.removeControl(self.label)
         """
+        # type: (xbmcgui.Control) -> None
+        # getWindow will throw an error if Group is not placed
+        self.getWindow().removeControl(control)
         self._controls.remove(control)
-        self._window.removeControl(control)
 
     def removeControls(self, controls):
         """
@@ -687,7 +732,10 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
 
             self.removeControl(self.label)
         """
-        for control in controls:
+        # type: (typing.Iterable[xbmcgui.Control]) -> None
+        # Need to copy the list of controls as we are changing
+        # its size whilst iterating over it
+        for control in list(controls):
             self.removeControl(control)
 
     def removeAllChildren(self):
@@ -698,6 +746,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
 
             group.removeAllChildren()
         """
+        # type: () -> None
         self.removeControls(self._controls)
 
     def setVisible(self, is_visible):
@@ -710,6 +759,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
 
             group.setVisible(False)
         """
+        # type: (bool) -> None
         xbmcgui.ControlGroup.setVisible(self, is_visible)
         for control in self._controls:
             control.setVisible(is_visible)
@@ -732,6 +782,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
 
             group.setVisible(setEnabled)
         """
+        # type: (bool) -> None
         xbmcgui.ControlGroup.setEnabled(self, is_enabled)
         for control in self._controls:
             control.setEnabled(is_enabled)
@@ -748,10 +799,10 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
         """
         Called once the grid has been placed
         """
-        AbstractGrid.__init__(self, window)
-        self._setGrid()
+        self._window = window
 
     def _focussedCallback(self):
+        # type: (None) -> bool
         # Want to divert focus to the first control if possible
         # it doesn't really make sense for a container to have focus
         if self._controls:
@@ -807,16 +858,19 @@ class AbstractWindow(AbstractGrid):
 
     def __init__(self):
         # GridMixin
-        super(AbstractWindow, self).__init__(self)
-        self.controls = []
-        self.actions_connected = []
-        self.controls_connected = []
+        self.controls = [] # type: typing.List[xbmcgui.Control]
+        self.actions_connected = [] # type: typing.List[typing.Tuple[typing.Union[xbmcgui.Control,int], typing.Union[xbmcgui.Control, typing.List[xbmcgui.Control]]]]
+        self.controls_connected = [] # type: typing.List[typing.Tuple[typing.Union[xbmcgui.Control,int], typing.Union[xbmcgui.Control, typing.List[xbmcgui.Control]]]]
+
+    def getWindow(self):
+        return self
 
     def autoNavigation(self, vertical_wrap_around=True,
                        horizontal_wrap_around=True, include_disabled=False,
                        include_invisible=False, controls_subset=None,
                        control_types=(Button, List, RadioButton) if XBMC4XBOX \
                                else (Button, List, RadioButton, Slider, Edit)):
+        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Any) -> None
         if controls_subset is None:
             controls = self.controls
         else:
@@ -948,6 +1002,7 @@ class AbstractWindow(AbstractGrid):
         
             self.setGeometry(400, 500, 5, 4)
         """
+        # type: (int, int, int, int, int, int) -> None
         self._width = width_
         self._height = height_
         self.rows = rows_
@@ -958,7 +1013,6 @@ class AbstractWindow(AbstractGrid):
         else:
             self.x = 640 - width_ // 2
             self.y = 360 - height_ // 2
-        self._setGrid()
 
     def getRows(self):
         """
@@ -966,6 +1020,7 @@ class AbstractWindow(AbstractGrid):
 
         :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
+        # type: () -> int
         try:
             return self.rows  # pytype: disable=attribute-error
         except AttributeError:
@@ -977,6 +1032,7 @@ class AbstractWindow(AbstractGrid):
 
         :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
+        # type: () -> int
         try:
             return self.columns  # pytype: disable=attribute-error
         except AttributeError:
@@ -984,6 +1040,7 @@ class AbstractWindow(AbstractGrid):
 
     def getX(self):
         """Get X coordinate of the top-left corner of the window."""
+        # type: () -> int
         try:
             return self.x # pytype: disable=attribute-error
         except AttributeError:
@@ -991,6 +1048,7 @@ class AbstractWindow(AbstractGrid):
 
     def getY(self):
         """Get Y coordinate of the top-left corner of the window."""
+        # type: () -> int
         try:
             return self.y # pytype: disable=attribute-error
         except AttributeError:
@@ -998,6 +1056,7 @@ class AbstractWindow(AbstractGrid):
 
     def getWindowWidth(self):
         """Get window width."""
+        # type: () -> int
         try:
             return self._width # pytype: disable=attribute-error
         except AttributeError:
@@ -1005,6 +1064,7 @@ class AbstractWindow(AbstractGrid):
 
     def getWindowHeight(self):
         """Get window height."""
+        # type: () -> int
         try:
             return self._height # pytype: disable=attribute-error
         except AttributeError:
@@ -1017,7 +1077,7 @@ class AbstractWindow(AbstractGrid):
         :param event: event to be connected.
         :param callback: callback object the event is connected to.
 
-        An event can be an inctance of a Control object or an integer key action code.
+        An event can be an instance of a Control object or an integer key action code.
         Several basic key action codes are provided by PyXBMCt. ``xbmcgui`` module
         provides more action codes.
 
@@ -1044,6 +1104,7 @@ class AbstractWindow(AbstractGrid):
 
             self.connect(ACTION_NAV_BACK, self.close)
         """
+        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
 
         if isinstance(event, int):
             connect_list = self.actions_connected
@@ -1067,14 +1128,15 @@ class AbstractWindow(AbstractGrid):
         except:
             connect_list.append([event, callback])
 
-    def connectEventList(self, events, function):
+    def connectEventList(self, events, callback):
         """
         Connect a list of controls/action codes to a function.
 
         See :meth:`connect` docstring for more info.
         """
+        # type: (typing.List[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         for event in events:
-            self.connect(event, function)
+            self.connect(event, callable)
 
     def disconnect(self, event, callback=None):
         """
@@ -1095,6 +1157,7 @@ class AbstractWindow(AbstractGrid):
 
             self.disconnect(ACTION_NAV_BACK)
         """
+        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
         if isinstance(event, int):
             event_list = self.actions_connected
         else:
@@ -1106,11 +1169,19 @@ class AbstractWindow(AbstractGrid):
                     event_list.pop(event_index)
                     return
                 else:
-                    callback_list = event_list[event_index][1]
-                    for callback_index in range(len(callback_list)):
-                        if callback == callback_list[callback_index]:
-                            callback_list.pop(callback_index)
-                            return
+
+                    if isinstance(event_list[event_index][1], List):
+                        callback_list = event_list[event_index][1]
+                        for callback_index in range(len(callback_list)):
+                            if callback == callback_list[callback_index]:
+                                if len(callback_list) == 1:
+                                    event_list.pop(event_index)
+                                else:
+                                    callback_list.pop(callback_index)
+                                return # May leave an empty list
+                    else:
+                        if callback == event_list[event_index][1]:
+                            event_list.pop(event_index)
                     raise AddonWindowError('The action or control %s is not connected to function!' % str(callback))
 
         raise AddonWindowError('The action or control %s is not connected!' % event)
@@ -1126,6 +1197,7 @@ class AbstractWindow(AbstractGrid):
         :raises: :class:`AddonWindowError` if at least one event in the list
             is not connected to any function.
         """
+        # type: (typing.Iterable[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         for event in events:
             self.disconnect(event, callback)
 
@@ -1135,6 +1207,7 @@ class AbstractWindow(AbstractGrid):
 
         This is a helper method not to be called directly.
         """
+        # type: (typing.Union[int, xbmcgui.Control], typing.List[typing.Union[typing.Callable, typing.List[typing.Callable]]]) -> None
         for item in connected_list:
             if item[0] == event:
                 if isinstance(item[1], list):
@@ -1164,6 +1237,7 @@ class AbstractWindow(AbstractGrid):
                 control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=1000',),
                                         ('WindowClose', 'effect=fade start=100 end=0 time=1000',)])
         """
+        # type: (xbmcgui.Control) -> None
         pass
 
 
@@ -1186,6 +1260,7 @@ class AddonWindow(AbstractWindow):
 
     def __init__(self, title=''):
         """Constructor method."""
+        # type: (str) -> None
         super(AddonWindow, self).__init__()
         self._setFrame(title)
 
@@ -1198,6 +1273,7 @@ class AddonWindow(AbstractWindow):
 
         This is a helper method not to be called directly.
         """
+        # type: (str) -> None
         # Window background image
         self.background_img = skin.background_img
         # Background for a window header
@@ -1238,6 +1314,7 @@ class AddonWindow(AbstractWindow):
 
             self.setGeometry(400, 500, 5, 4)
         """
+        # type: (int, int, int, int, int, int, int) -> None
         self.win_padding = padding
         super(AddonWindow, self).setGeometry(width_, height_, rows_, columns_, pos_x, pos_y)
         self.background.setPosition(self.x, self.y)
@@ -1253,40 +1330,41 @@ class AddonWindow(AbstractWindow):
         self.window_close_button.setPosition(self.x + self._width - skin.close_btn_x_offset,
                                              self.y + skin.y_margin + skin.close_btn_y_offset)
 
-    def _ifSetGeometryNotCalledRaiseError(self):
+    def _raiseSetGeometryNotCalledError(self):
         """
         Helper method that raises an AddonWindowError  that states that setGeometry needs to be called. Used by methods
         that will fail if the window geometry is not defined.
         :raises AddonWindowError
         """
-        raise  AddonWindowError('Window geometry is not defined! Call setGeometry first.')
+        # type: () -> None
+        raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getGridX(self):
         try:
             val = self.x + self.win_padding
-        except:
-            self._ifSetGeometryNotCalledRaiseError()
+        except AttributeError:
+            self._raiseSetGeometryNotCalledError()
         return val + skin.x_margin
 
     def getGridY(self):
         try:
             val = self.y + self.win_padding
-        except:
-            self._ifSetGeometryNotCalledRaiseError()
+        except AttributeError:
+            self._raiseSetGeometryNotCalledError()
         return val + skin.y_margin + skin.title_back_y_shift + skin.header_height
 
     def getGridWidth(self):
         try:
             val = self._width - 2 * self.win_padding
-        except:
-            self._ifSetGeometryNotCalledRaiseError()
+        except AttributeError:
+            self._raiseSetGeometryNotCalledError()
         return val - 2 * skin.x_margin
 
     def getGridHeight(self):
         try:
             val = self._height - 2 * self.win_padding
-        except:
-            self._ifSetGeometryNotCalledRaiseError()
+        except AttributeError:
+            self._raiseSetGeometryNotCalledError()
         return val - skin.header_height - skin.title_back_y_shift - 2 * skin.y_margin
 
     def setWindowTitle(self, title=''):
