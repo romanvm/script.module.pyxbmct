@@ -857,10 +857,9 @@ class AbstractWindow(AbstractGrid):
     """
 
     def __init__(self):
-        # GridMixin
         self.controls = [] # type: typing.List[xbmcgui.Control]
-        self.actions_connected = [] # type: typing.List[typing.Tuple[typing.Union[xbmcgui.Control,int], typing.Union[xbmcgui.Control, typing.List[xbmcgui.Control]]]]
-        self.controls_connected = [] # type: typing.List[typing.Tuple[typing.Union[xbmcgui.Control,int], typing.Union[xbmcgui.Control, typing.List[xbmcgui.Control]]]]
+        self.actions_connected = []
+        self.controls_connected = []
 
     def getWindow(self):
         return self
@@ -1177,7 +1176,7 @@ class AbstractWindow(AbstractGrid):
                                 if len(callback_list) == 1:
                                     event_list.pop(event_index)
                                 else:
-                                    callback_list.pop(callback_index)
+                                    callback_list.pop(callback_index)  # pytype: disable=attribute-error
                                 return # May leave an empty list
                     else:
                         if callback == event_list[event_index][1]:
