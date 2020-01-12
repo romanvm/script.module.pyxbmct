@@ -4,10 +4,14 @@ branches:
     - /v\.\d+\.\d+\.\d+/
 language: python
 python: "2.7"
-install: true
-script: echo "Nothing to build"
+install:
+  - pip install unittest2 mock pytype future git+https://github.com/romanvm/Kodistubs.git#egg=Kodistubs git+https://github.com/romanvm/kodi.six.git
+stage: pytype
+  - script: pytype -V 2.7 ./script.module.pyxbmct/lib/pyxbmct/
+stage: test
+  - script: python -m unittest2 discover
 before_deploy:
-  - pip install Sphinx future mock git+https://github.com/romanvm/Kodistubs.git#egg=Kodistubs
+  - pip install Sphinx
   - wget https://raw.githubusercontent.com/romanvm/travis_scripts/master/deploy_addon.py
   - python deploy_addon.py -z script.module.pyxbmct
   - export RELEASE_ZIP=$(ls *.zip)
