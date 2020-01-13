@@ -857,7 +857,7 @@ class AbstractWindow(AbstractGrid):
     """
 
     def __init__(self):
-        self.controls = [] # type: typing.List[xbmcgui.Control]
+        self.controls = []  # type: typing.List[xbmcgui.Control]
         self.actions_connected = []
         self.controls_connected = []
 
@@ -1041,7 +1041,7 @@ class AbstractWindow(AbstractGrid):
         """Get X coordinate of the top-left corner of the window."""
         # type: () -> int
         try:
-            return self.x # pytype: disable=attribute-error
+            return self.x  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
@@ -1049,7 +1049,7 @@ class AbstractWindow(AbstractGrid):
         """Get Y coordinate of the top-left corner of the window."""
         # type: () -> int
         try:
-            return self.y # pytype: disable=attribute-error
+            return self.y  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
@@ -1057,7 +1057,7 @@ class AbstractWindow(AbstractGrid):
         """Get window width."""
         # type: () -> int
         try:
-            return self._width # pytype: disable=attribute-error
+            return self._width  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
@@ -1065,7 +1065,7 @@ class AbstractWindow(AbstractGrid):
         """Get window height."""
         # type: () -> int
         try:
-            return self._height # pytype: disable=attribute-error
+            return self._height  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
@@ -1177,13 +1177,15 @@ class AbstractWindow(AbstractGrid):
                                     event_list.pop(event_index)
                                 else:
                                     callback_list.pop(callback_index)  # pytype: disable=attribute-error
-                                return # May leave an empty list
+                                return  # May leave an empty list
                     else:
                         if callback == event_list[event_index][1]:
                             event_list.pop(event_index)
-                    raise AddonWindowError('The action or control %s is not connected to function!' % str(callback))
+                            return
+                    raise AddonWindowError('The action or control %s is not connected to function! %s' %
+                                           (str(event), str(callable)))
 
-        raise AddonWindowError('The action or control %s is not connected!' % event)
+        raise AddonWindowError('The action or control %s is not connected!' % str(event))
 
     def disconnectEventList(self, events, callback=None):
         """
