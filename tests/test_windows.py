@@ -34,7 +34,52 @@ class TestGroup(unittest2.TestCase):
         self._window.getWidth = mock.MagicMock(return_value=window_width)
         self._window.getHeight = mock.MagicMock(return_value=window_height)
 
-    def test_connect_callback(self):
+    def test_connect_callback_returns_false(self):
+        self._window.setGeometry(400, 300, 3, 3)
+        label = pyxbmct.Label(None, None, None, None, None, None)
+        label.getId = lambda: 12
+        self._window.placeControl(label, 1, 1)
+
+        callable = mock.MagicMock()
+        label._connectCallback = mock.MagicMock(return_value=False)
+        self._window.connect(label, callable)
+
+        with self.subTest("Callable not called when attached"):
+            callable.assert_not_called()
+
+        with self.subTest("Callable not called"):
+            self._window.onControl(label)
+            callable.assert_not_called()
+
+        with self.subTest("Cannot disconnect"):
+            with self.assertRaises(pyxbmct.AddonWindowError):
+                self._window.disconnect(label, callable)
+
+    def test_connect_callback_returns_new_callable(self):
+        self._window.setGeometry(400, 300, 3, 3)
+        label = pyxbmct.Label(None, None, None, None, None, None)
+        label.getId = lambda: 12
+        self._window.placeControl(label, 1, 1)
+
+        callable = mock.MagicMock()
+        new_callable = mock.MagicMock()
+        label._connectCallback = mock.MagicMock(return_value=new_callable)
+        self._window.connect(label, callable)
+
+        with self.subTest("Orginal callable not called when attached"):
+            callable.assert_not_called()
+
+        with self.subTest("New callable not called when attached"):
+            callable.assert_not_called()
+
+        with self.subTest("Orginal callable not called"):
+            self._window.onControl(label)
+            callable.assert_not_called()
+
+        with self.subTest("Callable called"):
+            new_callable.assert_called_once_with()
+
+    def test_connect_callable_returns_true(self):
         self._window.setGeometry(400, 300, 3, 3)
         label = pyxbmct.Label(None, None, None, None, None, None)
         label.getId = lambda: 12
@@ -59,37 +104,6 @@ class TestGroup(unittest2.TestCase):
             with self.subTest("Callable not called once disconnected"):
                 self._window.disconnect(label, callable)
                 callable.assert_called_once_with()  # Not called again
-
-        with self.subTest("Callback returns False"):
-            callable = mock.MagicMock()
-            label._connectCallback = mock.MagicMock(return_value=False)
-            self._window.connect(label, callable)
-
-            with self.subTest("Callable not called when attached"):
-                callable.assert_not_called()
-
-            with self.subTest("Callable not called"):
-                self._window.onControl(label)
-                callable.assert_not_called()
-
-        with self.subTest("Callback returns new callable"):
-            callable = mock.MagicMock()
-            new_callable = mock.MagicMock()
-            label._connectCallback = mock.MagicMock(return_value=new_callable)
-            self._window.connect(label, callable)
-
-            with self.subTest("Orginal callable not called when attached"):
-                callable.assert_not_called()
-
-            with self.subTest("New callable not called when attached"):
-                callable.assert_not_called()
-
-            with self.subTest("Orginal callable not called"):
-                self._window.onControl(label)
-                callable.assert_not_called()
-
-            with self.subTest("Callable called"):
-                new_callable.assert_called_once_with()
 
     def test_place_control_set_geometry_not_called(self):
         """

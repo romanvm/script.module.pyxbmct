@@ -15,6 +15,7 @@ import mock
 import itertools
 from import_pyxbmct import pyxbmct
 
+
 class TestGroup(unittest2.TestCase):
     """
     This test case is for pyxbmct.Group
