@@ -85,25 +85,60 @@ class TestGroup(unittest2.TestCase):
         label.getId = lambda: 12
         self._window.placeControl(label, 1, 1)
 
-        with self.subTest("Callback returns True"):
-            callable = mock.MagicMock()
-            label._connectCallback = mock.MagicMock(return_value=True)
+        callable = mock.MagicMock()
+        label._connectCallback = mock.MagicMock(return_value=True)
 
-            self._window.connect(label, callable)
+        self._window.connect(label, callable)
 
-            with self.subTest("Callback called"):
-                label._connectCallback.assert_called_once_with(callable, self._window)
+        with self.subTest("Callback called"):
+            label._connectCallback.assert_called_once_with(callable, self._window)
 
-            with self.subTest("Callable not called when attached"):
-                callable.assert_not_called()
+        with self.subTest("Callable not called when attached"):
+            callable.assert_not_called()
 
-            with self.subTest("Callable called"):
-                self._window.onControl(label)
-                callable.assert_called_once_with()
+        with self.subTest("Callable called"):
+            self._window.onControl(label)
+            callable.assert_called_once_with()
 
-            with self.subTest("Callable not called once disconnected"):
-                self._window.disconnect(label, callable)
-                callable.assert_called_once_with()  # Not called again
+        with self.subTest("Callable not called once disconnected"):
+            self._window.disconnect(label, callable)
+            callable.assert_called_once_with()  # Not called again
+
+    def test_connect_callable_multiple_callbacks(self):
+        self._window.setGeometry(400, 300, 3, 3)
+        label = pyxbmct.Label(None, None, None, None, None, None)
+        label.getId = lambda: 12
+        self._window.placeControl(label, 1, 1)
+
+        callable = mock.MagicMock()
+        callable2 = mock.MagicMock()
+        label._connectCallback = mock.MagicMock(return_value=True)
+
+        self._window.connect(label, callable)
+        self._window.connect(label, callable2)
+
+        self._window.onControl(label)
+        with self.subTest("Callable called"):
+            callable.assert_called_once_with()
+
+        with self.subTest("Callable 2 called"):
+            callable2.assert_called_once_with()
+
+        with self.subTest("Can disconnect callable 2"):
+            self._window.disconnect(label, callable2)
+
+        self._window.onControl(label)
+        with self.subTest("Callable 2 not called once disconnected"):
+            self.assertEqual(callable.call_count, 2) # Called again
+            callable2.assert_called_once_with()  # Not called again
+
+        with self.subTest("Callable 2 re-connected, callable 1 disconnected"):
+            self._window.connect(label, callable2)
+            self._window.disconnect(label, callable)
+            self._window.onControl(label)
+
+            self.assertEqual(callable.call_count, 2)  # Not called again
+            callable2.assert_called_once_with()  # Not called again
 
     def test_place_control_set_geometry_not_called(self):
         """
