@@ -11,6 +11,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 .venv/
+venv/
 env/
 build/
 develop-eggs/
@@ -111,6 +112,8 @@ crashlytics-build.properties
 
 epydoc.*
 _docs/
+
+.pytype/
 
 venv/
 *.zip

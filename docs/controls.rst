@@ -57,11 +57,17 @@ RadioButton
 
 :class:`RadioButton<pyxbmct.addonwindow.RadioButton>` is a 2-state switch. It generates a control event on click.
 
+Group
+-----------
+
+:class:`Group<pyxbmct.addonwindow.Group>` is container for other controls. It has its own grid coordinate system.
+
 Edit
 ----
 
 :class:`Edit<pyxbmct.addonwindow.Edit>` implements a text entry field, similar to ``Tkinter.Entry`` or ``QLineEdit``.
 When activated, it opens an on-screen keyboard to enter text.
+Edit is not supported on XBMC4XBOX.
 
 List
 ----
@@ -74,3 +80,4 @@ Slider
 ------
 
 :class:`Slider<pyxbmct.addonwindow.Slider>` is a control for stepless adjusting some value (e.g. volume level).
+Slider is not supported on XBMC4XBOX.

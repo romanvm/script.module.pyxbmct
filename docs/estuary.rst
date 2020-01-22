@@ -7,7 +7,7 @@ PyXBMCt appearance can also be set explicitly::
 
   import pyxbmct
 
-  pyxbmc.skin.estuary = True  # False: use old design
+  pyxbmct.skin.estuary = True  # False: use old design
 
   # Then create your UI elements
 

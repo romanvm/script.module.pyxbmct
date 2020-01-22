@@ -41,6 +41,7 @@ __all__ = [
     'Edit',
     'List',
     'Slider',
+    'Group',
     'BlankFullWindow',
     'BlankDialogWindow',
     'AddonDialogWindow',
