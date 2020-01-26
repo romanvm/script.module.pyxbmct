@@ -801,17 +801,6 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
         """
         self._window = window
 
-    def _focussedCallback(self):
-        # type: (None) -> bool
-        # Want to divert focus to the first control if possible
-        # it doesn't really make sense for a container to have focus
-        if self._controls:
-            self._window.setFocus(self._controls[0])
-            return False
-        else:
-            return True
-
-
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
     class Slider(ControlMixin, xbmcgui.ControlSlider):
@@ -1446,13 +1435,6 @@ class AddonWindow(AbstractWindow):
         for control in controls:
             self.removeControl(control)
 
-    def setFocus(self, control):
-        do_set_focus = True
-        if hasattr(control, '_focussedCallback'):
-            do_set_focus = control._focussedCallback()
-        if do_set_focus:
-            xbmcgui.Window.setFocus(self, control)
-
     def onAction(self, action):
         """
         Catch button actions.
@@ -1482,16 +1464,6 @@ class AddonWindow(AbstractWindow):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
-
-    def onFocus(self, control):
-        """
-        Catch focused controls.
-
-        :param control: is an instance of :class:`xbmcgui.Control` class.
-        """
-        if hasattr(control, '_focussedCallback'):
-            control._focussedCallback()
-
 
 class BlankFullWindow(AbstractWindow, xbmcgui.Window):
     """
