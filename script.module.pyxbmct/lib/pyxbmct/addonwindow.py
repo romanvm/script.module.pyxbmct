@@ -11,6 +11,7 @@ This module contains all classes and constants of PyXBMCt framework
 """
 
 from __future__ import absolute_import, division, unicode_literals
+<<<<<<< HEAD
 
 import platform
 
@@ -27,12 +28,12 @@ if XBMC4XBOX:
     range = xrange
     import xbmc, xbmcgui, inspect
 else:
-    from future.builtins import range
+    from six.moves import range
     from kodi_six import xbmc, xbmcgui
+    from six.moves import range
 
 import os
 from abc import ABCMeta, abstractmethod
-
 from .addonskin import Skin
 
 skin = Skin()
