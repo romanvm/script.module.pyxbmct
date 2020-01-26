@@ -29,6 +29,7 @@ if XBMC4XBOX:
 else:
     from future.builtins import range
     from kodi_six import xbmc, xbmcgui
+    from six.moves import range
 
 import os
 from abc import ABCMeta, abstractmethod

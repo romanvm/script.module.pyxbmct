@@ -2,13 +2,12 @@
 
 import sys
 import os
+import mock
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-sys.path.insert(0, os.path.join(os.path.dirname(basedir), 'xbmcstubs'))
 sys.path.insert(0, os.path.join(basedir, 'script.module.pyxbmct', 'lib'))
 
-import mock
 import xbmc
 import xbmcgui
 
@@ -26,6 +25,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.githubpages',
     'alabaster',
 ]
 

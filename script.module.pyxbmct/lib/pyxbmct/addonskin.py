@@ -11,7 +11,8 @@ import platform
 XBMC4XBOX = platform.system() == "XBMC4Xbox"
 
 if not XBMC4XBOX:
-    from future.utils import with_metaclass
+    from six import with_metaclass
+
 import os
 from abc import ABCMeta, abstractmethod
 import xbmc
