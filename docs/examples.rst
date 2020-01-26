@@ -143,6 +143,10 @@ Despite being rather simple, this example illustrates main steps of initializing
 - Set up keyboard/remote navigation between controls.
 - Set initial focus on a control (necessary for navigation to work).
 
-`PyXBMCt demo addon`_ povides more compherensive example on how to use all PyXBMCt Controls.
+`PyXBMCt demo addon`_ provides more comprehensive example on how to use all PyXBMCt Controls.
 
 .. _PyXBMCt demo addon: https://github.com/romanvm/pyxbmct.demo
+
+`Xbox BIOS config editor for XBMC`_ a more complex real-world example that showcases creating custom controls.
+
+.. _Xbox BIOS config editor for XBMC: https://github.com/jcn509/Xbox-BIOS-config-editor-for-XBMC

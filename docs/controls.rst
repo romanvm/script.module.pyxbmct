@@ -1,7 +1,7 @@
 Controls
 ========
 
-PyXBMCt provides 9 ready-to-use UI controls that are based on the respective :mod:`xbmcgui` controls
+PyXBMCt provides 10 ready-to-use UI controls that are based on the respective :mod:`xbmcgui` controls
 with the following differences:
 
 * You don’t need to specify coordinates and size for the controls explicitly.

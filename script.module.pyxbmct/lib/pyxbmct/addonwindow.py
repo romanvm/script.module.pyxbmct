@@ -94,6 +94,61 @@ class AddonWindowError(Exception):
     pass
 
 
+class ControlWithConnectCallback(object):
+    """Abstract mixin class for controls that require a callback before events are connected to them"""
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def _connectCallback(self, callback, window):
+        """
+        Called just before an event is connected to a control.
+        If true is returned callback is connected to the control.
+        If false is returned it is not.
+        If a new callback is returned then that is connected instead.
+        :param callback: the callback that is to be associated with the control
+        :param window: the window on which the connect method was called
+        """
+        # type: (typing.Callable, xbmcgui.Window) -> typing.Union[bool, typing.Callable]
+        raise NotImplementedError
+
+
+class ControlWithPlacedCallback(object):
+    """Abstract mixin class for controls that require a callback after they have been placed"""
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def _placedCallback(self, window, row, column, rowspan, columnspan, pad_x, pad_y):
+        """
+        Called after the control has been placed in a Window or Group.
+        :param window: the window in which the control has been placed
+        :param row: the row in which the control was placed (top left corner)
+        :param column: the column in which the control was placed (top left corner)
+        :param rowspan: the number of rows that the control takes up
+        :param columnspan: the number of columns that the control takes up
+        :param pad_x: the number of pixels of padding inside the cell around the left and right sides of the control
+        :param pad_y: the number of pixels of padding inside the cell around the top and bottom sides of the control
+        """
+        # type: (xbmcgui.Window, int, int, int, int, int, int) -> None
+        raise NotImplementedError
+
+
+class ControlWithRemovedCallback(object):
+    """Abstract mixin class for controls that require a callback before they are removed"""
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def _removedCallback(self, window):
+        """
+        Called just before a control is removed from the window
+        :param window: The window the control is being removed from
+        """
+        # type: (xbmcgui.Window) -> None
+        raise NotImplementedError
+
+
 class AbstractGrid(object):
     """
     Grid functionality mixin.
@@ -801,6 +856,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid):
         """
         self._window = window
 
+
 # Slider is not supported on Xbox using the Python API
 if not XBMC4XBOX:
     class Slider(ControlMixin, xbmcgui.ControlSlider):
@@ -1464,6 +1520,7 @@ class AddonWindow(AbstractWindow):
             self.close()
         else:
             self._executeConnected(control, self.controls_connected)
+
 
 class BlankFullWindow(AbstractWindow, xbmcgui.Window):
     """
