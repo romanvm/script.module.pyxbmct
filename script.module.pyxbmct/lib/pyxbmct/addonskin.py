@@ -15,6 +15,7 @@ if not XBMC4XBOX:
 
 import os
 from abc import ABCMeta, abstractmethod
+from six import with_metaclass
 import xbmc
 from xbmcaddon import Addon
 

@@ -33,7 +33,6 @@ else:
 
 import os
 from abc import ABCMeta, abstractmethod
-
 from .addonskin import Skin
 
 skin = Skin()
