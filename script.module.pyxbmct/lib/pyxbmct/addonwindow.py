@@ -11,7 +11,6 @@ This module contains all classes and constants of PyXBMCt framework
 """
 
 from __future__ import absolute_import, division, unicode_literals
-<<<<<<< HEAD
 
 import platform
 
@@ -30,7 +29,7 @@ if XBMC4XBOX:
 else:
     from six.moves import range
     from kodi_six import xbmc, xbmcgui
-    from six.moves import range
+    from six.moves import range, with_metaclass
 
 import os
 from abc import ABCMeta, abstractmethod
@@ -95,10 +94,11 @@ class AddonWindowError(Exception):
     pass
 
 
-class ControlWithConnectCallback(object):
+class ControlWithConnectCallback(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """Abstract mixin class for controls that require a callback before events are connected to them"""
 
-    __metaclass__ = ABCMeta
+    if XBMC4XBOX:
+        __metaclass__ = ABCMeta
 
     @abstractmethod
     def _connectCallback(self, callback, window):
@@ -114,10 +114,11 @@ class ControlWithConnectCallback(object):
         raise NotImplementedError
 
 
-class ControlWithPlacedCallback(object):
+class ControlWithPlacedCallback(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """Abstract mixin class for controls that require a callback after they have been placed"""
 
-    __metaclass__ = ABCMeta
+    if XBMC4XBOX:
+        __metaclass__ = ABCMeta
 
     @abstractmethod
     def _placedCallback(self, window, row, column, rowspan, columnspan, pad_x, pad_y):
@@ -135,10 +136,11 @@ class ControlWithPlacedCallback(object):
         raise NotImplementedError
 
 
-class ControlWithRemovedCallback(object):
+class ControlWithRemovedCallback(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """Abstract mixin class for controls that require a callback before they are removed"""
 
-    __metaclass__ = ABCMeta
+    if XBMC4XBOX:
+        __metaclass__ = ABCMeta
 
     @abstractmethod
     def _removedCallback(self, window):
@@ -150,7 +152,7 @@ class ControlWithRemovedCallback(object):
         raise NotImplementedError
 
 
-class AbstractGrid(object):
+class AbstractGrid(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """
     Grid functionality mixin.
     
@@ -160,7 +162,8 @@ class AbstractGrid(object):
     
     .. warning:: This is an abstract class and is not supposed to be instantiated directly!
     """
-    __metaclass__ = ABCMeta
+    if XBMC4XBOX:
+        __metaclass__ = ABCMeta
 
     @abstractmethod
     def getRows(self):
