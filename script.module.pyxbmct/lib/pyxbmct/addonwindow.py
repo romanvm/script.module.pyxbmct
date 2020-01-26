@@ -904,8 +904,8 @@ class AbstractWindow(AbstractGrid):
 
     def __init__(self):
         self.controls = []  # type: typing.List[xbmcgui.Control]
-        self.actions_connected = []
-        self.controls_connected = []
+        self.actions_connected = [] # type: typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]
+        self.controls_connected = [] # type: typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]
 
     def getWindow(self):
         return self
@@ -1166,12 +1166,9 @@ class AbstractWindow(AbstractGrid):
         try:
             entry = next(entry for entry in connect_list if entry[0] == event)
 
-            if not isinstance(entry[1], list):
-                entry[1] = [entry[1], callback]
-            else:
-                entry[1].append(callback)
+            entry[1].append(callback)
         except:
-            connect_list.append([event, callback])
+            connect_list.append((event, [callback]))
 
     def connectEventList(self, events, callback):
         """
@@ -1214,20 +1211,14 @@ class AbstractWindow(AbstractGrid):
                     event_list.pop(event_index)
                     return
                 else:
-
-                    if isinstance(event_list[event_index][1], List):
-                        callback_list = event_list[event_index][1]
-                        for callback_index in range(len(callback_list)):
-                            if callback == callback_list[callback_index]:
-                                if len(callback_list) == 1:
-                                    event_list.pop(event_index)
-                                else:
-                                    callback_list.pop(callback_index)  # pytype: disable=attribute-error
-                                return  # May leave an empty list
-                    else:
-                        if callback == event_list[event_index][1]:
-                            event_list.pop(event_index)
-                            return
+                    callback_list = event_list[event_index][1]
+                    for callback_index in range(len(callback_list)):
+                        if callback == callback_list[callback_index]:
+                            if len(callback_list) == 1:
+                                event_list.pop(event_index)
+                            else:
+                                callback_list.pop(callback_index)  # pytype: disable=attribute-error
+                            return  # May leave an empty list
                     raise AddonWindowError('The action or control %s is not connected to function! %s' %
                                            (str(event), str(callable)))
 
@@ -1254,14 +1245,11 @@ class AbstractWindow(AbstractGrid):
 
         This is a helper method not to be called directly.
         """
-        # type: (typing.Union[int, xbmcgui.Control], typing.List[typing.Union[typing.Callable, typing.List[typing.Callable]]]) -> None
+        # type: (typing.Union[int, xbmcgui.Control], typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]) -> None
         for item in connected_list:
             if item[0] == event:
-                if isinstance(item[1], list):
-                    for callback in item[1]:
-                        callback()
-                else:
-                    item[1]()
+                for callback in item[1]:
+                    callback()
                 break
 
     def setAnimation(self, control):

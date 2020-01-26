@@ -129,7 +129,7 @@ class TestGroup(unittest2.TestCase):
 
         self._window.onControl(label)
         with self.subTest("Callable 2 not called once disconnected"):
-            self.assertEqual(callable.call_count, 2) # Called again
+            self.assertEqual(callable.call_count, 2)  # Called again
             callable2.assert_called_once_with()  # Not called again
 
         with self.subTest("Callable 2 re-connected, callable 1 disconnected"):
@@ -138,7 +138,14 @@ class TestGroup(unittest2.TestCase):
             self._window.onControl(label)
 
             self.assertEqual(callable.call_count, 2)  # Not called again
-            callable2.assert_called_once_with()  # Not called again
+            self.assertEqual(callable.call_count, 2)  # Called again
+
+        with self.subTest("Callable 2 re-disconnected, not called again"):
+            self._window.disconnect(label, callable2)
+            self._window.onControl(label)
+
+            self.assertEqual(callable.call_count, 2)  # Not called again
+            self.assertEqual(callable.call_count, 2)  # Not called again
 
     def test_place_control_set_geometry_not_called(self):
         """
