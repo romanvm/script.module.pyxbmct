@@ -48,5 +48,8 @@ __all__ = [
     'AddonFullWindow',
     'Skin',
     'skin',
-    'BaseSkin'
+    'BaseSkin',
+    'ControlWithConnectCallback',
+    'ControlWithPlacedCallback',
+    'ControlWithRemovedCallback'
 ]

@@ -20,17 +20,19 @@ pyxbmct.addonwindow
       BlankDialogWindow
       BlankFullWindow
       Button
-      DialogWindowMixin
       Edit
       FadeLabel
-      FullWindowMixin
       Image
       Label
       List
       RadioButton
+      Group
       Skin
       Slider
       TextBox
+      ControlWithConnectCallback
+      ControlWithPlacedCallback
+      ControlWithRemovedCallback
    
    
 
