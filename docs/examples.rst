@@ -102,7 +102,8 @@ Let’s see how it looks in Python code::
         def set_navigation(self):
             """Set up keyboard/remote navigation between controls."""
             # Note there is a new feature:
-            # you can instead do self.
+            # if you instead write self.autoNavigation() PyXBMCT will set up
+            # the navigation between the controls for you automatically!
             self.name_field.controlUp(self.hello_buton)
             self.name_field.controlDown(self.hello_buton)
             self.close_button.controlLeft(self.hello_buton)
