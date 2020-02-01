@@ -13,7 +13,7 @@ from .addonwindow import *
 from .abstractgrid import AbstractGrid
 from .addoncontrols import *
 from .addonwindowerror import AddonWindowError
-from .addonskin import BaseSkin
+from .addonskin import *
 from .kodiconstants import *
 
 __all__ = [
