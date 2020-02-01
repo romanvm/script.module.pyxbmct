@@ -7,20 +7,21 @@
 
 from __future__ import unicode_literals
 
-import platform
-XBMC4XBOX = platform.system() == "XBMC4Xbox"
-
-if not XBMC4XBOX:
-    from six import with_metaclass
-
 import os
 from abc import ABCMeta, abstractmethod
-from six import with_metaclass
 import xbmc
 from xbmcaddon import Addon
+from .xbmc4xbox import isXBMC4XBOX
+
+_XBMC4XBOX = isXBMC4XBOX()
+
+if not _XBMC4XBOX:
+    from six import with_metaclass
+
+# Note: this file exports an instance of Skin called skin
 
 
-class BaseSkin(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
+class BaseSkin(object if _XBMC4XBOX else with_metaclass(ABCMeta, object)):
     """
     Abstract class for creating fully customized skins
 
@@ -28,9 +29,9 @@ class BaseSkin(object if XBMC4XBOX else with_metaclass(ABCMeta, object)):
         A sublcass must implement all the following properties.
     """
 
-    if XBMC4XBOX:
+    if _XBMC4XBOX:
         __metaclass__ = ABCMeta
-    
+
     @abstractmethod
     def images(self):
         """
@@ -211,10 +212,11 @@ class Skin(BaseSkin):
     Defines parameters that control
     the appearance of PyXBMCt windows and controls.
     """
+
     def __init__(self):
         kodi_version = xbmc.getInfoLabel('System.BuildVersion')[:2]
         # Kodistubs return an empty string
-        if not XBMC4XBOX and kodi_version and kodi_version >= '17':
+        if not _XBMC4XBOX and kodi_version and kodi_version >= '17':
             self._estuary = True
         else:
             self._estuary = False
@@ -349,3 +351,6 @@ class Skin(BaseSkin):
     @property
     def main_bg_img(self):
         return os.path.join(self.images, 'AddonWindow', 'SKINDEFAULT.jpg')
+
+
+skin = Skin()

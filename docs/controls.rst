@@ -28,56 +28,56 @@ Below is the list of PyXBMCt controls with brief descriptions:
 Label
 -----
 
-:class:`Label<pyxbmct.addonwindow.Label>` implements a simple text label much like ``Tkinter.Label`` or ``QLabel``.
+:class:`Label<pyxbmct.addoncontrols.Label>` implements a simple text label much like ``Tkinter.Label`` or ``QLabel``.
 
 FadeLabel
 ---------
 
-:class:`FaldeLabel<pyxbmct.addonwindow.FadeLabel>` is similar to :class:`Label<pyxbmct.addonwindow.Label>`,
+:class:`FaldeLabel<pyxbmct.addoncontrols.FadeLabel>` is similar to :class:`Label<pyxbmct.addoncontrols.Label>`,
 but a very long text string is auto-scrolled.
 
 TextBox
 -------
 
-:class:`TextBox<pyxbmct.addonwindow.TextBox>` shows multiline text. It can autoscroll very long text.
+:class:`TextBox<pyxbmct.addoncontrols.TextBox>` shows multiline text. It can autoscroll very long text.
 
 Image
 -----
 
-:class:`Image<pyxbmct.addonwindow.Image>` control displays images from files (``.jpg``, ``.png``, ``.gif``).
+:class:`Image<pyxbmct.addoncontrols.Image>` control displays images from files (``.jpg``, ``.png``, ``.gif``).
 For ``.gif`` and ``.png`` images transparency is supported, and for ``.gif`` animation is shown as well.
 
 Button
 ------
 
-:class:`Button<pyxbmct.addonwindow.Button>` implements a clickable button. It generates a control event on click.
+:class:`Button<pyxbmct.addoncontrols.Button>` implements a clickable button. It generates a control event on click.
 
 RadioButton
 -----------
 
-:class:`RadioButton<pyxbmct.addonwindow.RadioButton>` is a 2-state switch. It generates a control event on click.
+:class:`RadioButton<pyxbmct.addoncontrols.RadioButton>` is a 2-state switch. It generates a control event on click.
 
 Group
 -----------
 
-:class:`Group<pyxbmct.addonwindow.Group>` is container for other controls. It has its own grid coordinate system.
+:class:`Group<pyxbmct.addoncontrols.Group>` is container for other controls. It has its own grid coordinate system.
 
 Edit
 ----
 
-:class:`Edit<pyxbmct.addonwindow.Edit>` implements a text entry field, similar to ``Tkinter.Entry`` or ``QLineEdit``.
+:class:`Edit<pyxbmct.addoncontrols.Edit>` implements a text entry field, similar to ``Tkinter.Entry`` or ``QLineEdit``.
 When activated, it opens an on-screen keyboard to enter text.
 Edit is not supported on XBMC4XBOX.
 
 List
 ----
 
-:class:`List<pyxbmct.addonwindow.List>` implements a list of items.
+:class:`List<pyxbmct.addoncontrols.List>` implements a list of items.
 The list scrolls when it cannot display all its items within available space.
 It generates a control event when an item is selected.
 
 Slider
 ------
 
-:class:`Slider<pyxbmct.addonwindow.Slider>` is a control for stepless adjusting some value (e.g. volume level).
+:class:`Slider<pyxbmct.addoncontrols.Slider>` is a control for stepless adjusting some value (e.g. volume level).
 Slider is not supported on XBMC4XBOX.
