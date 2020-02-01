@@ -34,6 +34,35 @@ class TestGroup(unittest2.TestCase):
         self._window.getWidth = mock.MagicMock(return_value=window_width)
         self._window.getHeight = mock.MagicMock(return_value=window_height)
 
+    def test_set_focus_no_focus_callback(self):
+        label = pyxbmct.Label(None, None, None, None, None, None)
+
+        with mock.patch('xbmcgui.Window.setFocus') as xbmcgui_window_set_focus:
+            self._window.setFocus(label)
+            xbmcgui_window_set_focus.assert_called_once_with(self._window, label)
+
+    def test_set_focus_focus_callback_returns_false(self):
+        label = pyxbmct.Label(None, None, None, None, None, None)
+        label._focusedCallback = mock.MagicMock(return_value=False)
+
+        with mock.patch('xbmcgui.Window.setFocus') as xbmcgui_window_set_focus:
+            self._window.setFocus(label)
+            with self.subTest("Focused callback called"):
+                label._focusedCallback.assert_called_once_with()  # no arguments
+            with self.subTest("Control not focused on"):
+                xbmcgui_window_set_focus.assert_not_called()
+
+    def test_set_focus_focus_callback_returns_true(self):
+        label = pyxbmct.Label(None, None, None, None, None, None)
+        label._focusedCallback = mock.MagicMock(return_value=True)
+
+        with mock.patch('xbmcgui.Window.setFocus') as xbmcgui_window_set_focus:
+            self._window.setFocus(label)
+            with self.subTest("Focused callback called"):
+                label._focusedCallback.assert_called_once_with()  # no arguments
+            with self.subTest("Control not focused on"):
+                xbmcgui_window_set_focus.assert_called_once_with(self._window, label)
+
     def test_connect_callback_returns_false(self):
         self._window.setGeometry(400, 300, 3, 3)
         label = pyxbmct.Label(None, None, None, None, None, None)
