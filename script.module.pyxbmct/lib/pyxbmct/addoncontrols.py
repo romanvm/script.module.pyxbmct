@@ -34,7 +34,6 @@ except:
 
 # kodi_six doesn't work on
 if _XBMC4XBOX:
-    range = xrange
     import xbmc, xbmcgui
 else:
     from kodi_six import xbmc, xbmcgui

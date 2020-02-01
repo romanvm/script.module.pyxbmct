@@ -30,7 +30,6 @@ except:
 
 # kodi_six doesn't work on XBMC4XBOX
 if _XBMC4XBOX:
-    range = xrange
     import xbmcgui
 else:
     from .addoncontrols import Slider, Edit
