@@ -85,7 +85,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         :param controls_subset: pass in a specific set of controls to set up the navigation for (only these controls will be effacted and then can will only be set up to navigate to each other)
         :param control_types: the types of controls to consider for the navigation
         """
-        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Iterable[typing.Any]) -> None
+        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Tuple[typing.Any, ...]) -> None
         if controls_subset is None:
             controls = self._controls
         else:
