@@ -75,7 +75,17 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                        include_invisible=False, controls_subset=None,
                        control_types=(Button, List, RadioButton) if _XBMC4XBOX \
                                else (Button, List, RadioButton, Slider, Edit)):
-        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Any) -> None
+        """
+        Automatically setup the navigation between controls in the Window
+        :param vertical_wrap_around: if you navigate up from the topmost control it will take you to the bottommost control
+        :param horizontal_wrap_around: if you navigate down from the bottommost control it will take you to the topmost control
+        :param include_disabled: include controls that are disabled
+        :param include_invisible: include controls that are currently not visible
+        :param controls_subset: pass in a specific set of controls to set up the navigation for (only these controls will be effacted and then can will only be set up to navigate to each other)
+        :param control_types: the types of controls to cosider for the navigation
+        :return:
+        """
+        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Iterable[typing.Any]) -> None
         if controls_subset is None:
             controls = self._controls
         else:
