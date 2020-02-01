@@ -77,7 +77,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                                else (Button, List, RadioButton, Slider, Edit)):
         """
         Automatically setup the navigation between controls in the Window
-        
+
         :param vertical_wrap_around: if you navigate up from the topmost control it will take you to the bottommost control
         :param horizontal_wrap_around: if you navigate down from the bottommost control it will take you to the topmost control
         :param include_disabled: include controls that are disabled
@@ -554,11 +554,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         :param control: is an instance of :class:`xbmcgui.Control` class.
         """
         # type: (xbmcgui.Control) -> None
-        if (hasattr(self, 'window_close_button') and
-                control.getId() == self.window_close_button.getId()):
-            self.close()
-        else:
-            self._executeConnected(control, self._controls_connected)
+        self._executeConnected(control, self._controls_connected)
 
 
 class AddonWindow(AbstractWindow):
@@ -583,6 +579,19 @@ class AddonWindow(AbstractWindow):
         # type: (str) -> None
         super(AddonWindow, self).__init__()
         self._setFrame(title)
+
+    def onControl(self, control):
+        """
+        Catch activated controls.
+
+        :param control: is an instance of :class:`xbmcgui.Control` class.
+        """
+        # type: (xbmcgui.Control) -> None
+        if (hasattr(self, 'window_close_button') and
+                control.getId() == self.window_close_button.getId()):
+            self.close()  # pytype: disable=attribute-error
+        else:
+            super(AddonWindow, self).onControl(control)
 
     def _setFrame(self, title):
         """
