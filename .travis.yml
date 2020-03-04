@@ -1,7 +1,7 @@
 language: python
 env:
   - ADDON_ID=script.module.pyxbmct
-    BRANCH=leia
+    BRANCH=matrix
 matrix:
   include:
     - python: "2.7"
