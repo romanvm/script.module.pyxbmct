@@ -348,7 +348,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         """
         # type: (typing.List[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         for event in events:
-            self.connect(event, callable)
+            self.connect(event, callback)
 
     def disconnect(self, event, callback=None):
         """
@@ -390,7 +390,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                                 callback_list.pop(callback_index)  # pytype: disable=attribute-error
                             return  # May leave an empty list
                     raise AddonWindowError('The action or control %s is not connected to function! %s' %
-                                           (str(event), str(callable)))
+                                           (str(event), str(callback)))
 
         raise AddonWindowError('The action or control %s is not connected!' % str(event))
 
