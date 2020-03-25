@@ -5,12 +5,13 @@ env:
 matrix:
   include:
     - python: "2.7"
-      install: true
+      install:
+        - pip install unittest2 mock pytype future six Kodistubs git+https://github.com/romanvm/kodi.six.git
       script:
-        - echo "pass"
+        - pytype -V 2.7 ./script.module.pyxbmct/lib/pyxbmct/
+        - python -m unittest2 discover
       before_deploy:
-        - pip install -q Sphinx six mock Kodistubs
-        - pip install -q git+https://github.com/romanvm/kodi.six.git
+        - pip install -q Sphinx
         - cd docs
         - make html
         - cd $TRAVIS_BUILD_DIR
