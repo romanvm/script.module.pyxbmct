@@ -23,7 +23,7 @@ setup(
     install_requires=[
         'Kodistubs',
         'six',
-        'kodi-six'
+        'kodisix'
     ],
     dependency_links=[
         'https://github.com/romanvm/kodi.six/tarball/master#egg=kodi-six'
