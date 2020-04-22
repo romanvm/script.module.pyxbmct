@@ -13,7 +13,7 @@ This test case is for pyxbmct.Group
 import unittest2
 import mock
 import itertools
-from import_pyxbmct import pyxbmct
+import pyxbmct
 
 
 class TestGroup(unittest2.TestCase):
