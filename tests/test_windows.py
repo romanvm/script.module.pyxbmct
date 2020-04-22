@@ -14,7 +14,7 @@ One test case is used for both classes as they are so similar as they only diffe
 import unittest2
 import mock
 import itertools
-from import_pyxbmct import pyxbmct
+import pyxbmct
 
 skin = pyxbmct.Skin()
 

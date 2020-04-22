@@ -23,7 +23,16 @@ setup(
     install_requires=[
         'Kodistubs',
         'six',
+        'future',
         'kodi_six @ git+https://github.com/romanvm/kodi.six@master'
     ],
+    extras_require={
+        'dev': [
+            'unittest2',
+            'mock',
+            'pytype',
+            'Sphinx'
+        ]
+    },
     zip_safe=False
 )

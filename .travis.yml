@@ -6,7 +6,7 @@ matrix:
   include:
     - python: "2.7"
       install:
-        - pip install unittest2 mock pytype future six Kodistubs git+https://github.com/romanvm/kodi.six.git
+        - pip install -e ".[dev]"
       script:
         - pytype -V 2.7 ./script.module.pyxbmct/lib/pyxbmct/
         - python -m unittest2 discover
