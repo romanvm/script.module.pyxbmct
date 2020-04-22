@@ -11,7 +11,6 @@ matrix:
         - pytype -V 2.7 ./script.module.pyxbmct/lib/pyxbmct/
         - python -m unittest2 discover
       before_deploy:
-        - pip install -q Sphinx
         - cd docs
         - make html
         - cd $TRAVIS_BUILD_DIR
