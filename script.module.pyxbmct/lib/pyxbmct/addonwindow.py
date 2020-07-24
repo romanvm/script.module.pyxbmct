@@ -284,7 +284,12 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
         self.radiobutton = RadioButton('Status', font='font14')
     """
     def __new__(cls, *args, **kwargs):
-        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
+        if xbmc.getInfoLabel('System.BuildVersion')[:2] >= '19':
+            textures = {'focusOnTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
+                        'noFocusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
+                        'focusOffTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
+                        'noFocusOffTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-nofocus.png')}
+        elif xbmc.getInfoLabel('System.BuildVersion')[:2] >= '13':
             textures = {'focusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemFO.png'),
                         'noFocusTexture': os.path.join(skin.images, 'RadioButton', 'MenuItemNF.png'),
                         'focusOnTexture': os.path.join(skin.images, 'RadioButton', 'radiobutton-focus.png'),
