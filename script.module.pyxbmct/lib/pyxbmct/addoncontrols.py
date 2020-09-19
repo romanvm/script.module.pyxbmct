@@ -55,6 +55,7 @@ class ControlWithConnectCallback(object if _XBMC4XBOX else with_metaclass(ABCMet
 
     @abstractmethod
     def _connectCallback(self, callback, window):
+        # type: (typing.Callable, xbmcgui.Window) -> typing.Union[bool, typing.Callable]
         """
         Called just before an event is connected to a control.
         If true is returned callback is connected to the control.
@@ -63,7 +64,6 @@ class ControlWithConnectCallback(object if _XBMC4XBOX else with_metaclass(ABCMet
         :param callback: the callback that is to be associated with the control
         :param window: the window on which the connect method was called
         """
-        # type: (typing.Callable, xbmcgui.Window) -> typing.Union[bool, typing.Callable]
         raise NotImplementedError
 
 
@@ -75,6 +75,7 @@ class ControlWithPlacedCallback(object if _XBMC4XBOX else with_metaclass(ABCMeta
 
     @abstractmethod
     def _placedCallback(self, window, row, column, rowspan, columnspan, pad_x, pad_y):
+        # type: (xbmcgui.Window, int, int, int, int, int, int) -> None
         """
         Called after the control has been placed in a Window or Group.
         :param window: the window in which the control has been placed
@@ -85,7 +86,6 @@ class ControlWithPlacedCallback(object if _XBMC4XBOX else with_metaclass(ABCMeta
         :param pad_x: the number of pixels of padding inside the cell around the left and right sides of the control
         :param pad_y: the number of pixels of padding inside the cell around the top and bottom sides of the control
         """
-        # type: (xbmcgui.Window, int, int, int, int, int, int) -> None
         raise NotImplementedError
 
 
@@ -97,11 +97,11 @@ class ControlWithRemovedCallback(object if _XBMC4XBOX else with_metaclass(ABCMet
 
     @abstractmethod
     def _removedCallback(self, window):
+        # type: (xbmcgui.Window) -> None
         """
         Called just before a control is removed from the window
         :param window: The window the control is being removed from
         """
-        # type: (xbmcgui.Window) -> None
         raise NotImplementedError
 
 
@@ -113,12 +113,12 @@ class ControlWithFocusedCallback(object if _XBMC4XBOX else with_metaclass(ABCMet
 
     @abstractmethod
     def _focusedCallback(self):
+        # type: () -> bool
         """
         Called when a control is focused either by manually calling Window.setFocus or
         by the user navigating to it.
         :returns The return value is only used when setFocus is called. If false the control won't be focused on.
         """
-        # type: () -> bool
         raise NotImplementedError
 
 
@@ -152,6 +152,7 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
         raise AddonWindowError("Could not find Control class")
 
     def isEnabled(self):
+        # type: () -> bool
         """
         Determine if a control is enabled or not.
 
@@ -159,13 +160,13 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
 
             enabled = self.isEnabled()
         """
-        # type: () -> bool
         # Test this way so that a constructor is not needed
         # to set the intial values
         return not hasattr(self, "_is_enabled") or self._is_enabled
 
     if _XBMC4XBOX:
         def isVisible(self):
+            # type: () -> bool
             """
             Determine if the control is visible or not.
 
@@ -173,7 +174,6 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
 
                 enabled = self.isVisible()
             """
-            # type: () -> bool
             return not hasattr(self, "_is_visible") or self._is_visible
 
         def getX(self):
@@ -185,6 +185,7 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
             return self.getPosition()[1]
 
         def setVisible(self, is_visible):
+            # type: (bool) -> None
             """
             Set whether the control is visible or not.
 
@@ -194,11 +195,11 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
 
                 self.setVisible(False)
             """
-            # type: (bool) -> None
             self._is_visible = is_visible
             self._getControlClass().setVisible(self, is_visible)
 
     def setEnabled(self, is_enabled):
+        # type: (bool) -> None
         """
         Set whether the control is enabled or not.
 
@@ -208,11 +209,11 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
 
             self.setEnabled(False)
         """
-        # type: (bool) -> None
         self._is_enabled = is_enabled
         self._getControlClass().setEnabled(self, is_enabled)
 
     def getMidpoint(self):
+        # type: () -> typing.Tuple[int, int]
         """
         Get the (x,y) coordinates of the controls midpoint.
 
@@ -220,7 +221,6 @@ class ControlMixin(xbmcgui.Control if TYPE_CHECKING else object):
 
             x, y = self.getMidpoint()
         """
-        # type: () -> typing.Tuple[int, int]
         x = self.getX()
         y = self.getY()
         width = self.getWidth()
@@ -590,17 +590,17 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
         return self.getHeight()
 
     def getRows(self):
+        # type: () -> int
         """
         Get grid rows count.
         """
-        # type: () -> int
         return self._rows
 
     def getColumns(self):
+        # type: () -> int
         """
         Get grid columns count.
         """
-        # type: () -> int
         return self._columns
 
     def addControl(self, control):
@@ -618,6 +618,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
         self._window = None
 
     def removeControl(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Remove a control from the window grid layout.
 
@@ -627,12 +628,12 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
 
             self.removeControl(self.label)
         """
-        # type: (xbmcgui.Control) -> None
         # getWindow will throw an error if Group is not placed
         self.getWindow().removeControl(control)
         self._controls.remove(control)
 
     def removeControls(self, controls):
+        # type: (typing.Iterable[xbmcgui.Control]) -> None
         """
         Remove multiple controls from the window grid layout.
 
@@ -642,13 +643,13 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
 
             self.removeControl(self.label)
         """
-        # type: (typing.Iterable[xbmcgui.Control]) -> None
         # Need to copy the list of controls as we are changing
         # its size whilst iterating over it
         for control in list(controls):
             self.removeControl(control)
 
     def removeAllChildren(self):
+        # type: () -> None
         """
         Removes all the Group's children (and all their children) from the window.
 
@@ -656,10 +657,10 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
 
             group.removeAllChildren()
         """
-        # type: () -> None
         self.removeControls(self._controls)
 
     def setVisible(self, is_visible):
+        # type: (bool) -> None
         """
         Sets the group (and it all its current children) to be either visible or invisible.
 
@@ -669,7 +670,6 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
 
             group.setVisible(False)
         """
-        # type: (bool) -> None
         xbmcgui.ControlGroup.setVisible(self, is_visible)
         for control in self._controls:
             control.setVisible(is_visible)
@@ -683,6 +683,7 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
             control.setVisibleCondition(is_visible, allow_hidden_focus)
 
     def setEnabled(self, is_enabled):
+        # type: (bool) -> None
         """
         Sets the group (and it all its current children) to be either enabled or disabled.
 
@@ -692,7 +693,6 @@ class Group(ControlMixin, xbmcgui.ControlGroup, AbstractGrid, ControlWithPlacedC
 
             group.setVisible(setEnabled)
         """
-        # type: (bool) -> None
         xbmcgui.ControlGroup.setEnabled(self, is_enabled)
         for control in self._controls:
             control.setEnabled(is_enabled)

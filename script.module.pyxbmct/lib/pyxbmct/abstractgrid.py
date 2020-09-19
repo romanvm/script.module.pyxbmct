@@ -41,18 +41,18 @@ class AbstractGrid(object if _XBMC4XBOX else with_metaclass(ABCMeta, object)):
 
     @abstractmethod
     def getRows(self):
+        # type: () -> int
         """
         Get grid rows count.
         """
-        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
     def getColumns(self):
+        # type: () -> int
         """
         Get grid columns count.
         """
-        # type: () -> int
         raise NotImplementedError
 
     @abstractmethod
@@ -101,6 +101,7 @@ class AbstractGrid(object if _XBMC4XBOX else with_metaclass(ABCMeta, object)):
         raise NotImplementedError
 
     def placeControl(self, control, row, column, rowspan=1, columnspan=1, pad_x=5, pad_y=5):
+        # type: (xbmcgui.Control, int, int, int, int, int, int) -> None
         """
         Place a control within the window grid layout.
 
@@ -120,7 +121,6 @@ class AbstractGrid(object if _XBMC4XBOX else with_metaclass(ABCMeta, object)):
 
             self.placeControl(self.label, 0, 1)
         """
-        # type: (xbmcgui.Control, int, int, int, int, int, int) -> None
         tile_width = self.getTileWidth()
         tile_height = self.getTileHeight()
         control_x = (self.getGridX() + tile_width * column) + pad_x

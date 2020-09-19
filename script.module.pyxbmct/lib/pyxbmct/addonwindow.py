@@ -75,6 +75,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                        include_invisible=False, controls_subset=None,
                        control_types=(Button, List, RadioButton) if _XBMC4XBOX \
                                else (Button, List, RadioButton, Slider, Edit)):
+        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Tuple[typing.Any, ...]) -> None
         """
         Automatically setup the navigation between controls in the Window
 
@@ -85,7 +86,6 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         :param controls_subset: pass in a specific set of controls to set up the navigation for (only these controls will be effacted and then can will only be set up to navigate to each other)
         :param control_types: the types of controls to consider for the navigation
         """
-        # type: (bool, bool, bool, bool, typing.Iterable[xbmcgui.Control], typing.Tuple[typing.Any, ...]) -> None
         if controls_subset is None:
             controls = self._controls
         else:
@@ -200,6 +200,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                 control.controlUp(wrap_around_move_up)
 
     def setGeometry(self, width_, height_, rows_, columns_, pos_x=-1, pos_y=-1):
+        # type: (int, int, int, int, int, int) -> None
         """
         Set width, height, Grid layout, and coordinates (optional) for a new control window.
 
@@ -217,7 +218,6 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             self.setGeometry(400, 500, 5, 4)
         """
-        # type: (int, int, int, int, int, int) -> None
         self._width = width_
         self._height = height_
         self.rows = rows_
@@ -230,62 +230,63 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
             self.y = 360 - height_ // 2
 
     def getRows(self):
+        # type: () -> int
         """
         Get grid rows count.
 
         :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
-        # type: () -> int
         try:
             return self.rows  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
 
     def getColumns(self):
+        # type: () -> int
         """
         Get grid columns count.
 
         :raises: :class:`AddonWindowError` if a grid has not yet been set.
         """
-        # type: () -> int
         try:
             return self.columns  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Grid layout is not set! Call setGeometry first.')
 
     def getX(self):
-        """Get X coordinate of the top-left corner of the window."""
         # type: () -> int
+        """Get X coordinate of the top-left corner of the window."""
         try:
             return self.x  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getY(self):
-        """Get Y coordinate of the top-left corner of the window."""
         # type: () -> int
+        """Get Y coordinate of the top-left corner of the window."""
         try:
             return self.y  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getWindowWidth(self):
-        """Get window width."""
         # type: () -> int
+        """Get window width."""
         try:
             return self._width  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getWindowHeight(self):
-        """Get window height."""
         # type: () -> int
+        """Get window height."""
         try:
             return self._height  # pytype: disable=attribute-error
         except AttributeError:
             raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def connect(self, event, callback):
+        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
         """
         Connect an event to a function.
 
@@ -319,7 +320,6 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             self.connect(ACTION_NAV_BACK, self.close)
         """
-        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
 
         if isinstance(event, int):
             connect_list = self._actions_connected
@@ -341,16 +341,17 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
             connect_list.append((event, [callback]))
 
     def connectEventList(self, events, callback):
+        # type: (typing.List[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         """
         Connect a list of controls/action codes to a function.
 
         See :meth:`connect` docstring for more info.
         """
-        # type: (typing.List[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         for event in events:
             self.connect(event, callback)
 
     def disconnect(self, event, callback=None):
+        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
         """
         Disconnect an event from a function.
 
@@ -369,7 +370,6 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             self.disconnect(ACTION_NAV_BACK)
         """
-        # type: (typing.Union[int, xbmcgui.Control], typing.Callable) -> None
         if isinstance(event, int):
             event_list = self._actions_connected
         else:
@@ -395,6 +395,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         raise AddonWindowError('The action or control %s is not connected!' % str(event))
 
     def disconnectEventList(self, events, callback=None):
+        # type: (typing.Iterable[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         """
         Disconnect a list of controls/action codes from functions.
 
@@ -405,17 +406,16 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         :raises: :class:`AddonWindowError` if at least one event in the list
             is not connected to any function.
         """
-        # type: (typing.Iterable[typing.Union[int, xbmcgui.Control]], typing.Callable) -> None
         for event in events:
             self.disconnect(event, callback)
 
     def _executeConnected(self, event, connected_list):
+        # type: (typing.Union[int, xbmcgui.Control], typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]) -> None
         """
         Execute a connected event (an action or a control).
 
         This is a helper method not to be called directly.
         """
-        # type: (typing.Union[int, xbmcgui.Control], typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]) -> None
         for item in connected_list:
             if item[0] == event:
                 for callback in item[1]:
@@ -423,6 +423,7 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                 break
 
     def setAnimation(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Set animation for control
 
@@ -442,7 +443,6 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
                 control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=1000',),
                                         ('WindowClose', 'effect=fade start=100 end=0 time=1000',)])
         """
-        # type: (xbmcgui.Control) -> None
         pass
 
     def setFocus(self, control):
@@ -454,16 +454,17 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
             self._XBMCWindowClass.setFocus(self, control)
 
     def onFocus(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Catch focused controls.
 
         :param control: is an instance of :class:`xbmcgui.Control` class.
         """
-        # type: (xbmcgui.Control) -> None
         if hasattr(control, '_focusedCallback'):
             control._focusedCallback()
 
     def addControl(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Wrapper for xbmcgui.Window.addControl.
 
@@ -476,11 +477,11 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             window.addControls(label)
         """
-        # type: (xbmcgui.Control) -> None
         self._controls.append(control)
         self._XBMCWindowClass.addControl(self, control)
 
     def addControls(self, controls):
+        # type: (typing.Iterable[xbmcgui.Control]) -> None
         """
         Wrapper for xbmcgui.Window.addControls.
 
@@ -493,13 +494,13 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             window.addControls([label, button])
         """
-        # type: (typing.Iterable[xbmcgui.Control]) -> None
         # addControls is not directly available on XBMC4XBOX
         # so this implementation is the most portable
         for control in controls:
             self.addControl(control)
 
     def removeControl(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Remove a control from the window grid layout.
 
@@ -509,12 +510,12 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             self.removeControl(self.label)
         """
-        # type: (xbmcgui.Control) -> None
         if hasattr(control, "_removedCallback"):
             control._removedCallback(self)
         self._XBMCWindowClass.removeControl(self, control)
 
     def removeControls(self, controls):
+        # type: (typing.Iterable[xbmcgui.Control]) -> None
         """
         Remove multiple controls from the window grid layout.
 
@@ -524,17 +525,16 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
 
             self.removeControl(self.label)
         """
-        # type: (typing.Iterable[xbmcgui.Control]) -> None
         for control in controls:
             self.removeControl(control)
 
     def onAction(self, action):
+        # type: (xbmcgui.Action) -> None
         """
         Catch button actions.
 
         :param action: an instance of :class:`xbmcgui.Action` class.
         """
-        # type: (xbmcgui.Action) -> None
         if action == ACTION_PREVIOUS_MENU:
             self.close()  # pytype: disable=attribute-error
         # On control is not called on XBMC4XBOX for subclasses of the built in
@@ -548,12 +548,12 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
             self._executeConnected(action, self._actions_connected)
 
     def onControl(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Catch activated controls.
 
         :param control: is an instance of :class:`xbmcgui.Control` class.
         """
-        # type: (xbmcgui.Control) -> None
         self._executeConnected(control, self._controls_connected)
 
 
@@ -575,18 +575,18 @@ class AddonWindow(AbstractWindow):
     """
 
     def __init__(self, title=''):
-        """Constructor method."""
         # type: (str) -> None
+        """Constructor method."""
         super(AddonWindow, self).__init__()
         self._setFrame(title)
 
     def onControl(self, control):
+        # type: (xbmcgui.Control) -> None
         """
         Catch activated controls.
 
         :param control: is an instance of :class:`xbmcgui.Control` class.
         """
-        # type: (xbmcgui.Control) -> None
         if (hasattr(self, 'window_close_button') and
                 control.getId() == self.window_close_button.getId()):
             self.close()  # pytype: disable=attribute-error
@@ -594,6 +594,7 @@ class AddonWindow(AbstractWindow):
             super(AddonWindow, self).onControl(control)
 
     def _setFrame(self, title):
+        # type: (str) -> None
         """
         Set window frame
 
@@ -602,7 +603,6 @@ class AddonWindow(AbstractWindow):
 
         This is a helper method not to be called directly.
         """
-        # type: (str) -> None
         # Window background image
         self.background_img = skin.background_img
         # Background for a window header
@@ -624,6 +624,7 @@ class AddonWindow(AbstractWindow):
         self.setAnimation(self.window_close_button)
 
     def setGeometry(self, width_, height_, rows_, columns_, pos_x=-1, pos_y=-1, padding=5):
+        # type: (int, int, int, int, int, int, int) -> None
         """
         Set width, height, Grid layout, and coordinates (optional) for a new control window.
 
@@ -643,7 +644,6 @@ class AddonWindow(AbstractWindow):
 
             self.setGeometry(400, 500, 5, 4)
         """
-        # type: (int, int, int, int, int, int, int) -> None
         self.win_padding = padding
         super(AddonWindow, self).setGeometry(width_, height_, rows_, columns_, pos_x, pos_y)
         self.background.setPosition(self.x, self.y)
@@ -660,12 +660,12 @@ class AddonWindow(AbstractWindow):
                                              self.y + skin.y_margin + skin.close_btn_y_offset)
 
     def _raiseSetGeometryNotCalledError(self):
+        # type: () -> None
         """
         Helper method that raises an AddonWindowError  that states that setGeometry needs to be called. Used by methods
         that will fail if the window geometry is not defined.
         :raises AddonWindowError
         """
-        # type: () -> None
         raise AddonWindowError('Window geometry is not defined! Call setGeometry first.')
 
     def getGridX(self):
@@ -701,6 +701,7 @@ class AddonWindow(AbstractWindow):
         return val - skin.header_height - skin.title_back_y_shift - 2 * skin.y_margin
 
     def setWindowTitle(self, title=''):
+        # type: (str) -> None
         """
         Set window title.
 
@@ -711,12 +712,11 @@ class AddonWindow(AbstractWindow):
 
             self.setWindowTitle('My Cool Addon')
         """
-        # type: (str) -> None
         self.title_bar.setLabel(title)
 
     def getWindowTitle(self):
-        """Get window title."""
         # type: () -> str
+        """Get window title."""
         return self.title_bar.getLabel()
 
 
@@ -766,10 +766,10 @@ class AddonFullWindow(AddonWindow, xbmcgui.Window):
         return super(AddonFullWindow, cls).__new__(cls, *args, **kwargs)
 
     def _setFrame(self, title):
+        # type: (str) -> None
         """
         Set the image for for the fullscreen background.
         """
-        # type: (str) -> None
         # Image for the fullscreen background.
         self.main_bg_img = skin.main_bg_img
         # Fullscreen background image control.
@@ -778,6 +778,7 @@ class AddonFullWindow(AddonWindow, xbmcgui.Window):
         super(AddonFullWindow, self)._setFrame(title)
 
     def setBackground(self, image=''):
+        # type: (str) -> None
         """
         Set the main bacground to an image file.
 
@@ -787,7 +788,6 @@ class AddonFullWindow(AddonWindow, xbmcgui.Window):
 
             self.setBackground('/images/bacground.png')
         """
-        # type: (str) -> None
         self.main_bg.setImage(image)
 
 
