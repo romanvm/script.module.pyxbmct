@@ -12,7 +12,7 @@ This module contains all the Window classes of the PyXBMCt framework
 
 from __future__ import absolute_import, division, unicode_literals
 import inspect
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from .addonskin import skin
 from .abstractgrid import AbstractGrid
 from .addoncontrols import Button, List, RadioButton
