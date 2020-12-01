@@ -37,6 +37,8 @@ else:
     from kodi_six import xbmcgui
     from six import with_metaclass
 
+XBMCGUI_WINDOW_CLASSES = (xbmcgui.Window, xbmcgui.WindowDialog)
+
 
 class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, AbstractGrid)):
     """
@@ -59,11 +61,11 @@ class AbstractWindow(AbstractGrid if _XBMC4XBOX else with_metaclass(ABCMeta, Abs
         self._controls_connected = []  # type: typing.List[typing.Tuple[typing.Union[int, xbmcgui.Control], typing.List[typing.Callable]]]
         # Need access to this class and this is not easy to obtain
         # as it is not the superclass of this one
-        self._XBMCWindowClass = None
+        self._XBMCWindowClass = None  # type: typing.Optional[typing.Type[xbmcgui.Window]]
         for ancestor in inspect.getmro(self.__class__):
-            if inspect.getmodule(ancestor) == inspect.getmodule(xbmcgui):
+            if ancestor in XBMCGUI_WINDOW_CLASSES:
                 self._XBMCWindowClass = ancestor
-            # break
+                break
         if self._XBMCWindowClass is None:
             raise AddonWindowError("Could not find Window parent class")
 
