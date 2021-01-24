@@ -23,7 +23,7 @@ setup(
     install_requires=[
         'Kodistubs',
         'six',
-        'kodi_six @ git+https://github.com/romanvm/kodi.six@master'
+        'kodi_six @ git+https://github.com/romanvm/kodi.six'
     ],
     extras_require={
         'dev': [
