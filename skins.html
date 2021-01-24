@@ -1,0 +1,145 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Skins &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Links" href="links.html" />
+    <link rel="prev" title="Estuary Skin Support" href="estuary.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="skins">
+<h1>Skins<a class="headerlink" href="#skins" title="Permalink to this headline">¶</a></h1>
+<p>Starting from <code class="docutils literal notranslate"><span class="pre">v.1.2.0</span></code>, PyXBMCt provides <a class="reference internal" href="_autosummary/pyxbmct.addonskin.html#pyxbmct.addonskin.BaseSkin" title="pyxbmct.addonskin.BaseSkin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSkin</span></code></a> and
+<a class="reference internal" href="_autosummary/pyxbmct.addonskin.html#pyxbmct.addonskin.Skin" title="pyxbmct.addonskin.Skin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Skin</span></code></a> classes that allow you to customize
+PyXBMCt UI elements appearance fully or partially.
+To customize your UI skin you need to subclass one of those classes and
+set your custom skin instance as <code class="docutils literal notranslate"><span class="pre">pyxbmct.skin</span></code> module-level property (see below).</p>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addonskin.html#pyxbmct.addonskin.BaseSkin" title="pyxbmct.addonskin.BaseSkin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSkin</span></code></a> is an abstract class that allows you
+to fully customize the appearance of PyXBMCt <code class="docutils literal notranslate"><span class="pre">*Window</span></code> classes.
+You need to subclass it and define all your custom skin attributes – image textures,
+coorditate offsets, etc. – as properties of your derived class.</p>
+<p>The <a class="reference internal" href="_autosummary/pyxbmct.addonskin.html#pyxbmct.addonskin.Skin" title="pyxbmct.addonskin.Skin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Skin</span></code></a> can be subclassed to change only some
+of the current PyXBMCt skin properties. The following example shows how to change the
+fullscreen background of <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonFullWindow" title="pyxbmct.addonwindow.AddonFullWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonFullWindow</span></code></a>
+class without altering other elements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyxbmct</span>
+
+
+<span class="k">class</span> <span class="nc">MySkin</span><span class="p">(</span><span class="n">pyxbmct</span><span class="o">.</span><span class="n">Skin</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">main_bg_img</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;/path/to/my/background_image.png&#39;</span>
+
+
+<span class="n">pyxbmct</span><span class="o">.</span><span class="n">addonwindow</span><span class="o">.</span><span class="n">skin</span> <span class="o">=</span> <span class="n">MySkin</span><span class="p">()</span>
+
+
+<span class="c1"># Then create your UI window class with the new background</span>
+<span class="k">class</span> <span class="nc">MyCoolWindow</span><span class="p">(</span><span class="n">pyxbmct</span><span class="o">.</span><span class="n">AddonWindow</span><span class="p">):</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

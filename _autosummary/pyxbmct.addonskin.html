@@ -1,0 +1,438 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyxbmct.addonskin &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyxbmct.addoncontrols" href="pyxbmct.addoncontrols.html" />
+    <link rel="prev" title="pyxbmct.addonwindow" href="pyxbmct.addonwindow.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyxbmct.addonskin">
+<span id="pyxbmct-addonskin"></span><h1>pyxbmct.addonskin<a class="headerlink" href="#module-pyxbmct.addonskin" title="Permalink to this headline">¶</a></h1>
+<p>Classes for defining the appearance of PyXBMCt Windows and Controls</p>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pyxbmct.addonskin.BaseSkin" title="pyxbmct.addonskin.BaseSkin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseSkin</span></code></a></td>
+<td>Abstract class for creating fully customized skins</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyxbmct.addonskin.Skin" title="pyxbmct.addonskin.Skin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Skin</span></code></a>()</td>
+<td>Skin class</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="pyxbmct.addonskin.BaseSkin">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonskin.</code><code class="descname">BaseSkin</code><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Abstract class for creating fully customized skins</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This class is meant for subclassing and cannot be instantiated directly!
+A sublcass must implement all the following properties.</p>
+</div>
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.images">
+<code class="descname">images</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the base directory for image files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.x_margin">
+<code class="descname">x_margin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.x_margin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.x_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get horizontal adjustment for the header background
+if the main background has transparent edges.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.y_margin">
+<code class="descname">y_margin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.y_margin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.y_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get vertical adjustment for the header background
+if the main background has transparent edges.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.title_bar_x_shift">
+<code class="descname">title_bar_x_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.title_bar_x_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.title_bar_x_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get horizontal adjustment for title bar texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.title_bar_y_shift">
+<code class="descname">title_bar_y_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.title_bar_y_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.title_bar_y_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get vertical adjustment for title bar texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.title_back_y_shift">
+<code class="descname">title_back_y_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.title_back_y_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.title_back_y_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get header position adjustment
+if the main background has visible borders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.header_height">
+<code class="descname">header_height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.header_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.header_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the height of a window header
+(for the title background and the title label).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_btn_width">
+<code class="descname">close_btn_width</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_btn_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_btn_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the width of the top-right close button</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_btn_height">
+<code class="descname">close_btn_height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_btn_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_btn_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the height of the top-right close button</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_btn_x_offset">
+<code class="descname">close_btn_x_offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_btn_x_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_btn_x_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get close button horizontal adjustment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_btn_y_offset">
+<code class="descname">close_btn_y_offset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_btn_y_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_btn_y_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get close button vertical adjustment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.header_align">
+<code class="descname">header_align</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.header_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.header_align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a numeric value for header text alignment</p>
+<p>For example:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>: left</li>
+<li><code class="docutils literal notranslate"><span class="pre">6</span></code>: center</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.header_text_color">
+<code class="descname">header_text_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.header_text_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.header_text_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the color of the header text</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.background_img">
+<code class="descname">background_img</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.background_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.background_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get dialog background texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.title_background_img">
+<code class="descname">title_background_img</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.title_background_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.title_background_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get title bar background texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_button_focus">
+<code class="descname">close_button_focus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_button_focus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_button_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get close button focused texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.close_button_no_focus">
+<code class="descname">close_button_no_focus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.close_button_no_focus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.close_button_no_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get close button unfocused texture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonskin.BaseSkin.main_bg_img">
+<code class="descname">main_bg_img</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#BaseSkin.main_bg_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.BaseSkin.main_bg_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get fullscreen background for
+<a class="reference internal" href="pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonFullWindow" title="pyxbmct.addonwindow.AddonFullWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonFullWindow</span></code></a> class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonskin.Skin">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonskin.</code><code class="descname">Skin</code><a class="reference internal" href="../_modules/pyxbmct/addonskin.html#Skin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonskin.Skin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonskin.BaseSkin" title="pyxbmct.addonskin.BaseSkin"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonskin.BaseSkin</span></code></a></p>
+<p>Skin class</p>
+<p>Defines parameters that control
+the appearance of PyXBMCt windows and controls.</p>
+<dl class="attribute">
+<dt id="pyxbmct.addonskin.Skin.estuary">
+<code class="descname">estuary</code><a class="headerlink" href="#pyxbmct.addonskin.Skin.estuary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set a boolean property that defines the look of PyXBMCt elements:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code> – use Estuary skin appearance</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> – use Confluence skin appearance.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../links.html">Links</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../pyxbmct.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addonwindow.html">pyxbmct.addonwindow</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pyxbmct.addonskin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addoncontrols.html">pyxbmct.addoncontrols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addonwindowerror.html">pyxbmct.addonwindowerror</a></li>
+</ul>
+</li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,679 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyxbmct.addonwindow &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyxbmct.addonskin" href="pyxbmct.addonskin.html" />
+    <link rel="prev" title="API Reference" href="../pyxbmct.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyxbmct.addonwindow">
+<span id="pyxbmct-addonwindow"></span><h1>pyxbmct.addonwindow<a class="headerlink" href="#module-pyxbmct.addonwindow" title="Permalink to this headline">¶</a></h1>
+<p>This module contains all the Window classes of the PyXBMCt framework</p>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow" title="pyxbmct.addonwindow.AbstractWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractWindow</span></code></a>()</td>
+<td>Top-level control window.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a>([title])</td>
+<td>Addon UI container with a transparent background.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyxbmct.addonwindow.AddonFullWindow" title="pyxbmct.addonwindow.AddonFullWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddonFullWindow</span></code></a>([title])</td>
+<td>Addon UI container with a solid background.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyxbmct.addonwindow.AddonWindow" title="pyxbmct.addonwindow.AddonWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddonWindow</span></code></a>([title])</td>
+<td>Top-level control window.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#pyxbmct.addonwindow.BlankDialogWindow" title="pyxbmct.addonwindow.BlankDialogWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlankDialogWindow</span></code></a>()</td>
+<td>Addon UI container with a transparent background.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#pyxbmct.addonwindow.BlankFullWindow" title="pyxbmct.addonwindow.BlankFullWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlankFullWindow</span></code></a>()</td>
+<td>Addon UI container with a solid background.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="pyxbmct.addonwindow.AbstractWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">AbstractWindow</code><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.abstractgrid.AbstractGrid</span></code></p>
+<p>Top-level control window.</p>
+<p>The control windows serves as a parent widget for other XBMC UI controls
+much like Tkinter.Tk or PyQt QWidget class.</p>
+<p>This class is a basic “skeleton” for a control window.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an abstract class and is not supposed to be instantiated directly!</p>
+</div>
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.autoNavigation">
+<code class="descname">autoNavigation</code><span class="sig-paren">(</span><em>vertical_wrap_around=True</em>, <em>horizontal_wrap_around=True</em>, <em>include_disabled=False</em>, <em>include_invisible=False</em>, <em>controls_subset=None</em>, <em>control_types=(&lt;class 'pyxbmct.addoncontrols.Button'&gt;</em>, <em>&lt;class 'pyxbmct.addoncontrols.List'&gt;</em>, <em>&lt;class 'pyxbmct.addoncontrols.RadioButton'&gt;</em>, <em>&lt;class 'pyxbmct.addoncontrols.Slider'&gt;</em>, <em>&lt;class 'pyxbmct.addoncontrols.Edit'&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.autoNavigation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.autoNavigation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically setup the navigation between controls in the Window</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vertical_wrap_around</strong> – if you navigate up from the topmost control it will take you to the bottommost control</li>
+<li><strong>horizontal_wrap_around</strong> – if you navigate down from the bottommost control it will take you to the topmost control</li>
+<li><strong>include_disabled</strong> – include controls that are disabled</li>
+<li><strong>include_invisible</strong> – include controls that are currently not visible</li>
+<li><strong>controls_subset</strong> – pass in a specific set of controls to set up the navigation for (only these controls will be effacted and then can will only be set up to navigate to each other)</li>
+<li><strong>control_types</strong> – the types of controls to consider for the navigation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.setGeometry">
+<code class="descname">setGeometry</code><span class="sig-paren">(</span><em>width_</em>, <em>height_</em>, <em>rows_</em>, <em>columns_</em>, <em>pos_x=-1</em>, <em>pos_y=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.setGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.setGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set width, height, Grid layout, and coordinates (optional) for a new control window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> – widgh of the created window.</li>
+<li><strong>height</strong> – height of the created window.</li>
+<li><strong>rows</strong> – # rows of the Grid layout to place controls on.</li>
+<li><strong>columns</strong> – # colums of the Grid layout to place controls on.</li>
+<li><strong>pos_x</strong> – (opt) x coordinate of the top left corner of the window.</li>
+<li><strong>pos_y</strong> – (opt) y coordinates of the top left corner of the window.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If pos_x and pos_y are not privided, the window will be placed
+at the center of the screen.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getRows">
+<code class="descname">getRows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getRows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getRows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get grid rows count.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonWindowError</span></code> if a grid has not yet been set.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getColumns">
+<code class="descname">getColumns</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getColumns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getColumns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get grid columns count.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonWindowError</span></code> if a grid has not yet been set.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getX">
+<code class="descname">getX</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get X coordinate of the top-left corner of the window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getY">
+<code class="descname">getY</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Y coordinate of the top-left corner of the window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getWindowWidth">
+<code class="descname">getWindowWidth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getWindowWidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getWindowWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get window width.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.getWindowHeight">
+<code class="descname">getWindowHeight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.getWindowHeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.getWindowHeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get window height.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>event</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect an event to a function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> – event to be connected.</li>
+<li><strong>callback</strong> – callback object the event is connected to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>An event can be an instance of a Control object or an integer key action code.
+Several basic key action codes are provided by PyXBMCt. <code class="docutils literal notranslate"><span class="pre">xbmcgui</span></code> module
+provides more action codes.</p>
+<p>You can connect the following Controls: <code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">RadioButton</span></code>
+and <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>. Other Controls do not generate any control events when activated
+so their connections won’t work.</p>
+<p>To catch <code class="xref py py-class docutils literal notranslate"><span class="pre">Slider</span></code> events you need to connect the following key actions:
+<code class="docutils literal notranslate"><span class="pre">ACTION_MOVE_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">ACTION_MOVE_RIGHT</span></code> and <code class="docutils literal notranslate"><span class="pre">ACTION_MOUSE_DRAG</span></code>, and do a check
+whether the <code class="docutils literal notranslate"><span class="pre">Slider</span></code> instance is focused.</p>
+<p><code class="docutils literal notranslate"><span class="pre">callback</span></code> parameter is a function or a method to be executed on when the event is fired.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">For connection you must provide a function object without brackets <code class="docutils literal notranslate"><span class="pre">()</span></code>,
+not a function call!</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">lambda</span></code> can be used as to call another function or method with parameters known at runtime.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ACTION_NAV_BACK</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.connectEventList">
+<code class="descname">connectEventList</code><span class="sig-paren">(</span><em>events</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.connectEventList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.connectEventList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect a list of controls/action codes to a function.</p>
+<p>See <a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow.connect" title="pyxbmct.addonwindow.AbstractWindow.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connect()</span></code></a> docstring for more info.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><em>event</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect an event from a function.</p>
+<p>An event can be an inctance of a Control object or an integer key action code
+which has previously been connected to a function or a method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>event</strong> – event to be disconnected.</li>
+<li><strong>callback</strong> – callback related to the event to be disconnected (if None then all callbacks are disconnected).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonWindowError</span></code> if an event is not connected to any function.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exit_button</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">ACTION_NAV_BACK</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.disconnectEventList">
+<code class="descname">disconnectEventList</code><span class="sig-paren">(</span><em>events</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.disconnectEventList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.disconnectEventList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect a list of controls/action codes from functions.</p>
+<p>See <a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow.disconnect" title="pyxbmct.addonwindow.AbstractWindow.disconnect"><code class="xref py py-func docutils literal notranslate"><span class="pre">disconnect()</span></code></a> docstring for more info.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>events</strong> – the list of events to be disconnected.</li>
+<li><strong>callback</strong> – callback related to each of the events to be disconnected (if None then all callbacks are disconnected).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonWindowError</span></code> if at least one event in the list
+is not connected to any function.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.setAnimation">
+<code class="descname">setAnimation</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.setAnimation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.setAnimation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set animation for control</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – control for which animation is set.</td>
+</tr>
+</tbody>
+</table>
+<p>This method is called automatically to set animation properties for all controls
+added to the current addon window instance – both for built-in controls
+(window background, title bar etc.) and for controls added with <code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl()</span></code>.</p>
+<p>It receives a control instance as the 2nd positional argument (besides <code class="docutils literal notranslate"><span class="pre">self</span></code>).
+By default the method does nothing, i.e. no animation is set for controls.
+To add animation you need to re-implement this method in your child class.</p>
+<p>E.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">setAnimation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">):</span>
+    <span class="n">control</span><span class="o">.</span><span class="n">setAnimations</span><span class="p">([(</span><span class="s1">&#39;WindowOpen&#39;</span><span class="p">,</span> <span class="s1">&#39;effect=fade start=0 end=100 time=1000&#39;</span><span class="p">,),</span>
+                            <span class="p">(</span><span class="s1">&#39;WindowClose&#39;</span><span class="p">,</span> <span class="s1">&#39;effect=fade start=100 end=0 time=1000&#39;</span><span class="p">,)])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.onFocus">
+<code class="descname">onFocus</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.onFocus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.onFocus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catch focused controls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – is an instance of <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Control" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Control</span></code></a> class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.addControl">
+<code class="descname">addControl</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.addControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.addControl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for xbmcgui.Window.addControl.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – the control to add.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In most circumstances you should use placeControl.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only use this method if want to to place and element in a Group it using pixel coordinates</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">window</span><span class="o">.</span><span class="n">addControls</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.addControls">
+<code class="descname">addControls</code><span class="sig-paren">(</span><em>controls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.addControls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.addControls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for xbmcgui.Window.addControls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controls</strong> – iterable containing the controls to add.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In most circumstances you should use placeControl.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only use this method if want to to place and element in a Group it using pixel coordinates</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">window</span><span class="o">.</span><span class="n">addControls</span><span class="p">([</span><span class="n">label</span><span class="p">,</span> <span class="n">button</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.removeControl">
+<code class="descname">removeControl</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.removeControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.removeControl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a control from the window grid layout.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – control instance to be removed from the grid.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">removeControl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.removeControls">
+<code class="descname">removeControls</code><span class="sig-paren">(</span><em>controls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.removeControls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.removeControls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove multiple controls from the window grid layout.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controls</strong> – an iterable of control instances to be removed from the grid.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">removeControl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.onAction">
+<code class="descname">onAction</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.onAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.onAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catch button actions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> – an instance of <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Action" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Action</span></code></a> class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AbstractWindow.onControl">
+<code class="descname">onControl</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AbstractWindow.onControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AbstractWindow.onControl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catch activated controls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – is an instance of <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Control" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Control</span></code></a> class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonwindow.AddonWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">AddonWindow</code><span class="sig-paren">(</span><em>title=u''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow" title="pyxbmct.addonwindow.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonwindow.AbstractWindow</span></code></a></p>
+<p>Top-level control window.</p>
+<p>The control windows serves as a parent widget for other XBMC UI controls
+much like <code class="docutils literal notranslate"><span class="pre">Tkinter.Tk</span></code> or PyQt <code class="docutils literal notranslate"><span class="pre">QWidget</span></code> class.
+This is an abstract class which is not supposed to be instantiated directly
+and will raise exeptions. It is designed to be implemented in a grand-child class
+with the second inheritance from <code class="docutils literal notranslate"><span class="pre">xbmcgui.Window</span></code> or <code class="docutils literal notranslate"><span class="pre">xbmcgui.WindowDialog</span></code>
+in a direct child class.</p>
+<p>This class provides a control window with a background and a header
+similar to top-level widgets of desktop UI frameworks.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an abstract class and is not supposed to be instantiated directly!</p>
+</div>
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AddonWindow.onControl">
+<code class="descname">onControl</code><span class="sig-paren">(</span><em>control</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonWindow.onControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonWindow.onControl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catch activated controls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>control</strong> – is an instance of <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Control" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Control</span></code></a> class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AddonWindow.setGeometry">
+<code class="descname">setGeometry</code><span class="sig-paren">(</span><em>width_</em>, <em>height_</em>, <em>rows_</em>, <em>columns_</em>, <em>pos_x=-1</em>, <em>pos_y=-1</em>, <em>padding=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonWindow.setGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonWindow.setGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set width, height, Grid layout, and coordinates (optional) for a new control window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> – new window width in pixels.</li>
+<li><strong>height</strong> – new window height in pixels.</li>
+<li><strong>rows</strong> – # of rows in the Grid layout to place controls on.</li>
+<li><strong>columns</strong> – # of colums in the Grid layout to place controls on.</li>
+<li><strong>pos_x</strong> – (optional) x coordinate of the top left corner of the window.</li>
+<li><strong>pos_y</strong> – (optional) y coordinate of the top left corner of the window.</li>
+<li><strong>padding</strong> – (optional) padding between outer edges of the window</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>and controls placed on it.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">pos_x</span></code> and <code class="docutils literal notranslate"><span class="pre">pos_y</span></code> are not privided, the window will be placed
+at the center of the screen.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AddonWindow.setWindowTitle">
+<code class="descname">setWindowTitle</code><span class="sig-paren">(</span><em>title=u''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonWindow.setWindowTitle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonWindow.setWindowTitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set window title.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method must be called <strong>AFTER</strong> (!!!) <a class="reference internal" href="#pyxbmct.addonwindow.AddonWindow.setGeometry" title="pyxbmct.addonwindow.AddonWindow.setGeometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGeometry()</span></code></a>,
+otherwise there is some werid bug with all skin text labels set to the <code class="docutils literal notranslate"><span class="pre">title</span></code> text.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;My Cool Addon&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AddonWindow.getWindowTitle">
+<code class="descname">getWindowTitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonWindow.getWindowTitle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonWindow.getWindowTitle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get window title.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonwindow.BlankFullWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">BlankFullWindow</code><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#BlankFullWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.BlankFullWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow" title="pyxbmct.addonwindow.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonwindow.AbstractWindow</span></code></a>, <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Window" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Window</span></code></a></p>
+<p>Addon UI container with a solid background.</p>
+<p>This is a blank window with a black background and without any elements whatsoever.
+The decoration and layout are completely up to an addon developer.
+The window controls can hide under video or music visualization.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonwindow.BlankDialogWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">BlankDialogWindow</code><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#BlankDialogWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.BlankDialogWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonwindow.AbstractWindow" title="pyxbmct.addonwindow.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonwindow.AbstractWindow</span></code></a>, <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.WindowDialog" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.WindowDialog</span></code></a></p>
+<p>Addon UI container with a transparent background.</p>
+<p>This is a blank window with a transparent background and without any elements whatsoever.
+The decoration and layout are completely up to an addon developer.
+The window controls are always displayed over video or music visualization.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonwindow.AddonFullWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">AddonFullWindow</code><span class="sig-paren">(</span><em>title=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonFullWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonFullWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonwindow.AddonWindow" title="pyxbmct.addonwindow.AddonWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonwindow.AddonWindow</span></code></a>, <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Window" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Window</span></code></a></p>
+<p>Addon UI container with a solid background.</p>
+<p><code class="docutils literal notranslate"><span class="pre">AddonFullWindow</span></code> instance is displayed on top of the main background image –
+<code class="docutils literal notranslate"><span class="pre">self.main_bg</span></code> – and can hide behind a fullscreen video or music viaualisation.</p>
+<p>Minimal example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addon</span> <span class="o">=</span> <span class="n">AddonFullWindow</span><span class="p">(</span><span class="s1">&#39;My Cool Addon&#39;</span><span class="p">)</span>
+<span class="n">addon</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">addon</span><span class="o">.</span><span class="n">doModal</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="pyxbmct.addonwindow.AddonFullWindow.setBackground">
+<code class="descname">setBackground</code><span class="sig-paren">(</span><em>image=u''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonFullWindow.setBackground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonFullWindow.setBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the main bacground to an image file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – path to an image file as str.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="s1">&#39;/images/bacground.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyxbmct.addonwindow.AddonDialogWindow">
+<em class="property">class </em><code class="descclassname">pyxbmct.addonwindow.</code><code class="descname">AddonDialogWindow</code><span class="sig-paren">(</span><em>title=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyxbmct/addonwindow.html#AddonDialogWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyxbmct.addonwindow.AddonDialogWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyxbmct.addonwindow.AddonWindow" title="pyxbmct.addonwindow.AddonWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyxbmct.addonwindow.AddonWindow</span></code></a>, <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.WindowDialog" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.WindowDialog</span></code></a></p>
+<p>Addon UI container with a transparent background.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code> instance is displayed on top of XBMC UI,
+including fullscreen video and music visualization.</p>
+</div>
+<p>Minimal example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addon</span> <span class="o">=</span> <span class="n">AddonDialogWindow</span><span class="p">(</span><span class="s1">&#39;My Cool Addon&#39;</span><span class="p">)</span>
+<span class="n">addon</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">addon</span><span class="o">.</span><span class="n">doModal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../links.html">Links</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../pyxbmct.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pyxbmct.addonwindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addonskin.html">pyxbmct.addonskin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addoncontrols.html">pyxbmct.addoncontrols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyxbmct.addonwindowerror.html">pyxbmct.addonwindowerror</a></li>
+</ul>
+</li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

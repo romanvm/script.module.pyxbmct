@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Base Classes &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Controls" href="controls.html" />
+    <link rel="prev" title="Wellcome to PyXBMCt documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="base-classes">
+<h1>Base Classes<a class="headerlink" href="#base-classes" title="Permalink to this headline">¶</a></h1>
+<p>PyXBMCt provides 4 base classes: <a class="reference internal" href="#addondialogwindow">AddonDialogWindow</a>, <a class="reference internal" href="#addonfullwindow">AddonFullWindow</a>, <a class="reference internal" href="#blankdialogwindow-and-blankfullwindow">BlankDialogWindow and BlankFullWindow</a>. These classes serve as containers for other UI elements (controls).
+All base classes are “new-style” Python classes.</p>
+<div class="section" id="addondialogwindow">
+<h2>AddonDialogWindow<a class="headerlink" href="#addondialogwindow" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a> class is based on <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.WindowDialog" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.WindowDialog</span></code></a>
+and provides an interface window with background and a title-bar.
+The window serves as a parent control to other UI controls. Like all the other base classes,
+<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a> has the Grid layout manager
+to simplify arranging your UI controls and the event connection manager
+to connect XBMC UI events to functions and methods of your addon.</p>
+<div class="figure" id="id1">
+<img alt="_images/addon_dialog_window.jpg" src="_images/addon_dialog_window.jpg" />
+<p class="caption"><span class="caption-text"><strong>AddonDialogWindow parent window</strong></span></p>
+</div>
+<p>The main control window of <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a>
+is always displayed on top of Kodi UI, even video playback and music visualization, so it’s better suited for addons
+that are not supposed to play video or music.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Width, height and coordinates (optional) for the control window are specified
+in Kodi UI coordinate grid pixels.</p>
+</div>
+<p>The default resolution of UI coordinate grid is always 1280x720 regardless of your actual display resolution.
+This way UI elements have the same visible size no matter what display resolution you use.</p>
+</div>
+<div class="section" id="addonfullwindow">
+<h2>AddonFullWindow<a class="headerlink" href="#addonfullwindow" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonFullWindow" title="pyxbmct.addonwindow.AddonFullWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonFullWinow</span></code></a> is based on <code class="xref py py-class docutils literal notranslate"><span class="pre">xbcmgui.Window</span></code> class.
+It is similar to <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a> and also provides
+a parent control window for other UI controls.
+But, unlike <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AddonDialogWindow" title="pyxbmct.addonwindow.AddonDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AddonDialogWindow</span></code></a>,
+it has a solid main background (for which the default Estuary or Confluence background is used)
+and can hide under video or music visualization.</p>
+<div class="figure" id="id2">
+<img alt="_images/addon_full_window.jpg" src="_images/addon_full_window.jpg" />
+<p class="caption"><span class="caption-text"><strong>AddonFullWindow parent control window</strong></span></p>
+</div>
+</div>
+<div class="section" id="blankdialogwindow-and-blankfullwindow">
+<h2>BlankDialogWindow and BlankFullWindow<a class="headerlink" href="#blankdialogwindow-and-blankfullwindow" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.BlankDialogWindow" title="pyxbmct.addonwindow.BlankDialogWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlankDialogWindow</span></code></a> and
+<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.BlankFullWindow" title="pyxbmct.addonwindow.BlankFullWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlankFullWindow</span></code></a> are based on <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.WindowDialog" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.WindowDialog</span></code></a>
+and <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#xbmcgui.Window" title="(in Kodistubs v19.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xbmcgui.Window</span></code></a> respectively.
+They have no visual elements whatsoever, but, like the 2 previously described classes,
+they provide the Grid layout and event connection managers.</p>
+<p>Those classes are meant for DIY developers who want full control over the visual appearance of their addons.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Base Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#addondialogwindow">AddonDialogWindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#addonfullwindow">AddonFullWindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#blankdialogwindow-and-blankfullwindow">BlankDialogWindow and BlankFullWindow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

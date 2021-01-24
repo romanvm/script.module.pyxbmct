@@ -1,0 +1,273 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Code Examples &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Estuary Skin Support" href="estuary.html" />
+    <link rel="prev" title="Using PyXBMCt In Your Addon" href="using.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="code-examples">
+<h1>Code Examples<a class="headerlink" href="#code-examples" title="Permalink to this headline">¶</a></h1>
+<p>Now let’s take a look at some examples. As always, we’ll start with “Hello, World!”.</p>
+<div class="section" id="hello-world-example">
+<h2>“Hello, World!” example<a class="headerlink" href="#hello-world-example" title="Permalink to this headline">¶</a></h2>
+<p>The simplest code which will display a window with “Hello, World!” header looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import PyXBMCt module.</span>
+<span class="kn">import</span> <span class="nn">pyxbmct</span>
+
+<span class="c1"># Create a window instance.</span>
+<span class="n">window</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">AddonDialogWindow</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
+<span class="c1"># Set window width, height and grid resolution.</span>
+<span class="n">window</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Show the created window.</span>
+<span class="n">window</span><span class="o">.</span><span class="n">doModal</span><span class="p">()</span>
+<span class="c1"># Delete the window instance when it is no longer used.</span>
+<span class="k">del</span> <span class="n">window</span>
+</pre></div>
+</div>
+<p>If you’ve done everything correctly, you should see a window like the one shown below:</p>
+<div class="figure" id="id1">
+<img alt="_images/hello_world.jpg" src="_images/hello_world.jpg" />
+<p class="caption"><span class="caption-text"><strong>“Hello World!” example</strong></span></p>
+</div>
+<p>The window Grid has 1 row and 1 column. We haven’t placed any controls on it, but <code class="docutils literal notranslate"><span class="pre">setGeometry</span></code> method takes
+at least 4 arguments, so we have provided it dummy values.
+Also for simplicity’s sake we haven’t used OOP in this example.</p>
+<p>Now let’s analyze a more complex example.</p>
+</div>
+<div class="section" id="example-with-interactive-controls">
+<h2>Example with interactive controls<a class="headerlink" href="#example-with-interactive-controls" title="Permalink to this headline">¶</a></h2>
+<p>First, we need to draft the layout or our UI. You can use a pen and paper or imagine the layout in your head,
+it does not matter. The following table showsh the draft of the UI layout for our example addon:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Rows\Columns</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td colspan="2" rowspan="3">Image</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+</tr>
+<tr class="row-even"><td>2</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Name Label</td>
+<td>Name Edit</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>“Close” button</td>
+<td>“Hello” button</td>
+</tr>
+</tbody>
+</table>
+<p>As you can see, our example UI will have 4 rows, 2 columns and 5 controls placed in grid cells.
+Let’s see how it looks in Python code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import necessary modules</span>
+<span class="kn">import</span> <span class="nn">xbmc</span>
+<span class="kn">import</span> <span class="nn">pyxbmct</span>
+
+<span class="c1"># Create a class for our UI</span>
+<span class="k">class</span> <span class="nc">MyAddon</span><span class="p">(</span><span class="n">pyxbmct</span><span class="o">.</span><span class="n">AddonDialogWindow</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Class constructor&quot;&quot;&quot;</span>
+        <span class="c1"># Call the base class&#39; constructor.</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyAddon</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="c1"># Set width, height and the grid parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">280</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Call set controls method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_controls</span><span class="p">()</span>
+        <span class="c1"># Call set navigation method.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_navigation</span><span class="p">()</span>
+        <span class="c1"># Connect Backspace button to close our addon.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">pyxbmct</span><span class="o">.</span><span class="n">ACTION_NAV_BACK</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up UI controls&quot;&quot;&quot;</span>
+        <span class="c1"># Image control</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;https://peach.blender.org/wp-content/uploads/poster_rodents_small.jpg?3016dc&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeControl</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Text label</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s1">&#39;Your name:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeControl</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Text edit control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_field</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">Edit</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeControl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Close button</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="s1">&#39;Close&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeControl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Connect close button</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="c1"># Hello button.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span> <span class="o">=</span> <span class="n">pyxbmct</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeControl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Connect Hello button.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span>
+            <span class="n">xbmc</span><span class="o">.</span><span class="n">executebuiltin</span><span class="p">(</span><span class="s1">&#39;Notification(Hello </span><span class="si">{0}</span><span class="s1">!, Welcome to PyXBMCt.)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">getText</span><span class="p">())))</span>
+
+    <span class="k">def</span> <span class="nf">set_navigation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up keyboard/remote navigation between controls.&quot;&quot;&quot;</span>
+        <span class="c1"># Note there is a new feature:</span>
+        <span class="c1"># if you instead write self.autoNavigation() PyXBMCT will set up</span>
+        <span class="c1"># the navigation between the controls for you automatically!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">controlUp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="o">.</span><span class="n">controlDown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">controlLeft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">controlRight</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hello_buton</span><span class="o">.</span><span class="n">setNavigation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="p">)</span>
+        <span class="c1"># Set initial focus.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_field</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">myaddon</span> <span class="o">=</span> <span class="n">MyAddon</span><span class="p">(</span><span class="s1">&#39;PyXBMCt Example&#39;</span><span class="p">)</span>
+    <span class="n">myaddon</span><span class="o">.</span><span class="n">doModal</span><span class="p">()</span>
+    <span class="k">del</span> <span class="n">myaddon</span>
+</pre></div>
+</div>
+<p>This code should display the following window:</p>
+<div class="figure" id="id2">
+<img alt="_images/example_ui.jpg" src="_images/example_ui.jpg" />
+<p class="caption"><span class="caption-text"><strong>Our example UI</strong></span></p>
+</div>
+<p>If you enter your name (or any words for that matter) and click “Hello” button,
+the addon will display a pop-up notification:</p>
+<div class="figure" id="id3">
+<img alt="_images/pop-up.jpg" src="_images/pop-up.jpg" />
+<p class="caption"><span class="caption-text"><strong>The pop-up notification</strong></span></p>
+</div>
+<p>Two remarks about the code:</p>
+<ul class="simple">
+<li>In my example I have used an online URL for the Image control.
+Paths to image files stored on your local disks can be used as well.</li>
+<li>Note the usage of <a class="reference external" href="https://docs.python.org/2.7/reference/expressions.html#lambda" title="(in Python v2.7)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">lambda</span></code></a> to connect a function
+(<a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmc.html#xbmc.executebuiltin" title="(in Kodistubs v19.0.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">xbmc.executebuiltin()</span></code></a> in this case) with an argument.</li>
+</ul>
+<p>Despite being rather simple, this example illustrates main steps of initializing PyXBMCt-based addon UI:</p>
+<ul class="simple">
+<li>Set up the geometry and grid of the main window.</li>
+<li>Place UI controls on the grid.</li>
+<li>Connect interactive controls and key actions to functions/methods.</li>
+<li>Set up keyboard/remote navigation between controls.</li>
+<li>Set initial focus on a control (necessary for navigation to work).</li>
+</ul>
+<p><a class="reference external" href="https://github.com/romanvm/pyxbmct.demo">PyXBMCt demo addon</a> provides more comprehensive example on how to use all PyXBMCt Controls.</p>
+<p><a class="reference external" href="https://github.com/jcn509/Xbox-BIOS-config-editor-for-XBMC">Xbox BIOS config editor for XBMC</a> a more complex real-world example that showcases creating custom controls.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hello-world-example">“Hello, World!” example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-with-interactive-controls">Example with interactive controls</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

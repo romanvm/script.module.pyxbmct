@@ -1,0 +1,142 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Custom Controls &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Grid Layout" href="grid.html" />
+    <link rel="prev" title="Controls" href="controls.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="custom-controls">
+<h1>Custom Controls<a class="headerlink" href="#custom-controls" title="Permalink to this headline">¶</a></h1>
+<p>If you plan on extending any of the built in controls (such as using <code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code> to make
+your own composite controls) then make sure you call both the __init__ and __new__ methods.</p>
+<p>Controls can have callback methods defined that are called at various points in their lifecycle.
+It is recommended that you read the docstrings of and inherit from the ControlsWith&lt;callback name&gt; classes if you want
+to use them.</p>
+<div class="section" id="connectcallback">
+<h2>_connectCallback<a class="headerlink" href="#connectcallback" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithConnectCallback" title="pyxbmct.addoncontrols.ControlWithConnectCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">ControlWithConnectCallback</span></code></a> - Called just before an event is connected to a control.</p>
+</div>
+<div class="section" id="placedcallback">
+<h2>_placedCallback<a class="headerlink" href="#placedcallback" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithPlacedCallback" title="pyxbmct.addoncontrols.ControlWithPlacedCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">ControlWithPlacedCallback</span></code></a> - Called after the control has been placed in a Window or Group.</p>
+</div>
+<div class="section" id="removedcallback">
+<h2>_removedCallback<a class="headerlink" href="#removedcallback" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithRemovedCallback" title="pyxbmct.addoncontrols.ControlWithRemovedCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">ControlWithRemovedCallback</span></code></a> - Called just before a control is removed from the window.</p>
+</div>
+<div class="section" id="focusedcallback">
+<h2>_focusedCallback<a class="headerlink" href="#focusedcallback" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithFocusedCallback" title="pyxbmct.addoncontrols.ControlWithFocusedCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">ControlWithFocusedCallback</span></code></a> - Called when a control is focused on.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Controls</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#connectcallback">_connectCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#placedcallback">_placedCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#removedcallback">_removedCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#focusedcallback">_focusedCallback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

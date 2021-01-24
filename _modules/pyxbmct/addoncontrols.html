@@ -1,0 +1,865 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyxbmct.addoncontrols &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pyxbmct.addoncontrols</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># PyXBMCt framework module</span>
+<span class="c1">#</span>
+<span class="c1"># PyXBMCt is a mini-framework for creating Kodi (XBMC) Python addons</span>
+<span class="c1"># with arbitrary UI made of Controls - decendants of xbmcgui.Control class.</span>
+<span class="c1"># The framework uses image textures from Kodi Confluence skin.</span>
+<span class="c1">#</span>
+<span class="c1"># Licence: GPL v.3 &lt;http://www.gnu.org/licenses/gpl.html&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains all the controls of the PyXBMCt framework</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">.addonskin</span> <span class="kn">import</span> <span class="n">skin</span>
+<span class="kn">from</span> <span class="nn">.abstractgrid</span> <span class="kn">import</span> <span class="n">AbstractGrid</span>
+<span class="kn">from</span> <span class="nn">.addonwindowerror</span> <span class="kn">import</span> <span class="n">AddonWindowError</span>
+<span class="kn">from</span> <span class="nn">.kodiconstants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.xbmc4xbox</span> <span class="kn">import</span> <span class="n">isXBMC4XBOX</span>
+
+<span class="n">_XBMC4XBOX</span> <span class="o">=</span> <span class="n">isXBMC4XBOX</span><span class="p">()</span>
+
+<span class="c1"># typing module only needed when running pytype and is not available on XBMC4XBOX AFAIK</span>
+<span class="n">TYPE_CHECKING</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">typing</span>
+
+    <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="n">TYPE_CHECKING</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># kodi_six doesn&#39;t work on</span>
+<span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xbmc</span><span class="o">,</span> <span class="nn">xbmcgui</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">kodi_six</span> <span class="kn">import</span> <span class="n">xbmc</span><span class="p">,</span> <span class="n">xbmcgui</span>
+    <span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">with_metaclass</span>
+
+
+<span class="k">def</span> <span class="nf">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set texture arguments for controls.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">texture</span> <span class="ow">in</span> <span class="n">textures</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">texture</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">texture</span><span class="p">]</span> <span class="o">=</span> <span class="n">textures</span><span class="p">[</span><span class="n">texture</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ControlWithConnectCallback"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithConnectCallback">[docs]</a><span class="k">class</span> <span class="nc">ControlWithConnectCallback</span><span class="p">(</span><span class="nb">object</span> <span class="k">if</span> <span class="n">_XBMC4XBOX</span> <span class="k">else</span> <span class="n">with_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract mixin class for controls that require a callback before events are connected to them&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+        <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_connectCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="c1"># type: (typing.Callable, xbmcgui.Window) -&gt; typing.Union[bool, typing.Callable]</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called just before an event is connected to a control.</span>
+<span class="sd">        If true is returned callback is connected to the control.</span>
+<span class="sd">        If false is returned it is not.</span>
+<span class="sd">        If a new callback is returned then that is connected instead.</span>
+<span class="sd">        :param callback: the callback that is to be associated with the control</span>
+<span class="sd">        :param window: the window on which the connect method was called</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ControlWithPlacedCallback"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithPlacedCallback">[docs]</a><span class="k">class</span> <span class="nc">ControlWithPlacedCallback</span><span class="p">(</span><span class="nb">object</span> <span class="k">if</span> <span class="n">_XBMC4XBOX</span> <span class="k">else</span> <span class="n">with_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract mixin class for controls that require a callback after they have been placed&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+        <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_placedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">rowspan</span><span class="p">,</span> <span class="n">columnspan</span><span class="p">,</span> <span class="n">pad_x</span><span class="p">,</span> <span class="n">pad_y</span><span class="p">):</span>
+        <span class="c1"># type: (xbmcgui.Window, int, int, int, int, int, int) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called after the control has been placed in a Window or Group.</span>
+<span class="sd">        :param window: the window in which the control has been placed</span>
+<span class="sd">        :param row: the row in which the control was placed (top left corner)</span>
+<span class="sd">        :param column: the column in which the control was placed (top left corner)</span>
+<span class="sd">        :param rowspan: the number of rows that the control takes up</span>
+<span class="sd">        :param columnspan: the number of columns that the control takes up</span>
+<span class="sd">        :param pad_x: the number of pixels of padding inside the cell around the left and right sides of the control</span>
+<span class="sd">        :param pad_y: the number of pixels of padding inside the cell around the top and bottom sides of the control</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ControlWithRemovedCallback"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithRemovedCallback">[docs]</a><span class="k">class</span> <span class="nc">ControlWithRemovedCallback</span><span class="p">(</span><span class="nb">object</span> <span class="k">if</span> <span class="n">_XBMC4XBOX</span> <span class="k">else</span> <span class="n">with_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract mixin class for controls that require a callback before they are removed&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+        <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_removedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="c1"># type: (xbmcgui.Window) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called just before a control is removed from the window</span>
+<span class="sd">        :param window: The window the control is being removed from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ControlWithFocusedCallback"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlWithFocusedCallback">[docs]</a><span class="k">class</span> <span class="nc">ControlWithFocusedCallback</span><span class="p">(</span><span class="nb">object</span> <span class="k">if</span> <span class="n">_XBMC4XBOX</span> <span class="k">else</span> <span class="n">with_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract mixin class for controls that require a callback before events are connected to them&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+        <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_focusedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; bool</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when a control is focused either by manually calling Window.setFocus or</span>
+<span class="sd">        by the user navigating to it.</span>
+<span class="sd">        :returns The return value is only used when setFocus is called. If false the control won&#39;t be focused on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<span class="c1"># Inheritance for the sake of pytype seeing getX etc.</span>
+<span class="c1"># xbmcgui.Control does not exist on XBMC4XBOX and inheriting from it on</span>
+<span class="c1"># other platforms causes issues when calling the super constructor from</span>
+<span class="c1"># any of the control classes below as it ends up Control&#39;s constructor</span>
+<div class="viewcode-block" id="ControlMixin"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlMixin">[docs]</a><span class="k">class</span> <span class="nc">ControlMixin</span><span class="p">(</span><span class="n">xbmcgui</span><span class="o">.</span><span class="n">Control</span> <span class="k">if</span> <span class="n">TYPE_CHECKING</span> <span class="k">else</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic control functionality mixin.</span>
+
+<span class="sd">    Provides utility methods and wrappers for some existing methods to support PyXBMCt</span>
+
+<span class="sd">    .. warning:: This is a mixin class and is not supposed to be instantiated directly!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;getId&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_getControlClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_controlClass&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controlClass</span>
+
+        <span class="k">for</span> <span class="n">ancestor</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmro</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">ancestor</span><span class="p">)</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">xbmcgui</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_controlClass</span> <span class="o">=</span> <span class="n">ancestor</span>
+                <span class="k">return</span> <span class="n">ancestor</span>
+
+        <span class="k">raise</span> <span class="n">AddonWindowError</span><span class="p">(</span><span class="s2">&quot;Could not find Control class&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ControlMixin.isEnabled"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlMixin.isEnabled">[docs]</a>    <span class="k">def</span> <span class="nf">isEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; bool</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if a control is enabled or not.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            enabled = self.isEnabled()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Test this way so that a constructor is not needed</span>
+        <span class="c1"># to set the intial values</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_is_enabled&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_enabled</span></div>
+
+    <span class="k">if</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">isVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># type: () -&gt; bool</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Determine if the control is visible or not.</span>
+
+<span class="sd">            Example::</span>
+
+<span class="sd">                enabled = self.isVisible()</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_is_visible&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_visible</span>
+
+        <span class="k">def</span> <span class="nf">getX</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># type: () -&gt; int</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">getY</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># type: () -&gt; int</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">):</span>
+            <span class="c1"># type: (bool) -&gt; None</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Set whether the control is visible or not.</span>
+
+<span class="sd">            :param is_visible: boolean to determine if the control is visible.</span>
+
+<span class="sd">            Example::</span>
+
+<span class="sd">                self.setVisible(False)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_visible</span> <span class="o">=</span> <span class="n">is_visible</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getControlClass</span><span class="p">()</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ControlMixin.setEnabled"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlMixin.setEnabled">[docs]</a>    <span class="k">def</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">):</span>
+        <span class="c1"># type: (bool) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set whether the control is enabled or not.</span>
+
+<span class="sd">        :param is_enabled: boolean to determine if the control is enabled.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            self.setEnabled(False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_enabled</span> <span class="o">=</span> <span class="n">is_enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_getControlClass</span><span class="p">()</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ControlMixin.getMidpoint"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.ControlMixin.getMidpoint">[docs]</a>    <span class="k">def</span> <span class="nf">getMidpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; typing.Tuple[int, int]</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the (x,y) coordinates of the controls midpoint.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            x, y = self.getMidpoint()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getX</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getY</span><span class="p">()</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getHeight</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="Label"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Label">[docs]</a><span class="k">class</span> <span class="nc">Label</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlLabel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Label(label, font=None, textColor=None, disabledColor=None, alignment=0,hasPath=False, angle=0)</span>
+
+<span class="sd">    ControlLabel class.</span>
+
+<span class="sd">    Implements a simple text label.</span>
+
+<span class="sd">    :param label: text string</span>
+<span class="sd">    :type label: str</span>
+<span class="sd">    :param font: font used for label text. (e.g. ``&#39;font13&#39;``)</span>
+<span class="sd">    :type font: str</span>
+<span class="sd">    :param textColor: hex color code of enabled label&#39;s label. (e.g. ``&#39;0xFFFFFFFF&#39;``)</span>
+<span class="sd">    :type textColor: str</span>
+<span class="sd">    :param disabledColor: hex color code of disabled label&#39;s label. (e.g. ``&#39;0xFFFF3300&#39;``)</span>
+<span class="sd">    :type disabledColor: str</span>
+<span class="sd">    :param alignment: alignment of label. **Note**: see ``xbfont.h``</span>
+<span class="sd">    :type alignment: int</span>
+<span class="sd">    :param hasPath: ``True`` = stores a path / ``False`` = no path.</span>
+<span class="sd">    :type hasPath: bool</span>
+<span class="sd">    :param angle: angle of control. (``+`` rotates CCW, ``-`` rotates CW)</span>
+<span class="sd">    :type angle: int</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.label = Label(&#39;Status&#39;, angle=45)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Label</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FadeLabel"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.FadeLabel">[docs]</a><span class="k">class</span> <span class="nc">FadeLabel</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlFadeLabel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FadeLabel(font=None, textColor=None, _alignment=0)</span>
+
+<span class="sd">    Control that scrolls label text.</span>
+
+<span class="sd">    Implements a text label that can auto-scroll very long text.</span>
+
+<span class="sd">    :param font: font used for label text. (e.g. ``&#39;font13&#39;``)</span>
+<span class="sd">    :type font: str</span>
+<span class="sd">    :param textColor: hex color code of fadelabel&#39;s labels. (e.g. ``&#39;0xFFFFFFFF&#39;``)</span>
+<span class="sd">    :type textColor: str</span>
+<span class="sd">    :param _alignment: alignment of label. **Note**: see ``xbfont.h``</span>
+<span class="sd">    :type _alignment: int</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.fadelabel = FadeLabel(textColor=&#39;0xFFFFFFFF&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">FadeLabel</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextBox"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.TextBox">[docs]</a><span class="k">class</span> <span class="nc">TextBox</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlTextBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TextBox(font=None, textColor=None)</span>
+
+<span class="sd">    ControlTextBox class</span>
+
+<span class="sd">    Implements a box for displaying multi-line text.</span>
+<span class="sd">    Long text is truncated from below. Also supports auto-scrolling.</span>
+
+<span class="sd">    :param font: font used for text. (e.g. ``&#39;font13&#39;``)</span>
+<span class="sd">    :type font: str</span>
+<span class="sd">    :param textColor: hex color code of textbox&#39;s text. (e.g. ``&#39;0xFFFFFFFF&#39;``)</span>
+<span class="sd">    :type textColor: str</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.textbox = TextBox(textColor=&#39;0xFFFFFFFF&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">TextBox</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Image"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Image">[docs]</a><span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlImage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Image(filename, aspectRatio=0, colorDiffuse=None)</span>
+
+<span class="sd">    ControlImage class.</span>
+
+<span class="sd">    Implements a box for displaying ``.jpg``, ``.png``, and ``.gif`` images.</span>
+
+<span class="sd">    :param filename: path or URL to an image file.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param aspectRatio: (values: ``0`` = stretch (default), ``1`` = scale up (crops), ``2`` = scale down (black bars)</span>
+<span class="sd">    :type aspectRatio: int</span>
+<span class="sd">    :param colorDiffuse: for example, ``&#39;0xC0FF0000&#39;`` (red tint)</span>
+<span class="sd">    :type colorDiffuse: str</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.image = Image(&#39;d:\images\picture.jpg&#39;, aspectRatio=2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Button"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Button">[docs]</a><span class="k">class</span> <span class="nc">Button</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlButton</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Button(label, focusTexture=None, noFocusTexture=None, textOffsetX=CONTROL_TEXT_OFFSET_X, textOffsetY=CONTROL_TEXT_OFFSET_Y, alignment=4, font=None, textColor=None, disabledColor=None, angle=0, shadowColor=None, focusedColor=None)</span>
+
+<span class="sd">    ControlButton class.</span>
+
+<span class="sd">    Implements a clickable button.</span>
+
+<span class="sd">    :param label: button caption</span>
+<span class="sd">    :type label: str</span>
+<span class="sd">    :param focusTexture: filename for focus texture.</span>
+<span class="sd">    :type focusTexture: str</span>
+<span class="sd">    :param noFocusTexture: filename for no focus texture.</span>
+<span class="sd">    :type noFocusTexture: str</span>
+<span class="sd">    :param textOffsetX: x offset of label.</span>
+<span class="sd">    :type textOffsetX: int</span>
+<span class="sd">    :param textOffsetY: y offset of label.</span>
+<span class="sd">    :type textOffsetY: int</span>
+<span class="sd">    :param alignment: alignment of label. **Note**: see ``xbfont.h``</span>
+<span class="sd">    :type alignment: int</span>
+<span class="sd">    :param font: font used for label text. (e.g. ``&#39;font13&#39;``)</span>
+<span class="sd">    :type font: str</span>
+<span class="sd">    :param textColor: hex color code of enabled button&#39;s label. (e.g. ``&#39;0xFFFFFFFF&#39;``)</span>
+<span class="sd">    :type textColor: str</span>
+<span class="sd">    :param disabledColor: hex color code of disabled button&#39;s label. (e.g. ``&#39;0xFFFF3300&#39;``)</span>
+<span class="sd">    :type disabledColor: str</span>
+<span class="sd">    :param angle: angle of control. (``+`` rotates CCW, ``-`` rotates CW)</span>
+<span class="sd">    :type angle: int</span>
+<span class="sd">    :param shadowColor: hex color code of button&#39;s label&#39;s shadow. (e.g. ``&#39;0xFF000000&#39;``)</span>
+<span class="sd">    :type shadowColor: str</span>
+<span class="sd">    :param focusedColor: hex color code of focused button&#39;s label. (e.g. ``&#39;0xFF00FFFF&#39;``)</span>
+<span class="sd">    :type focusedColor: str</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.button = Button(&#39;Status&#39;, font=&#39;font14&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;focusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Button&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyboardKey.png&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;noFocusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Button&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyboardKeyNF.png&#39;</span><span class="p">)}</span>
+        <span class="n">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alignment&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alignment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ALIGN_CENTER</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Button</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RadioButton"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.RadioButton">[docs]</a><span class="k">class</span> <span class="nc">RadioButton</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlRadioButton</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    RadioButton(label, focusTexture=None, noFocusTexture=None, textOffsetX=None, textOffsetY=None, _alignment=None, font=None, textColor=None, disabledColor=None, angle=None, shadowColor=None, focusedColor=None, focusOnTexture=None, noFocusOnTexture=None, focusOffTexture=None, noFocusOffTexture=None)</span>
+
+<span class="sd">    ControlRadioButton class.</span>
+
+<span class="sd">    Implements a 2-state switch.</span>
+
+<span class="sd">    :param label: label text.</span>
+<span class="sd">    :type: str or unicode</span>
+<span class="sd">    :param focusTexture: filename for focus texture.</span>
+<span class="sd">    :type focusTexture: str</span>
+<span class="sd">    :param noFocusTexture: filename for no focus texture.</span>
+<span class="sd">    :type noFocusTexture: str</span>
+<span class="sd">    :param textOffsetX: x offset of label.</span>
+<span class="sd">    :type textOffsetX: int</span>
+<span class="sd">    :param textOffsetY: y offset of label.</span>
+<span class="sd">    :type textOffsetY: int</span>
+<span class="sd">    :param _alignment: alignment of label - *Note, see xbfont.h</span>
+<span class="sd">    :type _alignment: int</span>
+<span class="sd">    :param font: font used for label text. (e.g. &#39;font13&#39;)</span>
+<span class="sd">    :type font: str</span>
+<span class="sd">    :param textColor: hexstring -- color of enabled radio button&#39;s label. (e.g. &#39;0xFFFFFFFF&#39;)</span>
+<span class="sd">    :type textColor: str</span>
+<span class="sd">    :param disabledColor: hexstring -- color of disabled radio button&#39;s label. (e.g. &#39;0xFFFF3300&#39;)</span>
+<span class="sd">    :type disabledColor: str</span>
+<span class="sd">    :param angle: angle of control. (+ rotates CCW, - rotates CW)</span>
+<span class="sd">    :type angle: int</span>
+<span class="sd">    :param shadowColor: hexstring -- color of radio button&#39;s label&#39;s shadow. (e.g. &#39;0xFF000000&#39;)</span>
+<span class="sd">    :type shadowColor: str</span>
+<span class="sd">    :param focusedColor: hexstring -- color of focused radio button&#39;s label. (e.g. &#39;0xFF00FFFF&#39;)</span>
+<span class="sd">    :type focusedColor: str</span>
+<span class="sd">    :param focusOnTexture: filename for radio focused/checked texture.</span>
+<span class="sd">    :type focusOnTexture: str</span>
+<span class="sd">    :param noFocusOnTexture: filename for radio not focused/checked texture.</span>
+<span class="sd">    :type noFocusOnTexture: str</span>
+<span class="sd">    :param focusOffTexture: filename for radio focused/unchecked texture.</span>
+<span class="sd">    :type focusOffTexture: str</span>
+<span class="sd">    :param noFocusOffTexture: filename for radio not focused/unchecked texture.</span>
+<span class="sd">    :type noFocusOffTexture: str</span>
+
+<span class="sd">    .. note:: To customize RadioButton all 4 abovementioned textures need to be provided.</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.radiobutton = RadioButton(&#39;Status&#39;, font=&#39;font14&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_XBMC4XBOX</span> <span class="ow">and</span> <span class="n">xbmc</span><span class="o">.</span><span class="n">getInfoLabel</span><span class="p">(</span><span class="s1">&#39;System.BuildVersion&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="s1">&#39;13&#39;</span><span class="p">:</span>
+            <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;focusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemFO.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;noFocusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemNF.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;focusOnTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-focus.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;noFocusOnTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-focus.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;focusOffTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-nofocus.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;noFocusOffTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-nofocus.png&#39;</span><span class="p">)}</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># This is for compatibility with Frodo and earlier versions.</span>
+            <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;focusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemFO.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;noFocusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemNF.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;TextureRadioFocus&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-focus.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;TextureRadioNoFocus&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;RadioButton&#39;</span><span class="p">,</span> <span class="s1">&#39;radiobutton-nofocus.png&#39;</span><span class="p">)}</span>
+        <span class="n">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RadioButton</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<span class="c1"># Edit is not supported on Xbox using the Python API</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+<div class="viewcode-block" id="Edit"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Edit">[docs]</a>    <span class="k">class</span> <span class="nc">Edit</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlEdit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Edit(label, font=None, textColor=None, disabledColor=None, _alignment=0, focusTexture=None, noFocusTexture=None, isPassword=False)</span>
+
+<span class="sd">        ControlEdit class. Edit is not supported on Xbox using the Python API</span>
+
+<span class="sd">        Implements a clickable text entry field with an on-screen keyboard.</span>
+
+<span class="sd">        :param label: text string.</span>
+<span class="sd">        :type label: str or unicode</span>
+<span class="sd">        :param font: [opt] font used for label text. (e.g. &#39;font13&#39;)</span>
+<span class="sd">        :type font: str</span>
+<span class="sd">        :param textColor: [opt] hexstring -- color of enabled label&#39;s label. (e.g. &#39;0xFFFFFFFF&#39;)</span>
+<span class="sd">        :type textColor: str</span>
+<span class="sd">        :param disabledColor: [opt] hexstring -- color of disabled label&#39;s label. (e.g. &#39;0xFFFF3300&#39;)</span>
+<span class="sd">        :type disabledColor: str</span>
+<span class="sd">        :param _alignment: [opt] lignment of label - *Note, see xbfont.h</span>
+<span class="sd">        :type _alignment: int</span>
+<span class="sd">        :param focusTexture: [opt] filename for focus texture.</span>
+<span class="sd">        :type focusTexture: str</span>
+<span class="sd">        :param noFocusTexture: [opt] filename for no focus texture.</span>
+<span class="sd">        :type noFocusTexture: str</span>
+<span class="sd">        :param isPassword: [opt] if ``True``, mask text value.</span>
+<span class="sd">        :type isPassword: bool</span>
+
+<span class="sd">        .. note:: You can use the above as keywords for arguments and skip certain optional arguments.</span>
+<span class="sd">            Once you use a keyword, all following arguments require the keyword.</span>
+<span class="sd">            After you create the control, you need to add it to the window with ``placeControl()``.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            self.edit = Edit(&#39;Status&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;focusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="s1">&#39;button-focus.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;noFocusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Edit&#39;</span><span class="p">,</span> <span class="s1">&#39;black-back2.png&#39;</span><span class="p">)}</span>
+            <span class="n">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Edit</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="List"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.List">[docs]</a><span class="k">class</span> <span class="nc">List</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List(font=None, textColor=None, buttonTexture=None, buttonFocusTexture=None, selectedColor=None, _imageWidth=10, _imageHeight=10, _itemTextXOffset=10, _itemTextYOffset=2, _itemHeight=27, _space=2, _alignmentY=4)</span>
+
+<span class="sd">    ControlList class.</span>
+
+<span class="sd">    Implements a scrollable list of items.</span>
+
+<span class="sd">    :param font: string - font used for items label. (e.g. &#39;font13&#39;)</span>
+<span class="sd">    :param textColor: hexstring - color of items label. (e.g. &#39;0xFFFFFFFF&#39;)</span>
+<span class="sd">    :param buttonTexture: string - filename for no focus texture.</span>
+<span class="sd">    :param buttonFocusTexture: string - filename for focus texture.</span>
+<span class="sd">    :param selectedColor: integer - x offset of label.</span>
+<span class="sd">    :param _imageWidth: integer - width of items icon or thumbnail.</span>
+<span class="sd">    :param _imageHeight: integer - height of items icon or thumbnail.</span>
+<span class="sd">    :param _itemTextXOffset: integer - x offset of items label.</span>
+<span class="sd">    :param _itemTextYOffset: integer - y offset of items label.</span>
+<span class="sd">    :param _itemHeight: integer - height of items.</span>
+<span class="sd">    :param _space: integer - space between items.</span>
+<span class="sd">    :param _alignmentY: integer - Y-axis alignment of items label - *Note, see xbfont.h</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.cList = List(&#39;font14&#39;, space=5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;buttonTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;List&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemNF.png&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;buttonFocusTexture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;List&#39;</span><span class="p">,</span> <span class="s1">&#39;MenuItemFO.png&#39;</span><span class="p">)}</span>
+        <span class="n">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">List</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlGroup</span><span class="p">,</span> <span class="n">AbstractGrid</span><span class="p">,</span> <span class="n">ControlWithPlacedCallback</span><span class="p">,</span> <span class="n">ControlWithFocusedCallback</span><span class="p">,</span>
+            <span class="n">ControlWithRemovedCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Group(rows, columns)</span>
+
+<span class="sd">    ControlGroup class.</span>
+
+<span class="sd">    Implements a secondary grid (with its own coordinate system) that controls can be placed in.</span>
+<span class="sd">    Allowing for finer control over where controls are placed in a window.</span>
+
+<span class="sd">    :param rows: integer - the number of rows in the grid</span>
+<span class="sd">    :param columns: integer - the number of columns in the grid</span>
+
+<span class="sd">    .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">    .. warning:: You must place Group in a window before adding controls to it!</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        self.group = Group(1,2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># type: (int, int, typing.Any, typing.Any) -&gt; None</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># type: (int, int, typing.Any, typing.Any) -&gt; None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">getWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; xbmcgui.Window</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AddonWindowError</span><span class="p">(</span><span class="s2">&quot;Group not placed!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_window</span>
+
+    <span class="k">def</span> <span class="nf">getGridX</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getX</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getGridY</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getY</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getGridWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getGridHeight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getHeight</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Group.getRows"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.getRows">[docs]</a>    <span class="k">def</span> <span class="nf">getRows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get grid rows count.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span></div>
+
+<div class="viewcode-block" id="Group.getColumns"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.getColumns">[docs]</a>    <span class="k">def</span> <span class="nf">getColumns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; int</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get grid columns count.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span></div>
+
+    <span class="k">def</span> <span class="nf">addControl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">):</span>
+        <span class="c1"># type: (xbmcgui.Control) -&gt; None</span>
+        <span class="c1"># getWindow will throw an error if the Group is not placed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getWindow</span><span class="p">()</span><span class="o">.</span><span class="n">addControl</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setAnimation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">):</span>
+        <span class="c1"># type: (xbmcgui.Control) -&gt; None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">setAnimation</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_removedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeAllChildren</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Group.removeControl"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.removeControl">[docs]</a>    <span class="k">def</span> <span class="nf">removeControl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">):</span>
+        <span class="c1"># type: (xbmcgui.Control) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a control from the window grid layout.</span>
+
+<span class="sd">        :param control: control instance to be removed from the grid.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            self.removeControl(self.label)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># getWindow will throw an error if Group is not placed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getWindow</span><span class="p">()</span><span class="o">.</span><span class="n">removeControl</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">control</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.removeControls"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.removeControls">[docs]</a>    <span class="k">def</span> <span class="nf">removeControls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controls</span><span class="p">):</span>
+        <span class="c1"># type: (typing.Iterable[xbmcgui.Control]) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove multiple controls from the window grid layout.</span>
+
+<span class="sd">        :param controls: an iterable of control instances to be removed from the grid.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            self.removeControl(self.label)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Need to copy the list of controls as we are changing</span>
+        <span class="c1"># its size whilst iterating over it</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">controls</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">removeControl</span><span class="p">(</span><span class="n">control</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.removeAllChildren"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.removeAllChildren">[docs]</a>    <span class="k">def</span> <span class="nf">removeAllChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes all the Group&#39;s children (and all their children) from the window.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            group.removeAllChildren()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeControls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.setVisible"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.setVisible">[docs]</a>    <span class="k">def</span> <span class="nf">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">):</span>
+        <span class="c1"># type: (bool) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the group (and it all its current children) to be either visible or invisible.</span>
+
+<span class="sd">        :param is_visible: determines whether or the group and its current children should be visible or not.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            group.setVisible(False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlGroup</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">is_visible</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.setVisibleCondition"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.setVisibleCondition">[docs]</a>    <span class="k">def</span> <span class="nf">setVisibleCondition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">,</span> <span class="n">allow_hidden_focus</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See the XBMC documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlGroup</span><span class="o">.</span><span class="n">setVisibleCondition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_visible</span><span class="p">,</span> <span class="n">allow_hidden_focus</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setVisibleCondition</span><span class="p">(</span><span class="n">is_visible</span><span class="p">,</span> <span class="n">allow_hidden_focus</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.setEnabled"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.setEnabled">[docs]</a>    <span class="k">def</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">):</span>
+        <span class="c1"># type: (bool) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the group (and it all its current children) to be either enabled or disabled.</span>
+
+<span class="sd">        :param is_enabled: determines whether or the group and its current children should be enabled or not.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            group.setVisible(setEnabled)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlGroup</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">is_enabled</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.setEnableCondition"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group.setEnableCondition">[docs]</a>    <span class="k">def</span> <span class="nf">setEnableCondition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See the XBMC documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlGroup</span><span class="o">.</span><span class="n">setEnableCondition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_enabled</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setEnableCondition</span><span class="p">(</span><span class="n">is_enabled</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_placedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called once the grid has been placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="n">window</span>
+
+    <span class="k">def</span> <span class="nf">_focusedCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># type: () -&gt; bool</span>
+        <span class="c1"># Want to divert focus to the first control if possible</span>
+        <span class="c1"># it doesn&#39;t really make sense for a container to have focus</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_controls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="c1"># Slider is not supported on Xbox using the Python API</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_XBMC4XBOX</span><span class="p">:</span>
+<div class="viewcode-block" id="Slider"><a class="viewcode-back" href="../../_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Slider">[docs]</a>    <span class="k">class</span> <span class="nc">Slider</span><span class="p">(</span><span class="n">ControlMixin</span><span class="p">,</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">ControlSlider</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Slider(textureback=None, texture=None, texturefocus=None, orientation=xbmcgui.HORIZONTAL)</span>
+
+<span class="sd">        ControlSlider class.</span>
+
+<span class="sd">        Implements a movable slider for adjusting some value.</span>
+
+<span class="sd">        :param textureback: string -- image filename.</span>
+<span class="sd">        :param texture: string -- image filename.</span>
+<span class="sd">        :param texturefocus: string -- image filename.</span>
+<span class="sd">        :param orientation: int -- slider orientation</span>
+
+<span class="sd">        .. note:: After you create the control, you need to add it to the window with placeControl().</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            self.slider = Slider()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">textures</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;textureback&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Slider&#39;</span><span class="p">,</span> <span class="s1">&#39;osd_slider_bg.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;texture&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Slider&#39;</span><span class="p">,</span> <span class="s1">&#39;osd_slider_nibNF.png&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;texturefocus&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skin</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="s1">&#39;Slider&#39;</span><span class="p">,</span> <span class="s1">&#39;osd_slider_nib.png&#39;</span><span class="p">)}</span>
+            <span class="n">_set_textures</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xbmc</span><span class="o">.</span><span class="n">getInfoLabel</span><span class="p">(</span><span class="s1">&#39;System.BuildVersion&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="s1">&#39;17&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xbmcgui</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Slider</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

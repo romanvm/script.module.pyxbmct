@@ -1,0 +1,196 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Controls &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Custom Controls" href="custom_controls.html" />
+    <link rel="prev" title="Base Classes" href="classes.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="controls">
+<h1>Controls<a class="headerlink" href="#controls" title="Permalink to this headline">¶</a></h1>
+<p>PyXBMCt provides 10 ready-to-use UI controls that are based on the respective <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#module-xbmcgui" title="(in Kodistubs v19.0.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xbmcgui</span></code></a> controls
+with the following differences:</p>
+<ul class="simple">
+<li>You don’t need to specify coordinates and size for the controls explicitly.
+The Grid layout manager takes care of control placement.</li>
+<li>All controls that require textures are provided with default textures
+(borrowed from Confluence and Estuary skin resources).
+You can specify your own textures for PyXBMCt controls, but you need to do this through keyword arguments (important!).</li>
+<li>Button caption is center-aligned by default. You can change button caption alignment by providing a necessary alignment
+parameter through a keyword argument (PyXBMCt already includes symbolic constants for control text alignment).
+Since all PyXBMCt Controls are subclassed from <code class="docutils literal notranslate"><span class="pre">xbmcgui.Control*</span></code> classes, you can use all parent <a class="reference external" href="http://romanvm.github.io/Kodistubs/_autosummary/xbmcgui.html#module-xbmcgui" title="(in Kodistubs v19.0.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xbmcgui</span></code></a>
+classes’ methods to set Control properties.</li>
+</ul>
+<div class="figure" id="id1">
+<img alt="_images/pyxbmct_controls_confl.jpg" src="_images/pyxbmct_controls_confl.jpg" />
+<p class="caption"><span class="caption-text"><strong>PyXBMCt controls (Confluence-based skin)</strong></span></p>
+</div>
+<div class="figure" id="id2">
+<img alt="_images/pyxbmct_controls_est.jpg" src="_images/pyxbmct_controls_est.jpg" />
+<p class="caption"><span class="caption-text"><strong>PyXBMCt controls (Estuary-based skin)</strong></span></p>
+</div>
+<p>Below is the list of PyXBMCt controls with brief descriptions:</p>
+<div class="section" id="label">
+<h2>Label<a class="headerlink" href="#label" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Label" title="pyxbmct.addoncontrols.Label"><code class="xref py py-class docutils literal notranslate"><span class="pre">Label</span></code></a> implements a simple text label much like <code class="docutils literal notranslate"><span class="pre">Tkinter.Label</span></code> or <code class="docutils literal notranslate"><span class="pre">QLabel</span></code>.</p>
+</div>
+<div class="section" id="fadelabel">
+<h2>FadeLabel<a class="headerlink" href="#fadelabel" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.FadeLabel" title="pyxbmct.addoncontrols.FadeLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaldeLabel</span></code></a> is similar to <a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Label" title="pyxbmct.addoncontrols.Label"><code class="xref py py-class docutils literal notranslate"><span class="pre">Label</span></code></a>,
+but a very long text string is auto-scrolled.</p>
+</div>
+<div class="section" id="textbox">
+<h2>TextBox<a class="headerlink" href="#textbox" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.TextBox" title="pyxbmct.addoncontrols.TextBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextBox</span></code></a> shows multiline text. It can autoscroll very long text.</p>
+</div>
+<div class="section" id="image">
+<h2>Image<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Image" title="pyxbmct.addoncontrols.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> control displays images from files (<code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>).
+For <code class="docutils literal notranslate"><span class="pre">.gif</span></code> and <code class="docutils literal notranslate"><span class="pre">.png</span></code> images transparency is supported, and for <code class="docutils literal notranslate"><span class="pre">.gif</span></code> animation is shown as well.</p>
+</div>
+<div class="section" id="button">
+<h2>Button<a class="headerlink" href="#button" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Button" title="pyxbmct.addoncontrols.Button"><code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code></a> implements a clickable button. It generates a control event on click.</p>
+</div>
+<div class="section" id="radiobutton">
+<h2>RadioButton<a class="headerlink" href="#radiobutton" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.RadioButton" title="pyxbmct.addoncontrols.RadioButton"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadioButton</span></code></a> is a 2-state switch. It generates a control event on click.</p>
+</div>
+<div class="section" id="group">
+<h2>Group<a class="headerlink" href="#group" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Group" title="pyxbmct.addoncontrols.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></a> is container for other controls. It has its own grid coordinate system.</p>
+</div>
+<div class="section" id="edit">
+<h2>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Edit" title="pyxbmct.addoncontrols.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a> implements a text entry field, similar to <code class="docutils literal notranslate"><span class="pre">Tkinter.Entry</span></code> or <code class="docutils literal notranslate"><span class="pre">QLineEdit</span></code>.
+When activated, it opens an on-screen keyboard to enter text.
+Edit is not supported on XBMC4XBOX.</p>
+</div>
+<div class="section" id="list">
+<h2>List<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.List" title="pyxbmct.addoncontrols.List"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a> implements a list of items.
+The list scrolls when it cannot display all its items within available space.
+It generates a control event when an item is selected.</p>
+</div>
+<div class="section" id="slider">
+<h2>Slider<a class="headerlink" href="#slider" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_autosummary/pyxbmct.addoncontrols.html#pyxbmct.addoncontrols.Slider" title="pyxbmct.addoncontrols.Slider"><code class="xref py py-class docutils literal notranslate"><span class="pre">Slider</span></code></a> is a control for stepless adjusting some value (e.g. volume level).
+Slider is not supported on XBMC4XBOX.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Controls</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#label">Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fadelabel">FadeLabel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#textbox">TextBox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#image">Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#button">Button</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#radiobutton">RadioButton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#group">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#edit">Edit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list">List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#slider">Slider</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

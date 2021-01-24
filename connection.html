@@ -1,0 +1,146 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Connecting Events &#8212; PyXBMCt  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using PyXBMCt In Your Addon" href="using.html" />
+    <link rel="prev" title="Grid Layout" href="grid.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="connecting-events">
+<h1>Connecting Events<a class="headerlink" href="#connecting-events" title="Permalink to this headline">¶</a></h1>
+<p>Connecting events works similarly to the signal-slot connection mechanism of Qt framework.
+There are two types of events: Control events (when an on-screen Control, e.g. a button, is actvated)
+and a keyboard action (when a key bound to an action is pressed).
+You can connect an event to a function or a method that will be run
+when the respective event is triggered.
+The connection mechanism is implemented through <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.connect" title="pyxbmct.addonwindow.AbstractWindow.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connect</span></code></a>
+method of a base PyXBMCt class. This methods takes 2 parameters: an object to be connected (a Control instance
+or a numeric action code, and a function/method object to be called. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_foo_clicked</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">self.foo_button</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code> instance and
+<code class="docutils literal notranslate"><span class="pre">self.on_foo_clicked</span></code> is some method that needs to be called when a user activates
+<code class="docutils literal notranslate"><span class="pre">self.foo_button</span></code>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">For connection you must provide a function object without brackets <code class="docutils literal notranslate"><span class="pre">()</span></code>, not a function call.
+Do not confuse those two!</p>
+</div>
+<p>Similarly to PyQt signal-slot connection, <a class="reference external" href="https://docs.python.org/2.7/reference/expressions.html#lambda" title="(in Python v2.7)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">lambda</span></code></a> can be used to connect a function/method with arguments
+known at runtime. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foo_button</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_foo_clicked</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;spam&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>You can only connect the following controls: <code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RadioButton</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>.
+Other controls do not generate any events, so connecting them won’t have any effect.</p>
+<p>The key code <code class="docutils literal notranslate"><span class="pre">ACTION_PREVIOUS_MENU</span></code> or <code class="docutils literal notranslate"><span class="pre">10</span></code> (bound to <code class="docutils literal notranslate"><span class="pre">ESC</span></code> key by default) is already connected
+to the method that closes a current addon window (<code class="docutils literal notranslate"><span class="pre">close</span></code>), so you cannot connect it to any function/method.
+Or technically you can, but such connection won’t work. It guarantees that you always have a way
+to close an active addon window.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyXBMCt</a></h1>
+
+
+
+<p class="blurb">A GUI micro-framework for Kodi mediacenter addons</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=romanvm&repo=script.module.pyxbmct&type=star&v=2&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grid.html">Grid Layout</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Connecting Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estuary.html">Estuary Skin Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skins.html">Skins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyxbmct.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Roman Miroshnychenko.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/romanvm/script.module.pyxbmct" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
