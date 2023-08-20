@@ -10,10 +10,11 @@
 This module contains all classes and constants of PyXBMCt framework
 """
 
-from __future__ import absolute_import, division, unicode_literals
 import os
-from six.moves import range
-from kodi_six import xbmc, xbmcgui
+
+import xbmc
+import xbmcgui
+
 from .addonskin import Skin
 
 skin = Skin()
@@ -179,7 +180,7 @@ class Image(xbmcgui.ControlImage):
         return super(Image, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class CompareMixin(object):
+class CompareMixin:
     def __eq__(self, other):
         if hasattr(other, 'getId'):
             return self.getId() == other.getId()
@@ -403,7 +404,7 @@ class Slider(CompareMixin, xbmcgui.ControlSlider):
         return super(Slider, cls).__new__(cls, -10, -10, 1, 1, *args, **kwargs)
 
 
-class AbstractWindow(object):
+class AbstractWindow:
 
     """
     Top-level control window.
