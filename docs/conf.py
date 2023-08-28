@@ -1,23 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import sys
 import os
-import mock
 
 basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 sys.path.insert(0, os.path.join(basedir, 'script.module.pyxbmct', 'lib'))
-
-import xbmc
-import xbmcgui
-
-kodi_six_mock = mock.MagicMock()
-kodi_six_mock.xbmc = xbmc
-kodi_six_mock.xbmcgui = xbmcgui
-
-sys.modules['kodi_six'] = kodi_six_mock
-
-import pyxbmct
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -32,8 +18,10 @@ extensions = [
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'show-inheritance']
 autosummary_generate = True
-intersphinx_mapping = {'https://docs.python.org/2.7': None,
-                       'http://romanvm.github.io/Kodistubs': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3.11', None),
+    'Kodistubs': ('http://romanvm.github.io/Kodistubs', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -54,7 +42,7 @@ project = u'PyXBMCt'
 copyright = u'2015, Roman Miroshnychenko'
 author = u'Roman Miroshnychenko'
 
-language = None
+language = 'en_US'
 
 exclude_patterns = ['_build']
 

@@ -111,6 +111,7 @@ crashlytics-build.properties
 
 epydoc.*
 _docs/
+docs/_autosummary
 
 venv/
 *.zip
