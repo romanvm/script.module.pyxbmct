@@ -18,7 +18,7 @@ jobs:
         python-version: "3.11"
     - name: Build HTML docs
       run: |
-        pip install Sphinx
+        pip install Sphinx Kodistubs
         cd docs
         make html
     - name: Publish docs to GH pages
