@@ -1,23 +1,20 @@
+<!DOCTYPE html>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en-US" data-content_root="./">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Grid Layout &#8212; PyXBMCt  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=51c57257" />
+    <script src="_static/documentation_options.js?v=ccd1e645"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Connecting Events" href="connection.html" />
-    <link rel="prev" title="Custom Controls" href="custom_controls.html" />
+    <link rel="prev" title="Controls" href="controls.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,33 +31,30 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="grid-layout">
-<h1>Grid Layout<a class="headerlink" href="#grid-layout" title="Permalink to this headline">¶</a></h1>
+  <section id="grid-layout">
+<h1>Grid Layout<a class="headerlink" href="#grid-layout" title="Link to this heading">¶</a></h1>
 <p>The Grid Layout helps to place UI controls within the parent window.
 It is similar to PyQt’s QGridLayout or Tkniter’s Grid geometry manager.
 The Grid Layout is implemented through
-<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.setGeometry" title="pyxbmct.addonwindow.AbstractWindow.setGeometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGeometry</span></code></a> or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">setGeometry</span></code> and
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> methods.</p>
+<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.setGeometry" title="pyxbmct.addonwindow.AbstractWindow.setGeometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGeometry</span></code></a> and
+<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.placeControl" title="pyxbmct.addonwindow.AbstractWindow.placeControl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code></a> methods of a base PyXBMCt class.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Currently PyXBMCt does not support changing window geometry at runtime so you must call
+<p class="admonition-title">Warning</p>
+<p>Currently PyXBMCt does not support changing window geometry at runtime so you must call
 <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.setGeometry" title="pyxbmct.addonwindow.AbstractWindow.setGeometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setGeometry</span></code></a> method only once.</p>
 </div>
 <p>To place a control you simply provide it as the 1st positional argument to
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> or
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> method,
+<a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.placeControl" title="pyxbmct.addonwindow.AbstractWindow.placeControl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code></a> method,
 and then specify a row and a column for the control as the next arguments,
 and the control will be placed in a specific grid cell.
 This eliminates the need to provide exact coordinates for each control and then fine-tune them.
 If a control needs to occupy several grid cells, you can provide <code class="docutils literal notranslate"><span class="pre">rowspan</span></code>
 and/or <code class="docutils literal notranslate"><span class="pre">columspan</span></code> parameters to specify how many cells it should take.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Row and column numbers start from zero, i.e. the top-left cell will have row# = <code class="docutils literal notranslate"><span class="pre">0</span></code>, column# = <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<p class="admonition-title">Note</p>
+<p>Row and column numbers start from zero, i.e. the top-left cell will have row# = <code class="docutils literal notranslate"><span class="pre">0</span></code>, column# = <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </div>
-<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> medhod
+<p>The <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.placeControl" title="pyxbmct.addonwindow.AbstractWindow.placeControl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code></a> medhod
 does not actually check if a control will actually be placed within the parent window.
 By providing a row and/or a column number which exceeds row and/or column count of the parent window,
 a control can be placed outside the window, intentionally or unintentionally.
@@ -68,12 +62,12 @@ You need to check the visual appearance of your addon window and correct positio
 <p>The Grid Layout also works with xbmcgui Controls, but when instantiating an xbmcgui Control you need
 to provide it with fake coordinates and size. Any integer values will do.</p>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">The size and aspect of an individual control can be adjusted with <code class="docutils literal notranslate"><span class="pre">pad_x</span></code> and <code class="docutils literal notranslate"><span class="pre">pad_y</span></code> parameters
-of <code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code> method.
+<p class="admonition-title">Tip</p>
+<p>The size and aspect of an individual control can be adjusted with <code class="docutils literal notranslate"><span class="pre">pad_x</span></code> and <code class="docutils literal notranslate"><span class="pre">pad_y</span></code> parameters
+of <a class="reference internal" href="_autosummary/pyxbmct.addonwindow.html#pyxbmct.addonwindow.AbstractWindow.placeControl" title="pyxbmct.addonwindow.AbstractWindow.placeControl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">placeControl</span></code></a> method.
 By default, both padding values equal <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p>
 </div>
-</div>
+</section>
 
 
           </div>
@@ -104,7 +98,6 @@ By default, both padding values equal <code class="docutils literal notranslate"
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="classes.html">Base Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="controls.html">Controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_controls.html">Custom Controls</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grid Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="connection.html">Connecting Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using.html">Using PyXBMCt In Your Addon</a></li>
@@ -117,17 +110,15 @@ By default, both padding values equal <code class="docutils literal notranslate"
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -136,8 +127,8 @@ By default, both padding values equal <code class="docutils literal notranslate"
       &copy;2015, Roman Miroshnychenko.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

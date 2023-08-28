@@ -10,5 +10,3 @@ All non-abstract classes are available at package level, for example::
 
   pyxbmct.addonwindow
   pyxbmct.addonskin
-  pyxbmct.addoncontrols
-  pyxbmct.addonwindowerror

@@ -4,18 +4,15 @@ Grid Layout
 The Grid Layout helps to place UI controls within the parent window.
 It is similar to PyQt’s QGridLayout or Tkniter’s Grid geometry manager.
 The Grid Layout is implemented through
-:meth:`setGeometry <pyxbmct.addonwindow.AbstractWindow.setGeometry>` or 
-:meth:`setGeometry <pyxbmct.addonwindow.AbstractWindow.Group>` and
-:meth:`placeControl <pyxbmct.addonwindow.AbstractWindow.placeControl>` or
-:meth:`placeControl <pyxbmct.addonwindow.Group.placeControl>` methods.
+:meth:`setGeometry <pyxbmct.addonwindow.AbstractWindow.setGeometry>` and
+:meth:`placeControl <pyxbmct.addonwindow.AbstractWindow.placeControl>` methods of a base PyXBMCt class.
 
 .. warning::
   Currently PyXBMCt does not support changing window geometry at runtime so you must call
   :meth:`setGeometry<pyxbmct.addonwindow.AbstractWindow.setGeometry>` method only once.
 
 To place a control you simply provide it as the 1st positional argument to
-:meth:`placeControl <pyxbmct.addonwindow.AbstractWindow.placeControl>` or
-:meth:`placeControl <pyxbmct.addonwindow.Group.placeControl>` method,
+:meth:`placeControl <pyxbmct.addonwindow.AbstractWindow.placeControl>` method,
 and then specify a row and a column for the control as the next arguments,
 and the control will be placed in a specific grid cell.
 This eliminates the need to provide exact coordinates for each control and then fine-tune them.

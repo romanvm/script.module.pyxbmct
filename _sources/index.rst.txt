@@ -38,7 +38,6 @@ Contents:
 
   classes
   controls
-  custom_controls
   grid
   connection
   using
