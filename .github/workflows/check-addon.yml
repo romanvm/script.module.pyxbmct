@@ -18,4 +18,4 @@ jobs:
         pip install -q kodi-addon-checker
     - name: Check with addon-checker
       run: |
-        kodi-addon-checker --branch matrix
+        kodi-addon-checker --branch matrix script.module.pyxbmct
