@@ -253,7 +253,7 @@ class RadioButton(CompareMixin, xbmcgui.ControlRadioButton):
     :type textOffsetX: int
     :param textOffsetY: y offset of label.
     :type textOffsetY: int
-    :param _alignment: alignment of label - *Note, see xbfont.h
+    :param _alignment: alignment of label - Note: see xbfont.h
     :type _alignment: int
     :param font: font used for label text. (e.g. 'font13')
     :type font: str
@@ -317,7 +317,7 @@ class Edit(CompareMixin, xbmcgui.ControlEdit):
     :type textColor: str
     :param disabledColor: [opt] hexstring -- color of disabled label's label. (e.g. '0xFFFF3300')
     :type disabledColor: str
-    :param _alignment: [opt] lignment of label - *Note, see xbfont.h
+    :param _alignment: [opt] lignment of label - Note: see xbfont.h
     :type _alignment: int
     :param focusTexture: [opt] filename for focus texture.
     :type focusTexture: str
@@ -360,7 +360,7 @@ class List(CompareMixin, xbmcgui.ControlList):
     :param _itemTextYOffset: integer - y offset of items label.
     :param _itemHeight: integer - height of items.
     :param _space: integer - space between items.
-    :param _alignmentY: integer - Y-axis alignment of items label - *Note, see xbfont.h
+    :param _alignmentY: integer - Y-axis alignment of items label - Note: see xbfont.h
     
     .. note:: After you create the control, you need to add it to the window with placeControl().
     
@@ -733,7 +733,7 @@ class AddonWindow(AbstractWindow):
         :param pos_x: (optional) x coordinate of the top left corner of the window.
         :param pos_y: (optional) y coordinate of the top left corner of the window.
         :param padding: (optional) padding between outer edges of the window
-        and controls placed on it.
+            and controls placed on it.
 
         If ``pos_x`` and ``pos_y`` are not privided, the window will be placed
         at the center of the screen.

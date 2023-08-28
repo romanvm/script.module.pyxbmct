@@ -16,7 +16,10 @@ extensions = [
 ]
 
 autodoc_member_order = 'bysource'
-autodoc_default_flags = ['members', 'show-inheritance']
+autodoc_default_options = {
+    'members': True,
+    'show-inheritance': True,
+}
 autosummary_generate = True
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.11', None),
